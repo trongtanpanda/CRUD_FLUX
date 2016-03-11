@@ -2,8 +2,11 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema,
 ObjectId = Schema.ObjectId;
 const courseSchema = new Schema({
+	course_id: String,
 	name: String,
-	number: Number,
+	incoming_year: Number,
+	full: String,
+
 
 });
 

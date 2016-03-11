@@ -38,7 +38,11 @@ connection();
 // All the route will be prefix by /api;
 app.use('/api', require('./Server/service/users'));
 app.use('/co', require('./Server/service/course'));
-
+app.use('/de', require('./Server/service/departments'));
+app.use('/se', require('./Server/service/sectors'));
+app.use('/su', require('./Server/service/subjects'));
+app.use('/ma', require('./Server/service/masks'));
+app.use('/te', require('./Server/service/term_class'));
 http.listen(3008, function(){
     console.log('Listening on *:3008');
 });
