@@ -1,9 +1,9 @@
 var request = require('superagent'),
-	AppDispatcher = require('../app-dispatcher.jsx'),
-	Contants = require('../contants/student-actions.jsx'),
+	AppDispatcher = require('../dispatcher/app-dispatcher.jsx'),
+	Contant = require('../constants/student-constants.jsx');
 	promise = require('es6-promise').Promise;
 
-var API_URL ='/';
+var API_URL ='http://localhost:3008/co/course';
 var TIMEOUT =10000;
 
 var _pendingRequests =[];
@@ -20,14 +20,13 @@ function makeUrl(part) {
 	return API_URL + part;
 }
 
-function getcourseData(filter){
+function getCourse(filter){
 	var c = new promise(function(resolve, reject){
-		request.get(API_URL + '/')
+		request.get(API_URL)		
 			.timeout(TIMEOUT)
-			.query(filter)
-			.end(function(res){
+			.end(function(err,res){				
 				var data = null;
-				if(res.status === 200){
+				if(res.status === 200) {
 					data = JSON.parse(res.text);
 					resolve(data);
 				}else{
@@ -55,3 +54,49 @@ function createCourse(newCourse) {
 	return c;
 
 }
+
+function updateCourse(updateData) {	
+	var t = new promise(function(resolve, reject){
+		request.put(API_URL)
+			.timeout(TIMEOUT)
+			.set('Content-Type', 'application/json')
+			.send({Course: updateData})
+			.end(function(err,res) {
+                data = JSON.parse(res.text);				
+				if(res.status === 201){
+					resolve(data);                    
+				}
+				else{
+					reject(res.status, res.text);
+				}
+			});
+	});
+
+	return t;
+}
+
+function deleteCourse(CourseID) {    
+	var t = new promise(function(resolve, reject){
+		request.delete(API_URL+"/delete")
+            .timeout(TIMEOUT)
+            .set('Content-Type', 'application/json')
+            .send({CourseId: CourseID})			
+			.end(function(err,res) {
+                data = JSON.parse(res.text);
+				if(res.status === 201) {                    
+					resolve(data);
+				}
+				else{
+					reject(res.status, res.text);
+				}
+			});
+	});
+
+	return t;
+}
+module.exports = {
+	getCourse: getCourse,
+	createCourse: createCourse,
+	deleteCourse: deleteCourse,
+	updateCourse: updateCourse
+};

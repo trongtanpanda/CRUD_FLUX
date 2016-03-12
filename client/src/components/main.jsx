@@ -1,6 +1,6 @@
 var React = require("react"),
     StudentActions = require("../actions/student-action.js"),
-    CourseActions = require('../actions/course-actions'),
+    CourseActions = require('../actions/course-action'),
     UserStore = require("../stores/user-store"), 
     ComboCourse = require("./combb-course"),   
     StudentForm = require("./student-form"),

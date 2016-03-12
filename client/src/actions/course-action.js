@@ -1,9 +1,9 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
-	Contants = require('../constants/Course-constants.jsx'),
-	CoursetAPI = require('../API/course-api');
+	Contants = require('../constants/student-constants.jsx'),
+	CourseAPI = require('../API/course-api.js');
 
 var CourseActions = {
-	fetchAddCourseFromServer: function() {		
+	getListCourse: function() {		
 		CourseAPI.getCourse({}).then(function(courses) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_COURSE,
