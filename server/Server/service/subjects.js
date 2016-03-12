@@ -6,7 +6,12 @@ router.route('/subjects')
 // create a new user (accessed at POST http://localhost:8080/api/sectors)
     .post(function(req, res) {
 			
-		Subjects.create({subject_id:req.body.id, name: req.body.name, short_name: req.body.short_name, number: req.body.english_name}, function(err,sector){
+		Subjects.create({
+				subject_id:req.body.id, 
+				name: req.body.name, 
+				short_name: req.body.short_name,
+				number: req.body.english_name
+			}, function(err,sector){
 			// console.log(user);
 			if(err) res.json({message: 'error'});
 			res.json({Message:{message: 'Successfully!'}, sector: sector});

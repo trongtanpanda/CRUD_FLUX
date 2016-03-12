@@ -3,7 +3,7 @@ var request = require('superagent'),
 	Contant = require('../constants/student-constants.jsx');
 	promise = require('es6-promise').Promise;
 
-var API_URL = 'http://localhost:3008/api/users';
+var API_URL = 'http://localhost:3008/ma/marks';
 var TIMEOUT = 10000;
 
 var _pendingRequests = [];
@@ -20,9 +20,9 @@ function makeUrl(part) {
 	return API_URL + part;
 }
 
-function getStudentData() {	
+function getAllmark() {	
 	var t = new promise(function(resolve, reject){
-		request.get('http://localhost:3008/api/users')		
+		request.get(API_URL)		
 			.timeout(TIMEOUT)
 			.end(function(err,res){				
 				var data = null;
@@ -38,11 +38,11 @@ function getStudentData() {
 	return t;;
 }
 
-function createStudent(newStudent) {   
+function createMark(mark) {   
 	var t = new promise(function(resolve, reject){
-		request.post('http://localhost:3008/api/users')
+		request.post(API_URL)
 			.timeout(TIMEOUT)
-			.send({student: newStudent})
+			.send({mark: mark})
 			.end(function(err,res) {
 				data = JSON.parse(res.text);
 				if(res.status === 201) {                    
@@ -56,12 +56,12 @@ function createStudent(newStudent) {
 	return t;
 }
 
-function updateStudent(updateData) {	
+function updateMark(mark) {	
 	var t = new promise(function(resolve, reject){
-		request.put('http://localhost:3008/api/users')
+		request.put(API_URL)
 			.timeout(TIMEOUT)
 			.set('Content-Type', 'application/json')
-			.send({student: updateData})
+			.send({mark: mark})
 			.end(function(err,res) {
                 data = JSON.parse(res.text);				
 				if(res.status === 201){
@@ -76,12 +76,12 @@ function updateStudent(updateData) {
 	return t;
 }
 
-function deleteStudent(studentID) {    
+function deleteMark(mark) {    
 	var t = new promise(function(resolve, reject){
-		request.delete("http://localhost:3008/api/users/delete")
+		request.delete(API_URL)
             .timeout(TIMEOUT)
             .set('Content-Type', 'application/json')
-            .send({studentId: studentID})			
+            .send({mark: mark})			
 			.end(function(err,res) {
                 data = JSON.parse(res.text);
 				if(res.status === 201) {                    
@@ -96,8 +96,8 @@ function deleteStudent(studentID) {
 	return t;
 }
 module.exports = {
-	getStudent: getStudentData,
-	createStudent: createStudent,
-	deleteStudent: deleteStudent,
-	updateStudent: updateStudent
+	getAllMark: getAllMark,
+	createMark: createMark,
+	deleteMark: deleteMark,
+	updateMark: updateMark
 };

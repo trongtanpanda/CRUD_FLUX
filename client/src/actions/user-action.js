@@ -1,13 +1,13 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.jsx'),
-	StudentAPI = require('../API/student-api');
+	UserAPI = require('../API/user-api');
 
-var StudentActions = {
-	fetchAddStudentFromServer: function() {		
-		StudentAPI.getStudent({}).then(function(students) {			
+var UserActions = {
+	fetchAddUserFromServer: function() {		
+		UserAPI.getUser({}).then(function(user) {			
 			AppDispatcher.dispatch({
-				action:Contants.GET_STUDENT,
-				data: students,
+				action:Contants.GET_USER,
+				data: user,
 				// params: {}
 			});
 		}, function(status, text) {
@@ -15,10 +15,10 @@ var StudentActions = {
 		});
 	},
 
-	create: function(student) {        
-		StudentAPI.createStudent(student).then(function(data) {            
+	create: function(user) {        
+		UserAPI.createUser(user).then(function(data) {            
 			AppDispatcher.dispatch({
-				action: Contants.CREATE_STUDENT,
+				action: Contants.CREATE_USER,
 				data: data
 			});
 		}, function(status, text) {
@@ -26,27 +26,27 @@ var StudentActions = {
 		});
 	},
 
-	update: function(student) {		
-		StudentAPI.updateStudent(student).then(function(updateData){
+	update: function(user) {		
+		UserAPI.updateUser(user).then(function(updateData){
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_STUDENT,
+				action: Contants.UPDATE_USER,
 				data: updateData,
-                user: student,
+                user: user,
 			});
 		}, function(status,text){
 			// handle err
 		});
 	},
-	editStudent: function(index) {
+	editUser: function(index) {
 	    AppDispatcher.dispatch({
 	        action: Contants.ACTION_EDIT,
 	        data: index,
 	    })
     },
 	destroy: function(id) {       
-		StudentAPI.deleteStudent(id).then(function(data){
+		UserAPI.deleteUser(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_STUDENT,
+				action: Contants.DELETE_USER,
 				data: data,
 			});
 		},function(status, err){
@@ -55,4 +55,4 @@ var StudentActions = {
 	}
 
 };
-module.exports = StudentActions;
+module.exports = UserActions;

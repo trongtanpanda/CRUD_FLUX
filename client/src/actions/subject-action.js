@@ -1,13 +1,13 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.jsx'),
-	StudentAPI = require('../API/student-api');
+	SubjectAPI = require('../API/subject-api');
 
-var StudentActions = {
-	fetchAddStudentFromServer: function() {		
-		StudentAPI.getStudent({}).then(function(students) {			
+var SubjectActions = {
+	fetchAddSubjectFromServer: function() {		
+		SubjectAPI.getSubject({}).then(function(subjects) {			
 			AppDispatcher.dispatch({
-				action:Contants.GET_STUDENT,
-				data: students,
+				action:Contants.GET_SUBJECT,
+				data: subjects,
 				// params: {}
 			});
 		}, function(status, text) {
@@ -15,10 +15,10 @@ var StudentActions = {
 		});
 	},
 
-	create: function(student) {        
-		StudentAPI.createStudent(student).then(function(data) {            
+	create: function(subject) {        
+		SubjectAPI.createSubject(subject).then(function(data) {            
 			AppDispatcher.dispatch({
-				action: Contants.CREATE_STUDENT,
+				action: Contants.CREATE_SUBJECT,
 				data: data
 			});
 		}, function(status, text) {
@@ -26,27 +26,27 @@ var StudentActions = {
 		});
 	},
 
-	update: function(student) {		
-		StudentAPI.updateStudent(student).then(function(updateData){
+	update: function(subject) {		
+		SubjectAPI.updateSubject(subject).then(function(updateData){
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_STUDENT,
+				action: Contants.UPDATE_SUBJECT,
 				data: updateData,
-                user: student,
+                subject: subject,
 			});
 		}, function(status,text){
 			// handle err
 		});
 	},
-	editStudent: function(index) {
+	editSubject: function(index) {
 	    AppDispatcher.dispatch({
 	        action: Contants.ACTION_EDIT,
 	        data: index,
 	    })
     },
 	destroy: function(id) {       
-		StudentAPI.deleteStudent(id).then(function(data){
+		SubjectAPI.deleteSubject(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_STUDENT,
+				action: Contants.DELETE_SUBJECT,
 				data: data,
 			});
 		},function(status, err){
@@ -55,4 +55,4 @@ var StudentActions = {
 	}
 
 };
-module.exports = StudentActions;
+module.exports = SubjectActions;
