@@ -1,0 +1,32 @@
+@charset "UTF-8";
+/* CSS Document */
+img{
+max-width: 100%;
+height:auto;
+}
+span.glyphicon{
+font-size:3em;
+color:#fff;
+margin-top:10px;
+}
+span.glyphicon:hover{
+color:rgba(0,211,255,1.00);
+}
+.btn-nav:hover{
+background-color: #8200A4 !important;
+}
+.span:hover{
+color:#84B409;
+}
+.services{
+margin-top: 20px;
+}
+.nav .glyphicon{
+	font-size: 1em;
+}
+.navbg{
+background:rgba(0,211,255,1.00) !important;
+}
+.btn-nav{
+	background-color:rgba(0,211,255,1.00);
+}
