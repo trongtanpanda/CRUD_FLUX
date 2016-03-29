@@ -1,10 +1,10 @@
 var React = require('react');
-var BeanItemStore = require('../../flux/stores/BeanItemStore');
-var BeanItemActions = require('../../flux/actions/BeanItemActions');
+var BeanItemStore = require('../../stores/BeanItemStore');
+var BeanItemActions = require('../../actions/BeanItemActions');
 var ListenerMixin = require('alt/mixins/ListenerMixin');
 
-var BeanPowerListItem = require('../components/BeanPowerListItem');
-var BeanProfile = require('../components/BeanProfile');
+var BeanPowerListItem = require('../BeanPowerListItem');
+var BeanProfile = require('../BeanProfile');
 
 var BeanItemPage = React.createClass({
     mixins: [ListenerMixin],

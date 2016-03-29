@@ -1,5 +1,5 @@
 var alt = require('../alt');
-var BeanWebAPI = require('../../api/BeanWebAPI');
+var BeanWebAPI = require('../api/BeanWebAPI');
 
 class BeanListActions {
 
