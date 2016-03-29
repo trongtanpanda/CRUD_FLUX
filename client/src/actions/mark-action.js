@@ -1,5 +1,5 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
-	Contants = require('../constants/student-constants.jsx'),
+	Contants = require('../constants/student-constants.js'),
 	MaskAPI = require('../API/mask-api');
 
 var MaskActions = {

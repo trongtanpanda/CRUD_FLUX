@@ -1,5 +1,5 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
-	Contants = require('../constants/student-constants.jsx'),
+	Contants = require('../constants/student-constants.js'),
 	Term_classAPI = require('../API/term_class-api');
 
 var Term_classActions = {

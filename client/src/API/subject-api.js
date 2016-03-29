@@ -1,6 +1,6 @@
 var request = require('superagent'),
-	AppDispatcher = require('../dispatcher/app-dispatcher.jsx'),
-	Contant = require('../constants/student-constants.jsx');
+	AppDispatcher = require('../dispatcher/app-dispatcher'),
+	Contant = require('../constants/student-constants');
 	promise = require('es6-promise').Promise;
 	
 var API_URL = 'http://localhost:3008/su/subjects';

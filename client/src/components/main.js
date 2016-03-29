@@ -87,7 +87,7 @@ var Main = React.createClass({
        
         return (
             
-            <div className="row">
+            <div>
                 <h1 className="text-center">Student Management</h1>
                     <div className="col-md-10 col-md-offset-1">                                                       
                     <StudentForm listCourse={this.state.courses}/>                 

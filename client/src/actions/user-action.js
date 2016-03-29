@@ -1,5 +1,5 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
-	Contants = require('../constants/student-constants.jsx'),
+	Contants = require('../constants/student-constants.js'),
 	UserAPI = require('../API/user-api');
 
 var UserActions = {

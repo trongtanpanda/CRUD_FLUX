@@ -1,5 +1,5 @@
 var _ = require("underscore"),
-    StudentConstants = require("../constants/student-constants.jsx"),
+    StudentConstants = require("../constants/student-constants.js"),
     AppDispatcher = require("../dispatcher/app-dispatcher"),    
     BaseStore = require('./base-store');
 

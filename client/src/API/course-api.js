@@ -1,6 +1,6 @@
 var request = require('superagent'),
-	AppDispatcher = require('../dispatcher/app-dispatcher.jsx'),
-	Contant = require('../constants/student-constants.jsx');
+	AppDispatcher = require('../dispatcher/app-dispatcher.js'),
+	Contant = require('../constants/student-constants.js');
 	promise = require('es6-promise').Promise;
 
 var API_URL ='http://localhost:3008/co/course';
