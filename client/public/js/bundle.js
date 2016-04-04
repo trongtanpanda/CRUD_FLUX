@@ -23696,13 +23696,13 @@
 	var App = __webpack_require__(202);
 	var Main = __webpack_require__(204);
 	var BeanListPage = __webpack_require__(232);
-	var BeanItemPage = __webpack_require__(255);
+	var OJ = __webpack_require__(261);
 	var BeanItemEditPage = __webpack_require__(260);
 	var routes = (
 	    React.createElement(Route, {name: "home", path: "/", handler: App}, 
 	        React.createElement(DefaultRoute, {name: "beanList", handler: BeanListPage}), 
 	        React.createElement(Route, {name: "main", path: "/main", handler: Main}), 
-	        React.createElement(Route, {name: "beanItemPage", path: "/bean/:beanID", handler: BeanItemPage}), 
+	        React.createElement(Route, {name: "objects", path: "/objects", handler: OJ}), 
 	        React.createElement(Route, {name: "beanItemEditPage", path: "/bean/:beanID/edit", handler: BeanItemEditPage})
 	    )
 	);
@@ -23765,9 +23765,11 @@
 			                )
 			            ), 
 			            React.createElement("div", {className: "btn-group"}, 
-			                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
-			                    React.createElement("span", {className: "glyphicon glyphicon-camera"}), 
-			                    React.createElement("p", null, "Photos")
+			            	React.createElement(Link, {to: "/objects"}, 
+				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
+				                    React.createElement("span", {className: "glyphicon glyphicon-camera"}), 
+				                    React.createElement("p", null, "Photos")
+				                )
 			                )
 			            ), 
 			            React.createElement("div", {className: "btn-group"}, 
@@ -31645,219 +31647,11 @@
 	module.exports = BeanListItem;
 
 /***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var BeanItemStore = __webpack_require__(256);
-	var BeanItemActions = __webpack_require__(257);
-	var ListenerMixin = __webpack_require__(252);
-
-	var BeanPowerListItem = __webpack_require__(258);
-	var BeanProfile = __webpack_require__(259);
-
-	var BeanItemPage = React.createClass({displayName: "BeanItemPage",
-	    mixins: [ListenerMixin],
-
-	    getInitialState:function() {
-	        return BeanItemStore.getState();
-	    },
-
-	    componentWillMount:function() {
-	        this.listenTo(BeanItemStore, this._onChange);
-	    },
-
-	    componentDidMount:function() {
-	        BeanItemActions.requestBeanItem(this.props.params.beanID);
-	    },
-
-	    _onChange:function() {
-	        this.setState(BeanItemStore.getState());
-	    },
-
-	    componentWillReceiveProps:function(nextProps) {
-	        if (this.props.params !== nextProps.params) {
-	            BeanItemActions.requestBeanItem(nextProps.params.beanID);
-	        }
-	    },
-
-	    render:function() {
-
-	        var elementToDisplay = null;
-
-	        // First check if it's loading
-	        // Then once loaded, check if there's an error
-	        // Show whatever element is required for each stage
-
-	        if (this.state.loadingBeanItem) {
-	            elementToDisplay = (
-	                React.createElement("div", {className: "loading-element"}, "LOADING BEAN...")
-	            )
-	        } else {
-	            if (this.state.beanItemError) {
-	                elementToDisplay = (
-	                    React.createElement("div", {className: "error"}, this.state.beanItemError)
-	                )
-	            } else {
-	                elementToDisplay = (
-	                    React.createElement(BeanProfile, {beanItem: this.state.beanItem})
-	                )
-	            }
-	        }
-
-	        return (
-	            React.createElement("div", {className: "bean-item-page"}, 
-	                elementToDisplay
-	            )
-	        );
-	    }
-	});
-
-	module.exports = BeanItemPage;
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var alt = __webpack_require__(234);
-	var BeanItemActions = __webpack_require__(257);
-
-
-	    function BeanItemStore() {"use strict";
-	        this.bindActions(BeanItemActions);
-
-	        this.loadingBeanItem = false;
-	        this.beanItem = {};
-	        this.beanItemError = null;
-	    }
-
-	    Object.defineProperty(BeanItemStore.prototype,"onRequestBeanItem",{writable:true,configurable:true,value:function() {"use strict";
-	        this.loadingBeanItem = true;
-	        this.beanItemError = null;
-	    }});
-
-	    Object.defineProperty(BeanItemStore.prototype,"onReceiveBeanItem",{writable:true,configurable:true,value:function(rawBeanItem) {"use strict";
-	        this.$BeanItemStore_init(rawBeanItem);
-	        this.loadingBeanItem = false;
-	    }});
-
-	    Object.defineProperty(BeanItemStore.prototype,"onReceiveBeanItemError",{writable:true,configurable:true,value:function(error) {"use strict";
-	        this.beanItemError = error;
-	        this.loadingBeanItem = false;
-	    }});
-
-	    Object.defineProperty(BeanItemStore.prototype,"$BeanItemStore_init",{writable:true,configurable:true,value:function(rawBeanItem) {"use strict";
-	        this.beanItem = rawBeanItem;
-	    }});
-
-
-	module.exports = alt.createStore(BeanItemStore);
-
-/***/ },
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var alt = __webpack_require__(234);
-	var BeanWebAPI = __webpack_require__(249);
-
-	function BeanItemActions(){"use strict";}
-
-	    Object.defineProperty(BeanItemActions.prototype,"receiveBeanItem",{writable:true,configurable:true,value:function(beanItem) {"use strict";
-	        this.dispatch(beanItem);
-	    }});
-
-	    Object.defineProperty(BeanItemActions.prototype,"receiveBeanItemError",{writable:true,configurable:true,value:function(error) {"use strict";
-	        this.dispatch(error);
-	    }});
-
-	    Object.defineProperty(BeanItemActions.prototype,"requestBeanItem",{writable:true,configurable:true,value:function(beanID) {"use strict";
-	        var actionDispatcher = this;
-
-	        actionDispatcher.dispatch();
-
-	        BeanWebAPI.requestBeanItem(beanID).then(function(beanItem) {
-
-	            actionDispatcher.actions.receiveBeanItem(beanItem);
-	            console.log("received bean item");
-
-	        }).catch(function(error) {
-
-	            actionDispatcher.actions.receiveBeanItemError(error);
-	            console.log(error);
-
-	        });
-
-	        console.log("requested bean item");
-	    }});
-
-
-	module.exports = alt.createActions(BeanItemActions);
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-
-	var BeanPowerListItem = React.createClass({displayName: "BeanPowerListItem",
-
-	    render:function() {
-	        return(
-	            React.createElement("li", {className: "bean-power-item", key: this.props.power.power_name}, 
-	                React.createElement("span", {className: "power-name"}, this.props.power.power_name), 
-	                React.createElement("span", {className: "power-description"}, this.props.power.power_description)
-	            )
-	        )
-	    }
-	});
-
-	module.exports = BeanPowerListItem;
-
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var BeanPowerListItem = __webpack_require__(258);
-
-	var BeanProfile = React.createClass({displayName: "BeanProfile",
-
-	    render:function() {
-	        var beanColor = this.props.beanItem.bean_color;
-
-	        var imgStyle = {
-	            backgroundColor : beanColor
-	        };
-
-	        var spanStyle = {
-	            color: beanColor
-	        };
-
-	        if (this.props.beanItem.bean_powers) {
-	            var beanPowers = this.props.beanItem.bean_powers.map(function(power) {
-	                return (
-	                    React.createElement(BeanPowerListItem, {power: power, key: power.power_name})
-	                )
-	            });
-	        }
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("img", {style: imgStyle, className: "beanImage", src: "public/image/bean_stencil.png"}), 
-	                React.createElement("h2", null, "The ", React.createElement("span", {style: spanStyle}, this.props.beanItem.bean_name), " bean"), 
-	                React.createElement("div", {className: "bean-description"}, this.props.beanItem.bean_description), 
-	                React.createElement("div", {className: "bean-powers"}, 
-	                    React.createElement("h2", null, "Powers"), 
-	                    React.createElement("ul", null, beanPowers)
-	                )
-	            )
-	        )
-	    }
-	});
-
-	module.exports = BeanProfile;
-
-/***/ },
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
 /* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31877,6 +31671,258 @@
 	});
 
 	module.exports = BeanItemEditPage;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports) {
+
+	var dataOr = [{id:1, fstname: "John", sndname: "smith"},
+	        {id:2, fstname: "Mathew", sndname: "Lodd"},
+	                {id:3, fstname: "Lenny", sndname: "Alva"},
+	                {id:4, fstname: "Emery", sndname: "Limford"}];
+
+	var fluxObj = Flux.Dispatcher;
+	var AppDispatcher = new fluxObj();
+
+	function Actions(){
+
+	  this.deleteItem = function(locationId){
+	    AppDispatcher.dispatch({
+	            actionType: 'ITEM_DELETE',
+	            id: locationId
+	        });
+	  }
+
+	  this.getAllData = function(){
+	    AppDispatcher.dispatch({
+	            actionType: 'GET_ALL_DATA'
+	        });
+	  }
+
+	}
+
+	var Actions = new Actions();
+
+	function deleteItem(id) {
+	            
+	    console.log('going to destory item with id' + id);
+	    dataOr = _.remove(dataOr, function(n) {
+	              return n['id'] != id;
+	    });
+	            
+	  console.log('dataOr');
+	  console.log(dataOr);
+	}
+
+	var CHANGE_EVENT = 'change';
+	var Store = new EventEmitter();
+
+	Store.prototype = {
+
+	  /**
+	   * Get the entire collection of TODOs.
+	   * @return {object}
+	   */
+	  getAll: function() {
+	    return dataOr;
+	  },
+
+	  emitChange: function() {
+	    Store.emit(CHANGE_EVENT);
+	  },
+
+	  /**
+	   * @param {function} callback
+	   */
+	  addChangeListener: function(callback) {
+	    Store.on(CHANGE_EVENT, callback);
+	  },
+
+	  /**
+	   * @param {function} callback
+	   */
+	  removeChangeListener: function(callback) {
+	    Store.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	}
+
+	AppDispatcher.register(function(action) {
+
+	  switch(action.actionType) {
+
+	    case 'ITEM_DELETE':
+	      deleteItem(action.id);
+	      console.log('emit delete');
+	      Store.prototype.emitChange();
+	      console.log(dataOr);
+	      break;
+
+	    default:
+	      // no op
+	  }
+	});
+
+	var Objects = React.createClass({displayName: "Objects",
+	      getInitialState: function() {
+	        return {data: Store.prototype.getAll()};
+	      },
+	      componentDidMount: function() {
+	        Store.prototype.addChangeListener(this._onChange);
+	      },
+	      componentWillUnmount: function(){
+	        Store.prototype.removeChangeListener(this._onChange);
+	      },
+	      render: function() {
+
+	        return (
+	          React.createElement("div", null, 
+	            React.createElement(MainTable, {ref: "mainTable", allData: this.state.data, ItemIdProp: 'id'})
+	          )
+	        );
+	      },
+	      _onChange: function() {
+	        this.setState({data: Store.prototype.getAll()});
+	      }
+	    });
+	    
+	var MainTable = React.createClass({displayName: "MainTable",
+	        tableAsJqeryElement: {},
+	        getInitialState: function(){
+	            return {
+	              selectedRow: 0
+	            }
+	        },
+	        componentDidMount: function(){
+	            var self = this;
+
+	            // initialize table
+	            this.tableAsJqeryElement = $('#mytable').DataTable({
+	                "bDestroy": true,
+	                "bAutoWidth": false,
+	              "fnDrawCallback": function() {
+	                    self.forceUpdate();         
+	              } 
+	            });
+
+	        },
+	        componentDidUpdate: function(){
+
+	            // make column with checkboxes sortable
+	            $('#mytable').DataTable({
+	                "bDestroy": true
+	            });
+	            
+	        },
+	        render: function(){
+
+	            var that = this;
+
+	            var allKeys = [];
+	            console.log(this.props.allData);
+	            this.props.allData.forEach(function(element) {
+	                Object.keys(element).forEach(function(key) {
+	                    if (!(allKeys.indexOf(key) > -1)){
+	                        allKeys.push(key);
+	                    }
+	                });
+	            });
+
+	            var columnNames = _.without(allKeys, this.props.ItemIdProp);
+
+	            return (
+	                React.createElement("div", {className: "table-responsive"}, 
+	                  React.createElement("div", {className: "toggle_column_wrapper"}
+	                  ), 
+	                    React.createElement("table", {className: "table table-striped table-bordered table-hover", cellSpacing: "0", id: "mytable", "data-click-to-select": "true"}, 
+	                        React.createElement(TableHeader, {ref: "tableHeader", columns: columnNames}), 
+	                        React.createElement(TableBody, {ref: this.props.allData, columns: columnNames, tableData: this.props})
+	                    )
+	                )
+	            );     
+	        },
+	        componentWillUnmount: function(){
+	            this.tableAsJqeryElement.destroy();
+	        }
+	     });
+
+	var TableHeader = React.createClass({displayName: "TableHeader",
+	      render: function() {
+	      
+	      console.log('this.props.columns');
+	            console.log(this.props.columns);
+
+	        var tableHeaders = this.props.columns.map(function (headerData, i) {
+	          return (
+	                React.createElement("th", {key: i}, headerData)
+	          );
+	        });
+
+	        return (
+	            React.createElement("thead", null, 
+	              React.createElement("tr", null, 
+	                  React.createElement("th", {className: "icon"}), 
+	                  tableHeaders
+	              )
+	          )
+	        );
+	      }
+	    });
+
+	    var TableBody = React.createClass({displayName: "TableBody",
+	      getInitialState: function(){
+	          return {
+	              selectedRow: -1
+	          };
+	      },
+	      render: function() {
+	        var that = this;
+	        counter = -1;
+	        
+	        console.log('this.props.tableData.allData');
+	        console.log(this.props.tableData.allData);
+	        
+	        var tableRows = this.props.tableData.allData.map(function(rowData, j) {
+	          counter++;
+	          var itemId = that.props.tableData.allData[counter]['id'];
+	          
+	          return (
+	            React.createElement("tr", {key: rowData['id']}, 
+	                React.createElement("td", null, 
+	                    React.createElement(MinusIcon, {minusClick: that.handleMinusClick.bind(null, j, itemId)})
+	                ), 
+	                
+	                  that.props.columns.map(function (column, i) {
+	                        if (column in rowData){
+	                            return React.createElement("td", {key: i}, rowData[column]);
+	                        } else {
+	                            return React.createElement("td", {key: i});
+	                        }
+	                    })
+	                
+	            ) 
+	            );
+	        });
+
+	        return (
+	            React.createElement("tbody", null, 
+	                tableRows
+	            )
+	        );
+	      },
+	      handleMinusClick: function(rowKey, id) {
+	          Actions.deleteItem(id);
+	      }
+	    });
+	    
+	var MinusIcon = React.createClass({displayName: "MinusIcon",
+	      render: function() {
+	        return React.createElement("div", {onClick: this.props.minusClick}, "Delete row")
+	      }
+	    });
+	 
+
+	module.exports = Objects;
 
 /***/ }
 /******/ ]);

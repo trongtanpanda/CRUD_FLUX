@@ -18,10 +18,12 @@ var menu = React.createClass({
 		                </Link>
 		            </div>
 		            <div className="btn-group">
-		                <button type="button" className="btn btn-nav">
-		                    <span className="glyphicon glyphicon-camera"></span>
-		                    <p>Photos</p>
-		                </button>
+		            	<Link to='/objects'>
+			                <button type="button" className="btn btn-nav">
+			                    <span className="glyphicon glyphicon-camera"></span>
+			                    <p>Photos</p>
+			                </button>
+		                </Link>
 		            </div>
 		            <div className="btn-group">
 		                <button type="button" className="btn btn-nav">
