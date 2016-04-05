@@ -3,7 +3,7 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	CourseAPI = require('../API/course-api.js');
 
 var CourseActions = {
-	getListCourse: function() {		
+	fetchAddCourseFromServer: function() {		
 		CourseAPI.getCourse({}).then(function(courses) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_COURSE,

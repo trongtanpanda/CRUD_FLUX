@@ -4,7 +4,7 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 
 var DepartmentActions = {
 	fetchAddDepartmentFromServer: function() {		
-		DepartmentAPI.getDepartment({}).then(function(Departments) {			
+		DepartmentAPI.getAllDepartment({}).then(function(departments) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_DEPARTMENT,
 				data: departments,

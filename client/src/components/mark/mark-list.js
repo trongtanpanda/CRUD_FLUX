@@ -1,6 +1,6 @@
 var React = require("react"),
-    UserStore = require("../stores/user-store"),
- StudentActions = require("../actions/student-action.js");
+    UserStore = require("../../stores/user-store"),
+ StudentActions = require("../../actions/student-action.js");
 var StudentList = React.createClass({
 
     render: function() {

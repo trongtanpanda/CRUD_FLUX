@@ -51,7 +51,7 @@ function _deleteMsg(){
     _msg =null;
 }
 var UserStore  = _.extend(BaseStore, {
-    getStudents: function() {
+    getStudents: function() {        
         for(var i=0; i<_students.length; i++){
             for (var j = 0; j < _courses.length; j++) {
                 if(_students[i].course===_courses[j]._id){
@@ -60,6 +60,7 @@ var UserStore  = _.extend(BaseStore, {
             };
         };
         return _students;
+
     },
     getCourses: function(){
         return _courses;

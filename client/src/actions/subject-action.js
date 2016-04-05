@@ -4,7 +4,7 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 
 var SubjectActions = {
 	fetchAddSubjectFromServer: function() {		
-		SubjectAPI.getSubject({}).then(function(subjects) {			
+		SubjectAPI.getAllSubject({}).then(function(subjects) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_SUBJECT,
 				data: subjects,

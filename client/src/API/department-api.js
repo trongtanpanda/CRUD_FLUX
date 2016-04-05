@@ -27,7 +27,7 @@ function getAllDepartment() {
 			.end(function(err,res){				
 				var data = null;
 				if(res.status === 200) {
-					data = JSON.parse(res.text);
+					data = JSON.parse(res.text);					
 					resolve(data);
 				}else{
 					reject(res.status, res.text);

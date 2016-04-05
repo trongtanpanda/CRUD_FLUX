@@ -11,17 +11,17 @@ router.route('/subjects')
 				name: req.body.name, 
 				short_name: req.body.short_name,
 				number: req.body.english_name
-			}, function(err,sector){
+			}, function(err,subject){
 			// console.log(user);
 			if(err) res.json({message: 'error'});
-			res.json({Message:{message: 'Successfully!'}, sector: sector});
+			res.json({Message:{message: 'Successfully!'}, subject: subject});
 		})
 	})    	
 	.get(function(req, res) {
- 		Subjects.find(function(err, sector) {
+ 		Subjects.find(function(err, subject) {
  		if (err)
  			res.send(err);
-		res.json(sector);
+		res.json(subject);
 		// console.log(departments);
  		});
  	})

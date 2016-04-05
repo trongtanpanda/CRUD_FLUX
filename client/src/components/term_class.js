@@ -3,13 +3,13 @@ var React = require("react"),
     CourseActions = require('../actions/course-action'),
     UserStore = require("../stores/user-store"), 
     ComboCourse = require("./combb-course"),   
-    StudentForm = require("./student-form"),
-    StudentList = require("./student-list");
+    StudentForm = require("./student/student-form"),
+    StudentList = require("./student/student-list");
     // Message = require("./message");
 
 
 
-var Main = React.createClass({
+var Student = React.createClass({
 
 //     sumdays: function(data,day){    
 //         switch(day){
@@ -88,7 +88,7 @@ var Main = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Student Management</h1>
+                <h1 className="text-center">Quản lý Lớp học phần</h1>
                     <div className="col-md-10 col-md-offset-1">                                                       
                     <StudentForm listCourse={this.state.courses}/>                 
                     <StudentList students={this.state.students} />
@@ -100,4 +100,4 @@ var Main = React.createClass({
     }
 });
 
-module.exports = Main;
+module.exports = Student;

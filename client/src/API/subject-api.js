@@ -28,7 +28,7 @@ function getAllSubject() {
 				var data = null;
 				if(res.status === 200) {
 					data = JSON.parse(res.text);
-					resolve(data);
+					resolve(data);					
 				}else{
 					reject(res.status, res.text);
 				}

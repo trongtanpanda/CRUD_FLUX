@@ -23694,15 +23694,35 @@
 	var $__0=     __webpack_require__(159),Route=$__0.Route,DefaultRoute=$__0.DefaultRoute;
 
 	var App = __webpack_require__(202);
-	var Main = __webpack_require__(204);
-	var BeanListPage = __webpack_require__(232);
-	var OJ = __webpack_require__(261);
-	var BeanItemEditPage = __webpack_require__(260);
+
+	var Course = __webpack_require__(266);
+	var Department = __webpack_require__(267);
+	var Mark = __webpack_require__(268);
+	var Sector = __webpack_require__(269);
+	var Student = __webpack_require__(263);
+	var Subject = __webpack_require__(272);
+	var Term_class = __webpack_require__(270);
+	var User = __webpack_require__(271);
+
+	var BeanListPage = __webpack_require__(233);
+	var BeanItemPage = __webpack_require__(258);
+	var BeanItemEditPage = __webpack_require__(257);
+
+
 	var routes = (
 	    React.createElement(Route, {name: "home", path: "/", handler: App}, 
 	        React.createElement(DefaultRoute, {name: "beanList", handler: BeanListPage}), 
-	        React.createElement(Route, {name: "main", path: "/main", handler: Main}), 
-	        React.createElement(Route, {name: "objects", path: "/objects", handler: OJ}), 
+
+	        React.createElement(Route, {name: "course", path: "/course", handler: Course}), 
+	        React.createElement(Route, {name: "department", path: "/department", handler: Department}), 
+	        React.createElement(Route, {name: "mark", path: "/mark", handler: Mark}), 
+	        React.createElement(Route, {name: "sector", path: "/sector", handler: Sector}), 
+	        React.createElement(Route, {name: "student", path: "/student", handler: Student}), 
+	        React.createElement(Route, {name: "subject", path: "/subject", handler: Subject}), 
+	        React.createElement(Route, {name: "term_class", path: "/term_class", handler: Term_class}), 
+	        React.createElement(Route, {name: "user", path: "/user", handler: User}), 
+
+	        React.createElement(Route, {name: "beanItemPage", path: "/bean/:beanID", handler: BeanItemPage}), 
 	        React.createElement(Route, {name: "beanItemEditPage", path: "/bean/:beanID/edit", handler: BeanItemEditPage})
 	    )
 	);
@@ -23757,43 +23777,51 @@
 	           React.createElement("div", {id: "header"}, 
 			        React.createElement("div", {className: "btn-group btn-group-justified"}, 
 			            React.createElement("div", {className: "btn-group"}, 
-			            	React.createElement(Link, {to: "/main"}, 
+			            	React.createElement(Link, {to: "/student"}, 
 				                React.createElement("button", {type: "button", className: "btn btn-nav"}, React.createElement("span", {className: "glyphicon glyphicon-home"}), 
-				                React.createElement("p", null, "Home")
+				                React.createElement("p", null, "Sinh Viên")
 
 				                )
 			                )
 			            ), 
 			            React.createElement("div", {className: "btn-group"}, 
-			            	React.createElement(Link, {to: "/objects"}, 
+			            	React.createElement(Link, {to: "/subject"}, 
 				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
 				                    React.createElement("span", {className: "glyphicon glyphicon-camera"}), 
-				                    React.createElement("p", null, "Photos")
+				                    React.createElement("p", null, "Môn Học")
 				                )
 			                )
 			            ), 
 			            React.createElement("div", {className: "btn-group"}, 
-			                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
-			                    React.createElement("span", {className: "glyphicon glyphicon-gift"}), 
-			                    React.createElement("p", null, "Freebies")
+			            	React.createElement(Link, {to: "/sector"}, 
+				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
+				                    React.createElement("span", {className: "glyphicon glyphicon-gift"}), 
+				                    React.createElement("p", null, "Sector")
+				                )
+				            )
+			            ), 
+			            	React.createElement("div", {className: "btn-group"}, 
+				            	React.createElement(Link, {to: "/mark"}, 
+				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
+				                    React.createElement("span", {className: "glyphicon glyphicon-briefcase"}), 
+				                    React.createElement("p", null, "Điểm")
+				                )
+				            )
+			            ), 
+			            React.createElement("div", {className: "btn-group"}, 
+			            	React.createElement(Link, {to: "/term_class"}, 
+				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
+				                    React.createElement("span", {className: "glyphicon glyphicon-link"}), 
+				                    React.createElement("p", null, "Lớp học phần")
+				                )
 			                )
 			            ), 
 			            React.createElement("div", {className: "btn-group"}, 
-			                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
-			                    React.createElement("span", {className: "glyphicon glyphicon-briefcase"}), 
-			                    React.createElement("p", null, "Work")
-			                )
-			            ), 
-			            React.createElement("div", {className: "btn-group"}, 
-			                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
-			                    React.createElement("span", {className: "glyphicon glyphicon-link"}), 
-			                    React.createElement("p", null, "Other Links")
-			                )
-			            ), 
-			            React.createElement("div", {className: "btn-group"}, 
-			                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
-			                    React.createElement("span", {className: "glyphicon glyphicon-credit-card"}), 
-			                    React.createElement("p", null, "Payments")
+			            	React.createElement(Link, {to: "/department"}, 
+				                React.createElement("button", {type: "button", className: "btn btn-nav"}, 
+				                    React.createElement("span", {className: "glyphicon glyphicon-credit-card"}), 
+				                    React.createElement("p", null, "Khoa")
+				                )
 			                )
 			            )
 			        )
@@ -23807,114 +23835,7 @@
 
 
 /***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(224), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(230),
-	    StudentList = __webpack_require__(231);
-	    // Message = require("./message");
-
-
-
-	var Main = React.createClass({displayName: "Main",
-
-	//     sumdays: function(data,day){    
-	//         switch(day){
-	//         case 0:return this.checkworkweek(data.su)
-	//         case 1:return this.checkworkweek(data.mo)
-	//         case 2:return this.checkworkweek(data.tu)
-	//         case 3:return this.checkworkweek(data.we) 
-	//         case 4:return this.checkworkweek(data.th)
-	//         case 5:return this.checkworkweek(data.fr)
-	//         case 6:return this.checkworkweek(data.sa)
-	//     }
-	//   },
-	//   checkworkweek: function(val){
-	//   switch(val){
-	//     case 'non':return 0
-	//     case 'half':return 0.5
-	//     case 'full':return 1
-	//   }
-	// },
-	// total: function(start, end,){
-	//     var that = this;
-	//     var fr='full';
-	//     var to ='morning';
-	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//     }
-	// },
-	//     _date: function(start, end){
-	//         var that = this;     
-
-	        
-	//         var st =start.toString().substring(0,10);
-	//         var ed =end.toString().substring(0,10);
-	//         console.log(st);
-	//         console.log(ed);
-	//         if(st==ed){//-----======-----//
-
-	//         }else{//////----######-----//
-
-	//         }
-
-	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//         }
-	        
-	//         return count.sun;
-	//     },
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Student Management"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Main;
-
-/***/ },
+/* 204 */,
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25982,7 +25903,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -26977,7 +26898,7 @@
 		CourseAPI = __webpack_require__(223);
 
 	var CourseActions = {
-		getListCourse: function() {		
+		fetchAddCourseFromServer: function() {		
 			CourseAPI.getCourse({}).then(function(courses) {			
 				AppDispatcher.dispatch({
 					action:Contants.GET_COURSE,
@@ -27195,7 +27116,7 @@
 	    _msg =null;
 	}
 	var UserStore  = _.extend(BaseStore, {
-	    getStudents: function() {
+	    getStudents: function() {        
 	        for(var i=0; i<_students.length; i++){
 	            for (var j = 0; j < _courses.length; j++) {
 	                if(_students[i].course===_courses[j]._id){
@@ -27204,6 +27125,7 @@
 	            };
 	        };
 	        return _students;
+
 	    },
 	    getCourses: function(){
 	        return _courses;
@@ -29227,149 +29149,151 @@
 	module.exports = ComboCourse;
 
 /***/ },
-/* 230 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),    
-	    UserStore = __webpack_require__(224),
-	    StudentActions = __webpack_require__(205);
-
-	var StudentForm = React.createClass({displayName: "StudentForm",
-	    
-	    _onClickAdd: function() {
-	         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
-
-	        StudentActions.create(student);
-	        this.setState({
-	            name: "", courser:"",
-	        });
-
-	    },
-	    _onClickUpdate: function() {
-	        var editingStudent = this.state.editingStudent;        
-	        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
-	        StudentActions.update(user);
-	        this.setState({
-	            name: "",
-	        });
-	    },
-	    _onchangCourse: function(e){        
-	        this.setState({
-	            courser: e.target.value,
-	        });
-	    },
-	    _onChangeName: function(e) {
-	        this.setState({
-	            name: e.target.value, 
-	        });
-	    },
-	    _onEdit: function() {        
-	        var editingStudent = UserStore.getEditingStudent();
-	        // console.log(editingStudent);
-	        this.setState({
-	            editingStudent: editingStudent,
-	        });
-
-	        if (editingStudent) {
-	            this.setState({
-	                name: editingStudent.name,
-	                courser: editingStudent.course._id,
-	            });
-	        }
-	    },
-	    getInitialState: function() {
-	            return {
-	            name: "",            
-	            editingStudent: null,            
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addEditStudentListener(this._onEdit);
-	    },
-	    render: function() {
-	        var btnAdd = (React.createElement("input", {type: "button", value: "Add", className: "btn btn-primary", onClick: this._onClickAdd}));
-	        var btnUpdate = (React.createElement("input", {type: "button", value: "Update", className: "btn btn-primary", onClick: this._onClickUpdate}));
-	        var courses = this.props.listCourse.map(function(course) {
-	            return (
-	               React.createElement("option", {value: course._id}, course.name)
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", {className: "row", style: {margin: "10px"}}, 
-	                React.createElement("div", {className: "col-md-2"}, 
-	                    "Name:"
-	                ), 
-	                React.createElement("div", null, 
-	                    React.createElement("input", {className: "form-group col-md-3", ref: "name", value: this.state.name, onChange: this._onChangeName})
-	                ), 
-	                 React.createElement("div", {className: "col-md-2"}, 
-	                    "Course:"
-	                ), 
-	                 React.createElement("div", {className: "col-md-3"}, 
-	                    React.createElement("select", {className: "col-md-12", onChange: this._onchangCourse, ref: "course", value: this.state.courser}, courses)
-	                ), 
-	                React.createElement("div", {className: "col-md-2"}, 
-	                    this.state.editingStudent ? btnUpdate : btnAdd
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = StudentForm;
-
-/***/ },
+/* 230 */,
 /* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),
-	    UserStore = __webpack_require__(224),
-	 StudentActions = __webpack_require__(205);
-	var StudentList = React.createClass({displayName: "StudentList",
+	var _ = __webpack_require__(225),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(226);
 
-	    render: function() {
-	        var studentList = this.props.students.map(function(student, index) {
-	            var course;
-	            if(!student.course){
-	             course=React.createElement("td", null);
-	            }else{
-	             course=   React.createElement("td", null, student.course.name)
-	            };
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, student.name), 
-	                      course, 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Remove", className: "btn btn-danger", onClick: StudentActions.destroy.bind(null,student._id)}))
-	                )
-	            );
-	        }.bind(this));
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
 
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        studentList
-	                    )
-	                )
-	            )
-	        );
+	var _students = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
 	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    _students.push(student);
+	}
+	function _listStudent(data){
+	    _students= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_students, "_id", _id);
+	        _students.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_students, "_id", _editing_id); 
+	    _students[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var UserStore  = _.extend(BaseStore, {
+	    getStudents: function() {
+	        for(var i=0; i<_students.length; i++){
+	            for (var j = 0; j < _courses.length; j++) {
+	                if(_students[i].course===_courses[j]._id){
+	                     _students[i].course = _courses[j];
+	                }
+	            };
+	        };
+	        return _students;
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingStudent: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_students, "_id", _editing_id);
+	        return _students[index];        
+	    },
+	    emitEditStudent: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditStudentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
 	});
 
-	module.exports = StudentList;
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        case StudentConstants.CREATE_STUDENT:
+	            _getMsg(payload.data.Message);
+	            _addStudent(payload.data.Message.user);
+	            UserStore.emitChange();            
+	            break;
+
+	        case StudentConstants.DELETE_STUDENT:
+	            _removeStudent(payload.data.Message.studentId);
+	            _getMsg(payload.data.Message);                    
+	            UserStore.emitChange();           
+	            break;
+
+	        case StudentConstants.ACTION_EDIT:
+	            _editStudent(payload.data);
+	            UserStore.emitEditStudent();
+	            break;
+
+	        case StudentConstants.UPDATE_STUDENT:
+	            _updateStudent(payload.user);
+	            _getMsg(payload.data.Message);            
+	            UserStore.emitEditStudent();
+	            UserStore.emitChange();            
+	            break;
+
+	        case StudentConstants.GET_STUDENT:
+	            _listStudent(payload.data);
+	            UserStore.emitChange();
+	            break;
+	            
+	        case StudentConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            UserStore.emitChange();
+	            break;
+	    }
+	});
+	module.exports = UserStore;
 
 /***/ },
-/* 232 */
+/* 232 */,
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanListActions = __webpack_require__(233);
-	var BeanListStore = __webpack_require__(251);
-	var ListenerMixin = __webpack_require__(252);
+	var BeanListActions = __webpack_require__(234);
+	var BeanListStore = __webpack_require__(252);
+	var ListenerMixin = __webpack_require__(253);
 
-	var BeanListItem = __webpack_require__(254);
+	var BeanListItem = __webpack_require__(255);
 
 	var BeanListPage = React.createClass({displayName: "BeanListPage",
 	    mixins: [ListenerMixin],
@@ -29426,11 +29350,11 @@
 	module.exports = BeanListPage;
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(234);
-	var BeanWebAPI = __webpack_require__(249);
+	var alt = __webpack_require__(235);
+	var BeanWebAPI = __webpack_require__(250);
 
 	function BeanListActions(){"use strict";}
 
@@ -29464,17 +29388,17 @@
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Alt = __webpack_require__(235);
+	var Alt = __webpack_require__(236);
 
 	var alt = new Alt();
 
 	module.exports = alt;
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global window*/
@@ -29497,29 +29421,29 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _flux = __webpack_require__(236);
+	var _flux = __webpack_require__(237);
 
-	var _utilsStateFunctions = __webpack_require__(239);
+	var _utilsStateFunctions = __webpack_require__(240);
 
 	var StateFunctions = _interopRequireWildcard(_utilsStateFunctions);
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(242);
+	var _utilsFunctions = __webpack_require__(243);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _store = __webpack_require__(243);
+	var _store = __webpack_require__(244);
 
 	var store = _interopRequireWildcard(_store);
 
-	var _utilsAltUtils = __webpack_require__(245);
+	var _utilsAltUtils = __webpack_require__(246);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _actions = __webpack_require__(248);
+	var _actions = __webpack_require__(249);
 
 	var _actions2 = _interopRequireDefault(_actions);
 
@@ -29789,7 +29713,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29801,11 +29725,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(237)
+	module.exports.Dispatcher = __webpack_require__(238)
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -29822,7 +29746,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(238);
+	var invariant = __webpack_require__(239);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -30061,7 +29985,7 @@
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports) {
 
 	/**
@@ -30120,7 +30044,7 @@
 
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30135,11 +30059,11 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(242);
+	var _utilsFunctions = __webpack_require__(243);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -30193,7 +30117,7 @@
 	}
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30204,7 +30128,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(241);
+	var _esSymbol = __webpack_require__(242);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
@@ -30257,7 +30181,7 @@
 	exports.STATE_CONTAINER = STATE_CONTAINER;
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30413,7 +30337,7 @@
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30449,7 +30373,7 @@
 	}
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30474,27 +30398,27 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _eventemitter3 = __webpack_require__(244);
+	var _eventemitter3 = __webpack_require__(245);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(245);
+	var _utilsAltUtils = __webpack_require__(246);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _utilsFunctions = __webpack_require__(242);
+	var _utilsFunctions = __webpack_require__(243);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _AltStore = __webpack_require__(246);
+	var _AltStore = __webpack_require__(247);
 
 	var _AltStore2 = _interopRequireDefault(_AltStore);
 
-	var _StoreMixin = __webpack_require__(247);
+	var _StoreMixin = __webpack_require__(248);
 
 	var _StoreMixin2 = _interopRequireDefault(_StoreMixin);
 
@@ -30629,7 +30553,7 @@
 	}
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30864,7 +30788,7 @@
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30927,7 +30851,7 @@
 	}
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30944,19 +30868,19 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _eventemitter3 = __webpack_require__(244);
+	var _eventemitter3 = __webpack_require__(245);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _esSymbol = __webpack_require__(241);
+	var _esSymbol = __webpack_require__(242);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(242);
+	var _utilsFunctions = __webpack_require__(243);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -31066,7 +30990,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31079,15 +31003,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(241);
+	var _esSymbol = __webpack_require__(242);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(242);
+	var _utilsFunctions = __webpack_require__(243);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -31276,7 +31200,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31295,15 +31219,15 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _esSymbol = __webpack_require__(241);
+	var _esSymbol = __webpack_require__(242);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(240);
+	var _symbolsSymbols = __webpack_require__(241);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(245);
+	var _utilsAltUtils = __webpack_require__(246);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
@@ -31369,10 +31293,10 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var fakeData = __webpack_require__(250);
+	var fakeData = __webpack_require__(251);
 
 	// Emulate API requests
 
@@ -31414,7 +31338,7 @@
 	module.exports = BeanWebApi;
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -31523,11 +31447,11 @@
 	};
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var BeanListActions = __webpack_require__(233);
-	var alt = __webpack_require__(234);
+	var BeanListActions = __webpack_require__(234);
+	var alt = __webpack_require__(235);
 
 
 	    function BeanListStore() {"use strict";
@@ -31554,11 +31478,11 @@
 	module.exports = alt.createStore(BeanListStore);
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Subscribe = __webpack_require__(253)
+	var Subscribe = __webpack_require__(254)
 
 	var ListenerMixin = {
 	  componentWillMount: function () {
@@ -31588,11 +31512,11 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Symbol = __webpack_require__(241)
+	var Symbol = __webpack_require__(242)
 	var MIXIN_REGISTRY = Symbol('alt store listeners')
 
 	var Subscribe = {
@@ -31621,7 +31545,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -31647,12 +31571,8 @@
 	module.exports = BeanListItem;
 
 /***/ },
-/* 255 */,
 /* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -31673,256 +31593,1785 @@
 	module.exports = BeanItemEditPage;
 
 /***/ },
-/* 261 */
-/***/ function(module, exports) {
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var dataOr = [{id:1, fstname: "John", sndname: "smith"},
-	        {id:2, fstname: "Mathew", sndname: "Lodd"},
-	                {id:3, fstname: "Lenny", sndname: "Alva"},
-	                {id:4, fstname: "Emery", sndname: "Limford"}];
+	var React = __webpack_require__(2);
+	var BeanItemStore = __webpack_require__(259);
+	var BeanItemActions = __webpack_require__(260);
+	var ListenerMixin = __webpack_require__(253);
 
-	var fluxObj = Flux.Dispatcher;
-	var AppDispatcher = new fluxObj();
+	var BeanPowerListItem = __webpack_require__(261);
+	var BeanProfile = __webpack_require__(262);
 
-	function Actions(){
+	var BeanItemPage = React.createClass({displayName: "BeanItemPage",
+	    mixins: [ListenerMixin],
 
-	  this.deleteItem = function(locationId){
-	    AppDispatcher.dispatch({
-	            actionType: 'ITEM_DELETE',
-	            id: locationId
-	        });
-	  }
+	    getInitialState:function() {
+	        return BeanItemStore.getState();
+	    },
 
-	  this.getAllData = function(){
-	    AppDispatcher.dispatch({
-	            actionType: 'GET_ALL_DATA'
-	        });
-	  }
+	    componentWillMount:function() {
+	        this.listenTo(BeanItemStore, this._onChange);
+	    },
 
-	}
+	    componentDidMount:function() {
+	        BeanItemActions.requestBeanItem(this.props.params.beanID);
+	    },
 
-	var Actions = new Actions();
+	    _onChange:function() {
+	        this.setState(BeanItemStore.getState());
+	    },
 
-	function deleteItem(id) {
-	            
-	    console.log('going to destory item with id' + id);
-	    dataOr = _.remove(dataOr, function(n) {
-	              return n['id'] != id;
-	    });
-	            
-	  console.log('dataOr');
-	  console.log(dataOr);
-	}
-
-	var CHANGE_EVENT = 'change';
-	var Store = new EventEmitter();
-
-	Store.prototype = {
-
-	  /**
-	   * Get the entire collection of TODOs.
-	   * @return {object}
-	   */
-	  getAll: function() {
-	    return dataOr;
-	  },
-
-	  emitChange: function() {
-	    Store.emit(CHANGE_EVENT);
-	  },
-
-	  /**
-	   * @param {function} callback
-	   */
-	  addChangeListener: function(callback) {
-	    Store.on(CHANGE_EVENT, callback);
-	  },
-
-	  /**
-	   * @param {function} callback
-	   */
-	  removeChangeListener: function(callback) {
-	    Store.removeListener(CHANGE_EVENT, callback);
-	  }
-
-	}
-
-	AppDispatcher.register(function(action) {
-
-	  switch(action.actionType) {
-
-	    case 'ITEM_DELETE':
-	      deleteItem(action.id);
-	      console.log('emit delete');
-	      Store.prototype.emitChange();
-	      console.log(dataOr);
-	      break;
-
-	    default:
-	      // no op
-	  }
-	});
-
-	var Objects = React.createClass({displayName: "Objects",
-	      getInitialState: function() {
-	        return {data: Store.prototype.getAll()};
-	      },
-	      componentDidMount: function() {
-	        Store.prototype.addChangeListener(this._onChange);
-	      },
-	      componentWillUnmount: function(){
-	        Store.prototype.removeChangeListener(this._onChange);
-	      },
-	      render: function() {
-
-	        return (
-	          React.createElement("div", null, 
-	            React.createElement(MainTable, {ref: "mainTable", allData: this.state.data, ItemIdProp: 'id'})
-	          )
-	        );
-	      },
-	      _onChange: function() {
-	        this.setState({data: Store.prototype.getAll()});
-	      }
-	    });
-	    
-	var MainTable = React.createClass({displayName: "MainTable",
-	        tableAsJqeryElement: {},
-	        getInitialState: function(){
-	            return {
-	              selectedRow: 0
-	            }
-	        },
-	        componentDidMount: function(){
-	            var self = this;
-
-	            // initialize table
-	            this.tableAsJqeryElement = $('#mytable').DataTable({
-	                "bDestroy": true,
-	                "bAutoWidth": false,
-	              "fnDrawCallback": function() {
-	                    self.forceUpdate();         
-	              } 
-	            });
-
-	        },
-	        componentDidUpdate: function(){
-
-	            // make column with checkboxes sortable
-	            $('#mytable').DataTable({
-	                "bDestroy": true
-	            });
-	            
-	        },
-	        render: function(){
-
-	            var that = this;
-
-	            var allKeys = [];
-	            console.log(this.props.allData);
-	            this.props.allData.forEach(function(element) {
-	                Object.keys(element).forEach(function(key) {
-	                    if (!(allKeys.indexOf(key) > -1)){
-	                        allKeys.push(key);
-	                    }
-	                });
-	            });
-
-	            var columnNames = _.without(allKeys, this.props.ItemIdProp);
-
-	            return (
-	                React.createElement("div", {className: "table-responsive"}, 
-	                  React.createElement("div", {className: "toggle_column_wrapper"}
-	                  ), 
-	                    React.createElement("table", {className: "table table-striped table-bordered table-hover", cellSpacing: "0", id: "mytable", "data-click-to-select": "true"}, 
-	                        React.createElement(TableHeader, {ref: "tableHeader", columns: columnNames}), 
-	                        React.createElement(TableBody, {ref: this.props.allData, columns: columnNames, tableData: this.props})
-	                    )
-	                )
-	            );     
-	        },
-	        componentWillUnmount: function(){
-	            this.tableAsJqeryElement.destroy();
+	    componentWillReceiveProps:function(nextProps) {
+	        if (this.props.params !== nextProps.params) {
+	            BeanItemActions.requestBeanItem(nextProps.params.beanID);
 	        }
-	     });
+	    },
 
-	var TableHeader = React.createClass({displayName: "TableHeader",
-	      render: function() {
-	      
-	      console.log('this.props.columns');
-	            console.log(this.props.columns);
+	    render:function() {
 
-	        var tableHeaders = this.props.columns.map(function (headerData, i) {
-	          return (
-	                React.createElement("th", {key: i}, headerData)
-	          );
-	        });
+	        var elementToDisplay = null;
 
-	        return (
-	            React.createElement("thead", null, 
-	              React.createElement("tr", null, 
-	                  React.createElement("th", {className: "icon"}), 
-	                  tableHeaders
-	              )
-	          )
-	        );
-	      }
-	    });
+	        // First check if it's loading
+	        // Then once loaded, check if there's an error
+	        // Show whatever element is required for each stage
 
-	    var TableBody = React.createClass({displayName: "TableBody",
-	      getInitialState: function(){
-	          return {
-	              selectedRow: -1
-	          };
-	      },
-	      render: function() {
-	        var that = this;
-	        counter = -1;
-	        
-	        console.log('this.props.tableData.allData');
-	        console.log(this.props.tableData.allData);
-	        
-	        var tableRows = this.props.tableData.allData.map(function(rowData, j) {
-	          counter++;
-	          var itemId = that.props.tableData.allData[counter]['id'];
-	          
-	          return (
-	            React.createElement("tr", {key: rowData['id']}, 
-	                React.createElement("td", null, 
-	                    React.createElement(MinusIcon, {minusClick: that.handleMinusClick.bind(null, j, itemId)})
-	                ), 
-	                
-	                  that.props.columns.map(function (column, i) {
-	                        if (column in rowData){
-	                            return React.createElement("td", {key: i}, rowData[column]);
-	                        } else {
-	                            return React.createElement("td", {key: i});
-	                        }
-	                    })
-	                
-	            ) 
-	            );
-	        });
+	        if (this.state.loadingBeanItem) {
+	            elementToDisplay = (
+	                React.createElement("div", {className: "loading-element"}, "LOADING BEAN...")
+	            )
+	        } else {
+	            if (this.state.beanItemError) {
+	                elementToDisplay = (
+	                    React.createElement("div", {className: "error"}, this.state.beanItemError)
+	                )
+	            } else {
+	                elementToDisplay = (
+	                    React.createElement(BeanProfile, {beanItem: this.state.beanItem})
+	                )
+	            }
+	        }
 
 	        return (
-	            React.createElement("tbody", null, 
-	                tableRows
+	            React.createElement("div", {className: "bean-item-page"}, 
+	                elementToDisplay
 	            )
 	        );
-	      },
-	      handleMinusClick: function(rowKey, id) {
-	          Actions.deleteItem(id);
-	      }
-	    });
-	    
-	var MinusIcon = React.createClass({displayName: "MinusIcon",
-	      render: function() {
-	        return React.createElement("div", {onClick: this.props.minusClick}, "Delete row")
-	      }
-	    });
-	 
+	    }
+	});
 
-	module.exports = Objects;
+	module.exports = BeanItemPage;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var alt = __webpack_require__(235);
+	var BeanItemActions = __webpack_require__(260);
+
+
+	    function BeanItemStore() {"use strict";
+	        this.bindActions(BeanItemActions);
+
+	        this.loadingBeanItem = false;
+	        this.beanItem = {};
+	        this.beanItemError = null;
+	    }
+
+	    Object.defineProperty(BeanItemStore.prototype,"onRequestBeanItem",{writable:true,configurable:true,value:function() {"use strict";
+	        this.loadingBeanItem = true;
+	        this.beanItemError = null;
+	    }});
+
+	    Object.defineProperty(BeanItemStore.prototype,"onReceiveBeanItem",{writable:true,configurable:true,value:function(rawBeanItem) {"use strict";
+	        this.$BeanItemStore_init(rawBeanItem);
+	        this.loadingBeanItem = false;
+	    }});
+
+	    Object.defineProperty(BeanItemStore.prototype,"onReceiveBeanItemError",{writable:true,configurable:true,value:function(error) {"use strict";
+	        this.beanItemError = error;
+	        this.loadingBeanItem = false;
+	    }});
+
+	    Object.defineProperty(BeanItemStore.prototype,"$BeanItemStore_init",{writable:true,configurable:true,value:function(rawBeanItem) {"use strict";
+	        this.beanItem = rawBeanItem;
+	    }});
+
+
+	module.exports = alt.createStore(BeanItemStore);
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var alt = __webpack_require__(235);
+	var BeanWebAPI = __webpack_require__(250);
+
+	function BeanItemActions(){"use strict";}
+
+	    Object.defineProperty(BeanItemActions.prototype,"receiveBeanItem",{writable:true,configurable:true,value:function(beanItem) {"use strict";
+	        this.dispatch(beanItem);
+	    }});
+
+	    Object.defineProperty(BeanItemActions.prototype,"receiveBeanItemError",{writable:true,configurable:true,value:function(error) {"use strict";
+	        this.dispatch(error);
+	    }});
+
+	    Object.defineProperty(BeanItemActions.prototype,"requestBeanItem",{writable:true,configurable:true,value:function(beanID) {"use strict";
+	        var actionDispatcher = this;
+
+	        actionDispatcher.dispatch();
+
+	        BeanWebAPI.requestBeanItem(beanID).then(function(beanItem) {
+
+	            actionDispatcher.actions.receiveBeanItem(beanItem);
+	            console.log("received bean item");
+
+	        }).catch(function(error) {
+
+	            actionDispatcher.actions.receiveBeanItemError(error);
+	            console.log(error);
+
+	        });
+
+	        console.log("requested bean item");
+	    }});
+
+
+	module.exports = alt.createActions(BeanItemActions);
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+
+	var BeanPowerListItem = React.createClass({displayName: "BeanPowerListItem",
+
+	    render:function() {
+	        return(
+	            React.createElement("li", {className: "bean-power-item", key: this.props.power.power_name}, 
+	                React.createElement("span", {className: "power-name"}, this.props.power.power_name), 
+	                React.createElement("span", {className: "power-description"}, this.props.power.power_description)
+	            )
+	        )
+	    }
+	});
+
+	module.exports = BeanPowerListItem;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	var BeanPowerListItem = __webpack_require__(261);
+
+	var BeanProfile = React.createClass({displayName: "BeanProfile",
+
+	    render:function() {
+	        var beanColor = this.props.beanItem.bean_color;
+
+	        var imgStyle = {
+	            backgroundColor : beanColor
+	        };
+
+	        var spanStyle = {
+	            color: beanColor
+	        };
+
+	        if (this.props.beanItem.bean_powers) {
+	            var beanPowers = this.props.beanItem.bean_powers.map(function(power) {
+	                return (
+	                    React.createElement(BeanPowerListItem, {power: power, key: power.power_name})
+	                )
+	            });
+	        }
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("img", {style: imgStyle, className: "beanImage", src: "public/image/bean_stencil.png"}), 
+	                React.createElement("h2", null, "The ", React.createElement("span", {style: spanStyle}, this.props.beanItem.bean_name), " bean"), 
+	                React.createElement("div", {className: "bean-description"}, this.props.beanItem.bean_description), 
+	                React.createElement("div", {className: "bean-powers"}, 
+	                    React.createElement("h2", null, "Powers"), 
+	                    React.createElement("ul", null, beanPowers)
+	                )
+	            )
+	        )
+	    }
+	});
+
+	module.exports = BeanProfile;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(205),
+	    CourseActions = __webpack_require__(222),
+	    UserStore = __webpack_require__(231), 
+	    ComboCourse = __webpack_require__(229),   
+	    StudentForm = __webpack_require__(264),
+	    StudentList = __webpack_require__(265),
+	    Message = __webpack_require__(279);
+
+
+
+	var Student = React.createClass({displayName: "Student",
+	    _onChange: function() {
+
+	        this.setState({
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();
+	        CourseActions.getListCourse();
+	        return {
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),    
+	    UserStore = __webpack_require__(224),
+	    StudentActions = __webpack_require__(205);
+
+	var StudentForm = React.createClass({displayName: "StudentForm",
+	    
+	    _onClickAdd: function() {
+	         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
+
+	        StudentActions.create(student);
+	        this.setState({
+	            name: "", courser:"",
+	        });
+
+	    },
+	    _onClickUpdate: function() {
+	        var editingStudent = this.state.editingStudent;        
+	        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
+	        StudentActions.update(user);
+	        this.setState({
+	            name: "",
+	        });
+	    },
+	    _onchangCourse: function(e){        
+	        this.setState({
+	            courser: e.target.value,
+	        });
+	    },
+	    _onChangeName: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {        
+	        var editingStudent = UserStore.getEditingStudent();
+	        // console.log(editingStudent);
+	        this.setState({
+	            editingStudent: editingStudent,
+	        });
+
+	        if (editingStudent) {
+	            this.setState({
+	                name: editingStudent.name,
+	                courser: editingStudent.course._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            editingStudent: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addEditStudentListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = (React.createElement("input", {type: "button", value: "Add", className: "btn btn-primary", onClick: this._onClickAdd}));
+	        var btnUpdate = (React.createElement("input", {type: "button", value: "Update", className: "btn btn-primary", onClick: this._onClickUpdate}));
+	        var courses = this.props.listCourse.map(function(course) {
+	            return (
+	               React.createElement("option", {value: course._id}, course.name)
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", {className: "row", style: {margin: "10px"}}, 
+	                React.createElement("div", {className: "col-md-2"}, 
+	                    "Name:"
+	                ), 
+	                React.createElement("div", null, 
+	                    React.createElement("input", {className: "form-group col-md-3", ref: "name", value: this.state.name, onChange: this._onChangeName})
+	                ), 
+	                 React.createElement("div", {className: "col-md-2"}, 
+	                    "Course:"
+	                ), 
+	                 React.createElement("div", {className: "col-md-3"}, 
+	                    React.createElement("select", {className: "col-md-12", onChange: this._onchangCourse, ref: "course", value: this.state.courser}, courses)
+	                ), 
+	                React.createElement("div", {className: "col-md-2"}, 
+	                    this.state.editingStudent ? btnUpdate : btnAdd
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = StudentForm;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    UserStore = __webpack_require__(231),
+	 StudentActions = __webpack_require__(205);
+	var StudentList = React.createClass({displayName: "StudentList",
+
+	    render: function() {
+	        var studentList = this.props.students.map(function(student, index) {
+	            var course;
+	            if(!student.course){
+	             course=React.createElement("td", null);
+	            }else{
+	             course=   React.createElement("td", null, student.course.name)
+	            };
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, student.name), 
+	                      course, 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Remove", className: "btn btn-danger", onClick: StudentActions.destroy.bind(null,student._id)}))
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        studentList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = StudentList;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    CourseActions = __webpack_require__(222),
+	    //CourseActions = require('../actions/course-action'),
+	    CourseStore = __webpack_require__(286), 
+	    //ComboCourse = require("./combb-course"),   
+	    //CourseForm = require("./course/course-form"),
+	    CourseList = __webpack_require__(285);
+	    // Message = require("./message");
+
+
+
+	var Course = React.createClass({displayName: "Course",
+
+	    componentWillMount: function() {
+	        this.setState({
+	            courses: CourseStore.getCourses(),
+	            
+	        });
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            courses: CourseStore.getCourses(),
+	            
+	        });        
+	               
+	    },
+	    getInitialState: function() {
+	        CourseActions.fetchAddCourseFromServer();
+	        return {
+	            courses: CourseStore.getCourses(),
+	            
+	        }
+	    },
+	    componentDidMount: function() {
+	        CourseStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Khóa học"), 
+	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(CourseList, {courses: this.state.courses})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Course;
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    DepartmentActions = __webpack_require__(281),
+	    //CourseActions = require('../actions/course-action'),
+	    DepartmentStore = __webpack_require__(280), 
+	   // ComboCourse = require("./combb-course"),   
+	    //StudentForm = require("./student/student-form"),
+	    DepartmentList = __webpack_require__(283);
+	    // Message = require("./message");
+
+
+
+	var Department = React.createClass({displayName: "Department",
+
+	    componentWillMount: function() {
+	        this.setState({
+	            departments: DepartmentStore.getDepartments(),
+	            
+	        });
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            departments: DepartmentStore.getDepartments(),
+	            
+	        }); 
+	        
+	               
+	    },
+	    getInitialState: function() {
+	        DepartmentActions.fetchAddDepartmentFromServer();        
+	        return {
+	            departments: DepartmentStore.getDepartments(),           
+	        }
+	    },
+	    componentDidMount: function() {
+	        DepartmentStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Khoa"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                                    
+	                    React.createElement(DepartmentList, {departments: this.state.departments})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Department;
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(205),
+	    CourseActions = __webpack_require__(222),
+	    UserStore = __webpack_require__(231), 
+	    ComboCourse = __webpack_require__(229),   
+	    StudentForm = __webpack_require__(264),
+	    StudentList = __webpack_require__(265);
+	    // Message = require("./message");
+
+
+
+	var Student = React.createClass({displayName: "Student",
+
+	//     sumdays: function(data,day){    
+	//         switch(day){
+	//         case 0:return this.checkworkweek(data.su)
+	//         case 1:return this.checkworkweek(data.mo)
+	//         case 2:return this.checkworkweek(data.tu)
+	//         case 3:return this.checkworkweek(data.we) 
+	//         case 4:return this.checkworkweek(data.th)
+	//         case 5:return this.checkworkweek(data.fr)
+	//         case 6:return this.checkworkweek(data.sa)
+	//     }
+	//   },
+	//   checkworkweek: function(val){
+	//   switch(val){
+	//     case 'non':return 0
+	//     case 'half':return 0.5
+	//     case 'full':return 1
+	//   }
+	// },
+	// total: function(start, end,){
+	//     var that = this;
+	//     var fr='full';
+	//     var to ='morning';
+	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
+	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//     }
+	// },
+	//     _date: function(start, end){
+	//         var that = this;     
+
+	        
+	//         var st =start.toString().substring(0,10);
+	//         var ed =end.toString().substring(0,10);
+	//         console.log(st);
+	//         console.log(ed);
+	//         if(st==ed){//-----======-----//
+
+	//         }else{//////----######-----//
+
+	//         }
+
+	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//         }
+	        
+	//         return count.sun;
+	//     },
+	    _onChange: function() {
+
+	        this.setState({
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();
+	        CourseActions.getListCourse();
+	        return {
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý điểm"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(205),
+	    CourseActions = __webpack_require__(222),
+	    UserStore = __webpack_require__(231), 
+	    ComboCourse = __webpack_require__(229),   
+	    StudentForm = __webpack_require__(264),
+	    StudentList = __webpack_require__(265);
+	    // Message = require("./message");
+
+
+
+	var Student = React.createClass({displayName: "Student",
+
+	//     sumdays: function(data,day){    
+	//         switch(day){
+	//         case 0:return this.checkworkweek(data.su)
+	//         case 1:return this.checkworkweek(data.mo)
+	//         case 2:return this.checkworkweek(data.tu)
+	//         case 3:return this.checkworkweek(data.we) 
+	//         case 4:return this.checkworkweek(data.th)
+	//         case 5:return this.checkworkweek(data.fr)
+	//         case 6:return this.checkworkweek(data.sa)
+	//     }
+	//   },
+	//   checkworkweek: function(val){
+	//   switch(val){
+	//     case 'non':return 0
+	//     case 'half':return 0.5
+	//     case 'full':return 1
+	//   }
+	// },
+	// total: function(start, end,){
+	//     var that = this;
+	//     var fr='full';
+	//     var to ='morning';
+	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
+	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//     }
+	// },
+	//     _date: function(start, end){
+	//         var that = this;     
+
+	        
+	//         var st =start.toString().substring(0,10);
+	//         var ed =end.toString().substring(0,10);
+	//         console.log(st);
+	//         console.log(ed);
+	//         if(st==ed){//-----======-----//
+
+	//         }else{//////----######-----//
+
+	//         }
+
+	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//         }
+	        
+	//         return count.sun;
+	//     },
+	    _onChange: function() {
+
+	        this.setState({
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();
+	        CourseActions.getListCourse();
+	        return {
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Ngành"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(205),
+	    CourseActions = __webpack_require__(222),
+	    UserStore = __webpack_require__(231), 
+	    ComboCourse = __webpack_require__(229),   
+	    StudentForm = __webpack_require__(264),
+	    StudentList = __webpack_require__(265);
+	    // Message = require("./message");
+
+
+
+	var Student = React.createClass({displayName: "Student",
+
+	//     sumdays: function(data,day){    
+	//         switch(day){
+	//         case 0:return this.checkworkweek(data.su)
+	//         case 1:return this.checkworkweek(data.mo)
+	//         case 2:return this.checkworkweek(data.tu)
+	//         case 3:return this.checkworkweek(data.we) 
+	//         case 4:return this.checkworkweek(data.th)
+	//         case 5:return this.checkworkweek(data.fr)
+	//         case 6:return this.checkworkweek(data.sa)
+	//     }
+	//   },
+	//   checkworkweek: function(val){
+	//   switch(val){
+	//     case 'non':return 0
+	//     case 'half':return 0.5
+	//     case 'full':return 1
+	//   }
+	// },
+	// total: function(start, end,){
+	//     var that = this;
+	//     var fr='full';
+	//     var to ='morning';
+	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
+	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//     }
+	// },
+	//     _date: function(start, end){
+	//         var that = this;     
+
+	        
+	//         var st =start.toString().substring(0,10);
+	//         var ed =end.toString().substring(0,10);
+	//         console.log(st);
+	//         console.log(ed);
+	//         if(st==ed){//-----======-----//
+
+	//         }else{//////----######-----//
+
+	//         }
+
+	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//         }
+	        
+	//         return count.sun;
+	//     },
+	    _onChange: function() {
+
+	        this.setState({
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();
+	        CourseActions.getListCourse();
+	        return {
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý Lớp học phần"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(205),
+	    CourseActions = __webpack_require__(222),
+	    UserStore = __webpack_require__(231), 
+	    ComboCourse = __webpack_require__(229),   
+	    StudentForm = __webpack_require__(264),
+	    StudentList = __webpack_require__(265);
+	    // Message = require("./message");
+
+
+
+	var Student = React.createClass({displayName: "Student",
+
+	//     sumdays: function(data,day){    
+	//         switch(day){
+	//         case 0:return this.checkworkweek(data.su)
+	//         case 1:return this.checkworkweek(data.mo)
+	//         case 2:return this.checkworkweek(data.tu)
+	//         case 3:return this.checkworkweek(data.we) 
+	//         case 4:return this.checkworkweek(data.th)
+	//         case 5:return this.checkworkweek(data.fr)
+	//         case 6:return this.checkworkweek(data.sa)
+	//     }
+	//   },
+	//   checkworkweek: function(val){
+	//   switch(val){
+	//     case 'non':return 0
+	//     case 'half':return 0.5
+	//     case 'full':return 1
+	//   }
+	// },
+	// total: function(start, end,){
+	//     var that = this;
+	//     var fr='full';
+	//     var to ='morning';
+	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
+	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//     }
+	// },
+	//     _date: function(start, end){
+	//         var that = this;     
+
+	        
+	//         var st =start.toString().substring(0,10);
+	//         var ed =end.toString().substring(0,10);
+	//         console.log(st);
+	//         console.log(ed);
+	//         if(st==ed){//-----======-----//
+
+	//         }else{//////----######-----//
+
+	//         }
+
+	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
+	//             count.sun += that.sumdays(ww,i.getDay());  
+	//         }
+	        
+	//         return count.sun;
+	//     },
+	    _onChange: function() {
+
+	        this.setState({
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();
+	        CourseActions.getListCourse();
+	        return {
+	            students: UserStore.getStudents(),
+	            message:UserStore.getMessage(),
+	            courses: UserStore.getCourses(),
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý người dùng"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SubjectActions = __webpack_require__(276),
+	    //CourseActions = require('../actions/course-action'),
+	    SubjectStore = __webpack_require__(275), 
+	    //ComboCourse = require("./combb-course"),   
+	    
+	    SubjectList = __webpack_require__(274);
+	    // Message = require("./message");
+
+
+
+	var Subject = React.createClass({displayName: "Subject",
+	    _onChange: function() {
+
+	        this.setState({
+	            subjects: SubjectStore.getSubjects(),
+	            //message: UserStore.getMessage(),
+	            // courses: UserStore.getCourses(),
+	        }); 
+	        if(this.state.message){
+	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
+	        }
+	               
+	    },
+	    getInitialState: function() {
+	        SubjectActions.fetchAddSubjectFromServer();
+	        //CourseActions.getListCourse();      
+
+	        return {
+	            subjects: SubjectStore.getSubjects(),
+	            // message: SubjectStore.getMessage(),
+	            // courses: SubjectStore.getCourses(),
+	        }
+	        
+	    },
+	    componentWillMount: function() {
+	        this.setState({
+	            subjects: SubjectStore.getSubjects(),          
+	        }); 
+	        
+	    },
+	    componentDidMount: function() {
+	        SubjectStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý môn học"), 
+	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                                   
+	                    React.createElement(SubjectList, {subjects: this.state.subjects})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Subject;
+
+/***/ },
+/* 273 */,
+/* 274 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SubjectStore = __webpack_require__(275),
+	    SubjectActions = __webpack_require__(276);
+	var SubjectList = React.createClass({displayName: "SubjectList",
+
+	    render: function() {
+
+	        var subjectList = this.props.subjects.map(function(subject, index) {
+	            return (
+
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, subject.subject_id), 
+	                    React.createElement("td", null, subject.name), 
+	                    React.createElement("td", null, subject.short_name), 
+	                    React.createElement("td", null, subject.number)
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Môn học"), 
+	                             React.createElement("th", null, "Tên môn học"), 
+	                             React.createElement("th", null, "Tên rút gọn"), 
+	                             React.createElement("th", null, "Số tín chỉ")
+	                          )
+	                        ), 
+	                            subjectList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = SubjectList;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(225),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(226);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _subject = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+	function _addStudent(student) {
+	    _subject.push(subject);
+	}
+	function _listSubject(data){    
+	    _subject = data;   
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_subject, "_id", _id);
+	        _subject.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_subject, "_id", _editing_id); 
+	    _subject[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var SubjectStore  = _.extend(BaseStore, {
+	    getSubjects: function() {    
+	        return _subject;        
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingSubject: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_subject, "_id", _editing_id);
+	        return _subject[index];        
+	    },
+	    emitEditSubject: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditSubjectListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {       
+
+	        case StudentConstants.GET_SUBJECT:
+	            _listSubject(payload.data);
+	            SubjectStore.emitChange();
+	            break;
+	        
+	    }
+	});
+	module.exports = SubjectStore;
+
+/***/ },
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		SubjectAPI = __webpack_require__(277);
+
+	var SubjectActions = {
+		fetchAddSubjectFromServer: function() {		
+			SubjectAPI.getAllSubject({}).then(function(subjects) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_SUBJECT,
+					data: subjects,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(subject) {        
+			SubjectAPI.createSubject(subject).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_SUBJECT,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(subject) {		
+			SubjectAPI.updateSubject(subject).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_SUBJECT,
+					data: updateData,
+	                subject: subject,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editSubject: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			SubjectAPI.deleteSubject(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_SUBJECT,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = SubjectActions;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+		
+	var API_URL = 'http://localhost:3008/su/subjects';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllSubject() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);					
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createSubject(subject) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({subject: subject})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateSubject(subject) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({subject: subject})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteSubject(subject) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({subject: subject})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllSubject: getAllSubject,
+		createSubject: createSubject,
+		deleteSubject: deleteSubject,
+		updateSubject: updateSubject
+	};
+
+/***/ },
+/* 278 */,
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+
+	var Message = React.createClass({displayName: "Message",
+	    render: function() {
+	        var message = this.props.messages.map(function(me) {
+	            return (
+	               React.createElement("td", null, "asdas")
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        message
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = Message;
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(225),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(226);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _departments = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    _departments.push(student);
+	}
+	function _listDepartment(data){
+	    _departments= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_departments, "_id", _id);
+	        _departments.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_departments, "_id", _editing_id); 
+	    _departments[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var DepartmentStore  = _.extend(BaseStore, {
+	    getDepartments: function() {
+	       
+	        return _departments;
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        
+	        case StudentConstants.GET_DEPARTMENT:            
+	            _listDepartment(payload.data);
+	            DepartmentStore.emitChange();
+	            break;
+	            
+	        
+	    }
+	});
+	module.exports = DepartmentStore;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		DepartmentAPI = __webpack_require__(282);
+
+	var DepartmentActions = {
+		fetchAddDepartmentFromServer: function() {		
+			DepartmentAPI.getAllDepartment({}).then(function(departments) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_DEPARTMENT,
+					data: departments,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(department) {        
+			DepartmentAPI.createDepartment(department).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_DEPARTMENT,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(department) {		
+			DepartmentAPI.updateDepartment(department).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_DEPARTMENT,
+					data: updateData,
+	                department: department,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editDepartment: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			DepartmentAPI.deleteDepartment(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_DEPARTMENT,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = DepartmentActions;
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/de/departments';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllDepartment() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);					
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createDepartment(department) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({department: department})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateDepartment(department) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({department: department})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteDepartment(department) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({department: department})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllDepartment: getAllDepartment,
+		createDepartment: createDepartment,
+		deleteDepartment: deleteDepartment,
+		updateDepartment: updateDepartment
+	};
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    DepartmentStore = __webpack_require__(280),
+	    DeparmentActions = __webpack_require__(281);
+	var DepartmentList = React.createClass({displayName: "DepartmentList",
+
+	    render: function() {
+	        var departmentList = this.props.departments.map(function(departments, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, departments.department_id), 
+	                    React.createElement("td", null, departments.name), 
+	                    React.createElement("td", null, departments.dean), 
+	                    React.createElement("td", null, departments.ministry), 
+	                    React.createElement("td", null, departments.phone)
+	                    
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã khoa"), 
+	                             React.createElement("th", null, "Tên Khoa"), 
+	                             React.createElement("th", null, "Trưởng Khoa"), 
+	                             React.createElement("th", null, "Giáo vụ"), 
+	                             React.createElement("th", null, "Điện thoại")
+	                          )
+	                        ), 
+	                        departmentList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = DepartmentList;
+
+/***/ },
+/* 284 */,
+/* 285 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+
+	var CourseList = React.createClass({displayName: "CourseList",
+
+	    render: function() {
+	        var courseList = this.props.courses.map(function(course, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, course.course_id), 
+	                    React.createElement("td", null, course.name), 
+	                    React.createElement("td", null, course.incoming_year), 
+	                    React.createElement("td", null, course.full)
+	                                       
+	                   
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Khóa"), 
+	                             React.createElement("th", null, "Tên Khóa"), 
+	                             React.createElement("th", null, "Năm bắt đầu"), 
+	                             React.createElement("th", null, "Tên đầy đủ")
+	                          )
+	                        ), 
+	                        courseList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = CourseList;
+
+/***/ },
+/* 286 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(225),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(226);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+
+	var _course= [];
+
+	function _addStudent(student) {
+	    _departments.push(student);
+	}
+	function _listDepartment(data){
+	    _departments= data;
+	}
+	function _listCourses(data){
+	    _course =data;
+	}
+
+	var CourseStore  = _.extend(BaseStore, {
+	    getCourses: function() {       
+	        return _course;
+	    },
+	   
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        
+	        case StudentConstants.GET_COURSE:       
+	            _listCourses(payload.data);
+	            CourseStore.emitChange();
+	            break;
+	            
+	        
+	    }
+	});
+	module.exports = CourseStore;
 
 /***/ }
 /******/ ]);

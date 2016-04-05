@@ -10,44 +10,52 @@ var menu = React.createClass({
            <div id="header"> 
 		        <div className="btn-group btn-group-justified">
 		            <div className="btn-group">
-		            	<Link to='/main'>
+		            	<Link to='/student'>
 			                <button type="button" className="btn btn-nav"><span className="glyphicon glyphicon-home"></span>
-			                <p>Home</p>
+			                <p>Sinh Viên</p>
 
 			                </button>
 		                </Link>
 		            </div>
 		            <div className="btn-group">
-		            	<Link to='/objects'>
+		            	<Link to='/subject'>
 			                <button type="button" className="btn btn-nav">
 			                    <span className="glyphicon glyphicon-camera"></span>
-			                    <p>Photos</p>
+			                    <p>Môn Học</p>
 			                </button>
 		                </Link>
 		            </div>
 		            <div className="btn-group">
-		                <button type="button" className="btn btn-nav">
-		                    <span className="glyphicon glyphicon-gift"></span>
-		                    <p>Freebies</p>
-		                </button>
+		            	<Link to='/sector'>
+			                <button type="button" className="btn btn-nav">
+			                    <span className="glyphicon glyphicon-gift"></span>
+			                    <p>Sector</p>
+			                </button>
+			            </Link>
+		            </div>
+		            	<div className="btn-group">
+			            	<Link to='/mark'>
+			                <button type="button" className="btn btn-nav">
+			                    <span className="glyphicon glyphicon-briefcase"></span>
+			                    <p>Điểm</p>
+			                </button>
+			            </Link>
 		            </div>
 		            <div className="btn-group">
-		                <button type="button" className="btn btn-nav">
-		                    <span className="glyphicon glyphicon-briefcase"></span>
-		                    <p>Work</p>
-		                </button>
+		            	<Link to='/term_class'>
+			                <button type="button" className="btn btn-nav">
+			                    <span className="glyphicon glyphicon-link"></span>
+			                    <p>Lớp học phần</p>
+			                </button>
+		                </Link>
 		            </div>
 		            <div className="btn-group">
-		                <button type="button" className="btn btn-nav">
-		                    <span className="glyphicon glyphicon-link"></span>
-		                    <p>Other Links</p>
-		                </button>
-		            </div>
-		            <div className="btn-group">
-		                <button type="button" className="btn btn-nav">
-		                    <span className="glyphicon glyphicon-credit-card"></span>
-		                    <p>Payments</p>
-		                </button>
+		            	<Link to='/department'>
+			                <button type="button" className="btn btn-nav">
+			                    <span className="glyphicon glyphicon-credit-card"></span>
+			                    <p>Khoa</p>
+			                </button>
+		                </Link>
 		            </div>
 		        </div>
 		    </div>
