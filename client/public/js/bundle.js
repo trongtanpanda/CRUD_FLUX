@@ -25968,7 +25968,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -29375,8 +29375,7 @@
 	       $("#close").click();
 	    },
 
-	    _onclickClose: function(){
-	        console.log('catch');
+	    _onclickClose: function(){       
 	        this.setState({                        
 	            id: "",
 	            name: "",
@@ -29416,14 +29415,14 @@
 	     
 	        return (
 	             React.createElement("div", null, 
-	            React.createElement("button", {type: "button", className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
 	              "Thêm mới"
 	            ), 
 	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", onClose: this._onclickClose, "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
 	              React.createElement("div", {className: "modal-dialog", onClose: this._onclickClose}, 
-	                React.createElement("div", {className: "modal-content"}, 
+	                React.createElement("div", {className: "modal-content", onClose: this._onclickClose}, 
 	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
 	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 

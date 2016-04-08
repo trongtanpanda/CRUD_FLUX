@@ -59,8 +59,7 @@ var DepartmentForm = React.createClass({
        $("#close").click();
     },
 
-    _onclickClose: function(){
-        console.log('catch');
+    _onclickClose: function(){       
         this.setState({                        
             id: "",
             name: "",
@@ -100,14 +99,14 @@ var DepartmentForm = React.createClass({
      
         return (
              <div>
-            <button type="button" className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
               Thêm mới
             </button>                    
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" onClose={this._onclickClose} aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" onClose={this._onclickClose}>
-                <div className="modal-content">
+                <div className="modal-content" onClose={this._onclickClose}>
                   <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
                     <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
                   </div>
                   <div className="modal-body">
