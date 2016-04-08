@@ -11,24 +11,19 @@ var React = require("react"),
 
 var Student = React.createClass({
     _onChange: function() {
-
         this.setState({
-            students: UserStore.getStudents(),
-            message:UserStore.getMessage(),
-            courses: UserStore.getCourses(),
+            students: UserStore.getStudents()
+           
         }); 
-        if(this.state.message){
-            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-        }
+      
                
     },
     getInitialState: function() {
-        StudentActions.fetchAddStudentFromServer();
-        CourseActions.getListCourse();
+        StudentActions.fetchAddStudentFromServer();       
         return {
             students: UserStore.getStudents(),
-            message:UserStore.getMessage(),
-            courses: UserStore.getCourses(),
+            
+           
         }
     },
     componentDidMount: function() {
@@ -41,8 +36,7 @@ var Student = React.createClass({
             
             <div>
                 <h1 className="text-center">Quản lý sinh viên</h1>
-                    <div className="col-md-10 col-md-offset-1">                                                       
-                    <StudentForm listCourse={this.state.courses}/>                 
+                    <div className="col-md-10 col-md-offset-1">
                     <StudentList students={this.state.students} />
                 </div>
 

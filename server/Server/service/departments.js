@@ -5,13 +5,13 @@ const router = express.Router();
 router.route('/departments')
 // create a new user (accessed at POST http://localhost:8080/api/departments)
     .post(function(req, res) {
-			
-		Departments.create({
-			department_id:req.body.id,
-			name: req.body.name, 
-			dean: req.body.dean, 
-			ministry: req.body.ministry, 
-			phone: req.body.phone
+			console.log(req.body);
+		Departments.create({			
+			department_id:req.body.department.id,
+			name: req.body.department.name, 
+			dean: req.body.department.dean, 
+			ministry: req.body.department.ministry, 
+			phone: req.body.department.phone
 		}, function(err,department){
 			// console.log(user);
 			if(err) res.json({message: 'error'});

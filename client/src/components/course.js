@@ -2,8 +2,8 @@ var React = require("react"),
     CourseActions = require("../actions/course-action"),
     //CourseActions = require('../actions/course-action'),
     CourseStore = require("../stores/course-store"), 
-    //ComboCourse = require("./combb-course"),   
-    //CourseForm = require("./course/course-form"),
+   // ComboCourse = require("./combb-course"),   
+    //StudentForm = require("./student/student-form"),
     CourseList = require("./course/course-list");
     // Message = require("./message");
 
@@ -11,26 +11,32 @@ var React = require("react"),
 
 var Course = React.createClass({
 
-    componentWillMount: function() {
+    componentWillMount: function() {        
         this.setState({
-            courses: CourseStore.getCourses(),
+            courses: CourseStore.getCourses()
             
         });
+        
     },
     _onChange: function() {
 
         this.setState({
             courses: CourseStore.getCourses(),
             
-        });        
+        }); 
+        
                
     },
     getInitialState: function() {
-        CourseActions.fetchAddCourseFromServer();
+        CourseActions.fetchAddCourseFromServer();        
         return {
+            courses: CourseStore.getCourses(),           
+        }
+         this.setState({
             courses: CourseStore.getCourses(),
             
-        }
+        }); 
+        
     },
     componentDidMount: function() {
         CourseStore.addChangeListener(this._onChange);             
@@ -41,8 +47,9 @@ var Course = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Khóa học</h1>
-                <div className="col-md-10 col-md-offset-1">
+                <h1 className="text-center">Khoa</h1>
+                    <div className="col-md-10 col-md-offset-1">                                                     
+                                    
                     <CourseList courses={this.state.courses} />
                 </div>
 

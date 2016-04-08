@@ -1,13 +1,13 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.js'),
-	MaskAPI = require('../API/mask-api');
+	MarkAPI = require('../API/mark-api');
 
-var MaskActions = {
-	fetchAddMaskFromServer: function() {		
-		MaskAPI.getMask({}).then(function(Masks) {			
+var MarkActions = {
+	fetchAddMarkFromServer: function() {		
+		MarkAPI.getAllmark({}).then(function(marks) {			
 			AppDispatcher.dispatch({
-				action:Contants.GET_MASK,
-				data: masks,
+				action:Contants.GET_Mark,
+				data: marks,
 				// params: {}
 			});
 		}, function(status, text) {
@@ -15,10 +15,10 @@ var MaskActions = {
 		});
 	},
 
-	create: function(mask) {        
-		MaskAPI.createMask(mask).then(function(data) {            
+	create: function(mark) {        
+		MarkAPI.createMark(mark).then(function(data) {            
 			AppDispatcher.dispatch({
-				action: Contants.CREATE_MASK,
+				action: Contants.CREATE_Mark,
 				data: data
 			});
 		}, function(status, text) {
@@ -26,27 +26,27 @@ var MaskActions = {
 		});
 	},
 
-	update: function(mask) {		
-		MaskAPI.updateMask(Mask).then(function(updateData){
+	update: function(mark) {		
+		MarkAPI.updateMark(Mark).then(function(updateData){
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_MASK,
+				action: Contants.UPDATE_Mark,
 				data: updateData,
-                mask: mask,
+                mark: mark,
 			});
 		}, function(status,text){
 			// handle err
 		});
 	},
-	editMask: function(index) {
+	editMark: function(index) {
 	    AppDispatcher.dispatch({
 	        action: Contants.ACTION_EDIT,
 	        data: index,
 	    })
     },
 	destroy: function(id) {       
-		MaskAPI.deleteMask(id).then(function(data){
+		MarkAPI.deleteMark(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_MASK,
+				action: Contants.DELETE_Mark,
 				data: data,
 			});
 		},function(status, err){
@@ -55,4 +55,4 @@ var MaskActions = {
 	}
 
 };
-module.exports = MaskActions;
+module.exports = MarkActions;

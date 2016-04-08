@@ -6,8 +6,10 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 
-var _students = [];
-var _courses= [];
+var _marks = [];
+var _student= [];
+var _termClass = [];
+
 var _editing_id = null;
 var _msg;
 
@@ -24,11 +26,14 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 function _addStudent(student) {
     _students.push(student);
 }
-function _listStudent(data){
-    _students= data;
+function _listMark(data){
+    _marks= data;
 }
-function _listCourse(data){
-    _courses =data;
+function _listStudent(data){
+    _student =data;
+}
+function _listTermClass(data){
+    _termClass =data;
 }
 function _removeStudent(_id) {    
     var i = ByKeyValue(_students, "_id", _id);
@@ -50,19 +55,29 @@ function _getMsg(message){
 function _deleteMsg(){
     _msg =null;
 }
-var UserStore  = _.extend(BaseStore, {
-    getStudents: function() {
-        for(var i=0; i<_students.length; i++){
-            for (var j = 0; j < _courses.length; j++) {
-                if(_students[i].course===_courses[j]._id){
-                     _students[i].course = _courses[j];
+function _mapTable(tb1, tb2){
+
+}
+
+var MarkStore  = _.extend(BaseStore, {
+    getMarks: function() {
+      for(var i=0; i<_marks.length; i++){
+            for (var j = 0; j < _student.length; j++) {
+                if(_marks[i].student===_student[j]._id){
+                     _marks[i].student = _student[j];
+                }
+            };
+            for (var j = 0; j < _termClass.length; j++) {
+                if(_marks[i].term_class===_termClass[j]._id){
+                     _marks[i].term_class = _termClass[j];
                 }
             };
         };
-        return _students;
+      
+        return _marks;
     },
-    getCourses: function(){
-        return _courses;
+    getStudent: function(){
+        return _student;
     },
     getMessage:function(){
         return _msg;
@@ -91,39 +106,19 @@ var UserStore  = _.extend(BaseStore, {
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-        case StudentConstants.CREATE_STUDENT:
-            _getMsg(payload.data.Message);
-            _addStudent(payload.data.Message.user);
-            UserStore.emitChange();            
+   
+        case StudentConstants.GET_MarkS:
+            _listMark(payload.data);
+            MarkStore.emitChange();
             break;
-
-        case StudentConstants.DELETE_STUDENT:
-            _removeStudent(payload.data.Message.studentId);
-            _getMsg(payload.data.Message);                    
-            UserStore.emitChange();           
-            break;
-
-        case StudentConstants.ACTION_EDIT:
-            _editStudent(payload.data);
-            UserStore.emitEditStudent();
-            break;
-
-        case StudentConstants.UPDATE_STUDENT:
-            _updateStudent(payload.user);
-            _getMsg(payload.data.Message);            
-            UserStore.emitEditStudent();
-            UserStore.emitChange();            
-            break;
-
         case StudentConstants.GET_STUDENT:
             _listStudent(payload.data);
-            UserStore.emitChange();
-            break;
-            
-        case StudentConstants.GET_COURSE:
-            _listCourse(payload.data);            
-            UserStore.emitChange();
-            break;
+            MarkStore.emitChange();
+            break;        
+        case StudentConstants.GET_TERM_CLASS:
+            _listTermClass(payload.data);
+            MarkStore.emitChange();
+            break;   
     }
 });
-module.exports = UserStore;
+module.exports = MarkStore;

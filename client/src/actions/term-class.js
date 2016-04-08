@@ -1,10 +1,10 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.js'),
-	Term_classAPI = require('../API/term_class-api');
+	Term_classAPI = require('../API/term-class-api');
 
 var Term_classActions = {
 	fetchAddTerm_classFromServer: function() {		
-		Term_classAPI.getTerm_class({}).then(function(term_class) {			
+		Term_classAPI.getAllTerm_Class({}).then(function(term_class) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_TERM_CLASS,
 				data: term_class,

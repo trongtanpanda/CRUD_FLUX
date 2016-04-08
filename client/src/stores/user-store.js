@@ -6,7 +6,7 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 
-var _students = [];
+var _users = [];
 var _courses= [];
 var _editing_id = null;
 var _msg;
@@ -24,8 +24,8 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 function _addStudent(student) {
     _students.push(student);
 }
-function _listStudent(data){
-    _students= data;
+function _listUser(data){
+    _users= data;
 }
 function _listCourse(data){
     _courses =data;
@@ -51,15 +51,9 @@ function _deleteMsg(){
     _msg =null;
 }
 var UserStore  = _.extend(BaseStore, {
-    getStudents: function() {
-        for(var i=0; i<_students.length; i++){
-            for (var j = 0; j < _courses.length; j++) {
-                if(_students[i].course===_courses[j]._id){
-                     _students[i].course = _courses[j];
-                }
-            };
-        };
-        return _students;
+    getUsers: function() {
+       
+        return _users;
     },
     getCourses: function(){
         return _courses;
@@ -90,40 +84,14 @@ var UserStore  = _.extend(BaseStore, {
 });
 
 AppDispatcher.register(function(payload) {
-    switch (payload.action) {
-        case StudentConstants.CREATE_STUDENT:
-            _getMsg(payload.data.Message);
-            _addStudent(payload.data.Message.user);
-            UserStore.emitChange();            
-            break;
+    switch (payload.action) {    
 
-        case StudentConstants.DELETE_STUDENT:
-            _removeStudent(payload.data.Message.studentId);
-            _getMsg(payload.data.Message);                    
-            UserStore.emitChange();           
-            break;
-
-        case StudentConstants.ACTION_EDIT:
-            _editStudent(payload.data);
-            UserStore.emitEditStudent();
-            break;
-
-        case StudentConstants.UPDATE_STUDENT:
-            _updateStudent(payload.user);
-            _getMsg(payload.data.Message);            
-            UserStore.emitEditStudent();
-            UserStore.emitChange();            
-            break;
-
-        case StudentConstants.GET_STUDENT:
-            _listStudent(payload.data);
+        case StudentConstants.GET_USER:
+            _listUser(payload.data);
             UserStore.emitChange();
             break;
             
-        case StudentConstants.GET_COURSE:
-            _listCourse(payload.data);            
-            UserStore.emitChange();
-            break;
+        
     }
 });
 module.exports = UserStore;

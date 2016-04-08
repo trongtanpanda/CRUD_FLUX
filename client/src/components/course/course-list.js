@@ -1,5 +1,6 @@
-var React = require("react");
-
+var React = require("react"),
+    CourseStore = require("../../stores/department-store"),
+    CoursesActions = require("../../actions/department-action.js");
 var CourseList = React.createClass({
 
     render: function() {
@@ -9,10 +10,7 @@ var CourseList = React.createClass({
                 <tr key={index}>
                     <td>{course.course_id}</td>
                     <td>{course.name}</td>
-                    <td>{course.incoming_year}</td> 
-                    <td>{course.full}</td>                   
-                                       
-                   
+                    
                 </tr>
             );
         }.bind(this));
@@ -25,8 +23,7 @@ var CourseList = React.createClass({
                           <tr>
                              <th>Mã Khóa</th>
                              <th>Tên Khóa</th>
-                             <th>Năm bắt đầu</th>
-                             <th>Tên đầy đủ</th>                             
+                                                        
                           </tr>
                         </thead>
                         {courseList}

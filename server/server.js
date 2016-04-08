@@ -36,7 +36,7 @@ app.use(bodyParser.json({
 connection();
 
 // All the route will be prefix by /api;
-app.use('/api', require('./Server/service/users'));
+app.use('/us', require('./Server/service/users'));
 app.use('/co', require('./Server/service/course'));
 app.use('/de', require('./Server/service/departments'));
 app.use('/se', require('./Server/service/sectors'));

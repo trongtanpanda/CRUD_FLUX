@@ -4,15 +4,19 @@ var React = require("react"),
 var DepartmentList = React.createClass({
 
     render: function() {
-        var departmentList = this.props.departments.map(function(departments, index) {
+        var departmentList = this.props.departments.map(function(department, index) {
            
             return (
                 <tr key={index}>
-                    <td>{departments.department_id}</td>                    
-                    <td>{departments.name}</td>  
-                    <td>{departments.dean}</td>  
-                    <td>{departments.ministry}</td>                    
-                    <td>{departments.phone}</td>  
+                    <td>{department.department_id}</td>                    
+                    <td>{department.name}</td>  
+                    <td>{department.dean}</td>  
+                    <td>{department.ministry}</td>                    
+                    <td>{department.phone}</td>  
+                    <td>
+                      <input type="button" value="Edit" data-toggle="modal" data-target="#myModal" className="btn btn-success" onClick={DeparmentActions.editDepartment.bind(null,department._id)} />&nbsp;
+                      <input type="button" value="Remove" className="btn btn-danger"  onClick={DeparmentActions.destroy.bind(null,department._id)}/>
+                    </td>
                     
                 </tr>
             );
@@ -29,6 +33,7 @@ var DepartmentList = React.createClass({
                              <th>Trưởng Khoa</th>
                              <th>Giáo vụ</th>
                              <th>Điện thoại</th>
+                             <th>Action</th>
                           </tr>
                         </thead>
                         {departmentList}

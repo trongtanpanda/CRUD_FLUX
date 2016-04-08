@@ -1,86 +1,36 @@
 var React = require("react"),
-    StudentActions = require("../actions/student-action.js"),
-    CourseActions = require('../actions/course-action'),
-    UserStore = require("../stores/user-store"), 
-    ComboCourse = require("./combb-course"),   
-    StudentForm = require("./student/student-form"),
-    StudentList = require("./student/student-list");
+    SectorActions = require("../actions/sector-action"),    
+    SectorStore = require("../stores/sector-store"),     
+    SectorList = require("./sector/sector-list");
     // Message = require("./message");
 
 
 
-var Student = React.createClass({
-
-//     sumdays: function(data,day){    
-//         switch(day){
-//         case 0:return this.checkworkweek(data.su)
-//         case 1:return this.checkworkweek(data.mo)
-//         case 2:return this.checkworkweek(data.tu)
-//         case 3:return this.checkworkweek(data.we) 
-//         case 4:return this.checkworkweek(data.th)
-//         case 5:return this.checkworkweek(data.fr)
-//         case 6:return this.checkworkweek(data.sa)
-//     }
-//   },
-//   checkworkweek: function(val){
-//   switch(val){
-//     case 'non':return 0
-//     case 'half':return 0.5
-//     case 'full':return 1
-//   }
-// },
-// total: function(start, end,){
-//     var that = this;
-//     var fr='full';
-//     var to ='morning';
-//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-//             count.sun += that.sumdays(ww,i.getDay());  
-//     }
-// },
-//     _date: function(start, end){
-//         var that = this;     
-
-        
-//         var st =start.toString().substring(0,10);
-//         var ed =end.toString().substring(0,10);
-//         console.log(st);
-//         console.log(ed);
-//         if(st==ed){//-----======-----//
-
-//         }else{//////----######-----//
-
-//         }
-
-//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-//             count.sun += that.sumdays(ww,i.getDay());  
-//         }
-        
-//         return count.sun;
-//     },
-    _onChange: function() {
-
+var Sector = React.createClass({
+     componentWillMount: function() {
         this.setState({
-            students: UserStore.getStudents(),
-            message:UserStore.getMessage(),
-            courses: UserStore.getCourses(),
+            sectors: SectorStore.getSectors()            
+        });
+        
+    },
+    _onChange: function() {
+        this.setState({
+            sectors: SectorStore.getSectors(),            
         }); 
-        if(this.state.message){
-            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-        }
+       
                
     },
     getInitialState: function() {
-        StudentActions.fetchAddStudentFromServer();
-        CourseActions.getListCourse();
+        SectorActions.fetchAddSectorFromServer();        
         return {
-            students: UserStore.getStudents(),
-            message:UserStore.getMessage(),
-            courses: UserStore.getCourses(),
+            sectors: SectorStore.getSectors(),           
         }
+         this.setState({
+            sectors: SectorStore.getSectors(),            
+        }); 
     },
     componentDidMount: function() {
-        UserStore.addChangeListener(this._onChange);             
+        SectorStore.addChangeListener(this._onChange);             
         
     },
     render: function() { 
@@ -89,9 +39,9 @@ var Student = React.createClass({
             
             <div>
                 <h1 className="text-center">Ngành</h1>
-                    <div className="col-md-10 col-md-offset-1"       >                                                       
-                    <StudentForm listCourse={this.state.courses}/>                 
-                    <StudentList students={this.state.students} />
+                    <div className="col-md-10 col-md-offset-1">                                                       
+                                 
+                    <SectorList sectors={this.state.sectors} />
                 </div>
 
             </div>
@@ -100,4 +50,4 @@ var Student = React.createClass({
     }
 });
 
-module.exports = Student;
+module.exports = Sector;

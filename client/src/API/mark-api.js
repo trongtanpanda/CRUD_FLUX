@@ -3,7 +3,7 @@ var request = require('superagent'),
 	Contant = require('../constants/student-constants');
 	promise = require('es6-promise').Promise;
 
-var API_URL = 'http://localhost:3008/ma/marks';
+var API_URL = 'http://localhost:3008/ma/masks';
 var TIMEOUT = 10000;
 
 var _pendingRequests = [];
@@ -96,7 +96,7 @@ function deleteMark(mark) {
 	return t;
 }
 module.exports = {
-	getAllMark: getAllMark,
+	getAllmark: getAllmark,
 	createMark: createMark,
 	deleteMark: deleteMark,
 	updateMark: updateMark

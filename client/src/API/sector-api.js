@@ -1,5 +1,5 @@
 var request = require('superagent'),
-	AppDispatcher = require('../dispatcher/app-dispatcher.jsx'),
+	AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contant = require('../constants/student-constants');
 	promise = require('es6-promise').Promise;
 

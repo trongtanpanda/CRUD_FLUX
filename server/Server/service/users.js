@@ -6,7 +6,10 @@ const router = express.Router();
 router.route('/users')
 //----------- create a new user--------------// 
     .post(function(req, res) {	   
-		Users.create({name:req.body.student.name,course: req.body.student.course}, function(err,user){            
+		Users.create({
+			name:req.body.student.name,
+			course: req.body.student.course
+		}, function(err,user){            
 			if(err) {                
 				res.json({Message:{message: 'Add new had error!', type: 'error'}});
 			}else{

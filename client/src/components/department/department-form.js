@@ -1,47 +1,88 @@
-var React = require("react"),    
-    UserStore = require("../../stores/student-store"),
-    StudentActions = require("../../actions/student-action.js");
+var React = require("react"), 
+    DepartmentStore = require('../../stores/department-store'),
+    DepartmentActions = require("../../actions/department-action");
 
-var StudentForm = React.createClass({
+var DepartmentForm = React.createClass({
     
-    _onClickAdd: function() {
-         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
-
-        StudentActions.create(student);
+   _onchangId: function(e){             
         this.setState({
-            name: "", courser:"",
+            id: e.target.value,
         });
-
     },
-    _onClickUpdate: function() {
-        var editingStudent = this.state.editingStudent;        
-        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
-        StudentActions.update(user);
+    _onchangName: function(e){        
         this.setState({
+            name: e.target.value,
+        });
+    },
+    _onchangDean: function(e){        
+        this.setState({
+            dean: e.target.value,
+        });
+    },
+    _onchangMinistry: function(e){        
+        this.setState({
+            ministry: e.target.value,
+        });
+    },
+    _onchangPhone: function(e){        
+        this.setState({
+            phone: e.target.value,
+        });
+    },
+     getInitialState: function() {
+            return {
+            id: "",
+            name: "", 
+            dean: "", 
+            ministry: "", 
+            phone: "",             
+                       
+        }
+    },
+     _onClickAdd: function() {
+         var department = {
+            id: this.state.id, 
+            name: this.state.name,
+            dean: this.state.dean,
+            ministry: this.state.ministry,
+            phone: this.state.phone
+        };
+
+        DepartmentActions.create(department);
+        this.setState({
+            id: "",
             name: "",
+            dean:"",
+            ministry: "",
+            phone: "",                       
+        });
+       $("#close").click();
+    },
+
+    _onclickClose: function(){
+        console.log('catch');
+        this.setState({                        
+            id: "",
+            name: "",
+            dean:"",
+            ministry: "",
+            phone: "",        
         });
     },
-    _onchangCourse: function(e){        
-        this.setState({
-            courser: e.target.value,
-        });
-    },
-    _onChangeName: function(e) {
-        this.setState({
-            name: e.target.value, 
-        });
-    },
+
     _onEdit: function() {        
-        var editingStudent = UserStore.getEditingStudent();
-        // console.log(editingStudent);
+        var editingDepartment = DepartmentStore.getEditingDepartment();
         this.setState({
-            editingStudent: editingStudent,
+            editingDepartment: editingDepartment,
         });
 
-        if (editingStudent) {
+        if (editingDepartment) {
             this.setState({
-                name: editingStudent.name,
-                courser: editingStudent.course._id,
+              id: editingDepartment.department_id, 
+            name: editingDepartment.name,
+            dean: editingDepartment.dean,
+            ministry: editingDepartment.ministry,
+            phone: editingDepartment.phone
             });
         }
     },
@@ -51,38 +92,69 @@ var StudentForm = React.createClass({
             editingStudent: null,            
         }
     },
+    
     componentDidMount: function() {
-        UserStore.addEditStudentListener(this._onEdit);
+        DepartmentStore.addEditDepartmentListener(this._onEdit);
     },
     render: function() {
-        var btnAdd = (<input type="button" value="Add" className="btn btn-primary" onClick={this._onClickAdd} />);
-        var btnUpdate = (<input type="button" value="Update" className="btn btn-primary" onClick={this._onClickUpdate} />);
-        var courses = this.props.listCourse.map(function(course) {
-            return (
-               <option value={course._id}>{course.name}</option>
-            );
-        }.bind(this));
-
+     
         return (
-            <div className="row" style={{margin: "10px"}}>
-                <div className="col-md-2">
-                    Name:
-                </div>               
-                <div>
-                    <input className="form-group col-md-3" ref="name" value={this.state.name} onChange={this._onChangeName} />
+             <div>
+            <button type="button" className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+              Thêm mới
+            </button>                    
+            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" onClose={this._onclickClose} aria-labelledby="myModalLabel" aria-hidden="true">
+              <div className="modal-dialog" onClose={this._onclickClose}>
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
+                  </div>
+                  <div className="modal-body">
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã khoa</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.id} onChange={this._onchangId} ref="id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                            </div>                       
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên khoa</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.name} onChange={this._onchangName} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Trưởng khoa</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.dean} onChange={this._onchangDean} ref="dean" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Giáo vụ</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.ministry} onChange={this._onchangMinistry} ref="ministry" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Điện thoại</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.phone} onChange={this._onchangPhone} ref="phone" className="form-control" type="text" placeholder="Điện thoại" ref="title" name="title"/>
+                            </div>
+                        </div>
+                    </form>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>
+                  </div>
                 </div>
-                 <div className="col-md-2">
-                    Course:
-                </div> 
-                 <div className="col-md-3">
-                    <select className="col-md-12" onChange={this._onchangCourse} ref="course" value={this.state.courser}>{courses}</select>
-                </div>
-                <div className="col-md-2">
-                    {this.state.editingStudent ? btnUpdate : btnAdd}
-                </div>
+              </div>
             </div>
+        </div>  
+                        
         );
     }
 });
 
-module.exports = StudentForm;
+module.exports = DepartmentForm;

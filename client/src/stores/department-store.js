@@ -20,12 +20,11 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
     return null;
 }
 
-
-function _addStudent(student) {
-    _departments.push(student);
+function _addDepartment(department) {
+    _departments.push(department);
 }
 function _listDepartment(data){
-    _departments= data;
+    _departments= data;    
 }
 function _listCourse(data){
     _courses =data;
@@ -35,7 +34,7 @@ function _removeStudent(_id) {
         _departments.splice(i,1);
 }
 
-function _editStudent(index) {
+function _editDepartment(index) {
     _editing_id = index;
 }
 
@@ -68,6 +67,19 @@ var DepartmentStore  = _.extend(BaseStore, {
     //     this.on(CHANGE_EVENT, callback);
     // },
 
+    getEditingDepartment: function() {
+        if (!_editing_id) {
+            return null;
+        }
+        var index = ByKeyValue(_departments, "_id", _editing_id);
+        return _departments[index];        
+    },
+    emitEditDepartment: function(callback) {
+        this.emit(CHANGE_EDIT_EVENT, callback);
+    },
+    addEditDepartmentListener: function(callback) {
+        this.on(CHANGE_EDIT_EVENT, callback);
+    },
 });
 
 AppDispatcher.register(function(payload) {
@@ -77,7 +89,14 @@ AppDispatcher.register(function(payload) {
             _listDepartment(payload.data);
             DepartmentStore.emitChange();
             break;
-            
+        case StudentConstants.CREATE_DEPARTMENT: 
+            _addDepartment(payload.data.department);
+            DepartmentStore.emitChange();
+            break;
+        case StudentConstants.ACTION_EDIT: 
+            _editDepartment(payload.data);
+            DepartmentStore.emitEditDepartment();
+            break;   
         
     }
 });

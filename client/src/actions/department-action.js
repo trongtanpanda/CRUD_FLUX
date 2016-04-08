@@ -15,8 +15,8 @@ var DepartmentActions = {
 		});
 	},
 
-	create: function(department) {        
-		DepartmentAPI.createDepartment(department).then(function(data) {            
+	create: function(department) { 
+		DepartmentAPI.createDepartment(department).then(function(data) { 
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_DEPARTMENT,
 				data: data

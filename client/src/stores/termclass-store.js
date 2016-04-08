@@ -6,7 +6,7 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 
-var _sector = [];
+var __termClass = [];
 var _courses= [];
 var _editing_id = null;
 var _msg;
@@ -22,17 +22,15 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 
 
 function _addStudent(student) {
-    _students.push(student);
+    __termClass.push(student);
 }
-function _listSector(data){
-    _sector= data;
+function _listTermClass(data){
+    __termClass= data;
 }
-function _listCourse(data){
-    _courses =data;
-}
+
 function _removeStudent(_id) {    
-    var i = ByKeyValue(_students, "_id", _id);
-        _students.splice(i,1);
+    var i = ByKeyValue(__termClass, "_id", _id);
+        __termClass.splice(i,1);
 }
 
 function _editStudent(index) {
@@ -40,8 +38,8 @@ function _editStudent(index) {
 }
 
 function _updateStudent(student) {
-    var index = ByKeyValue(_students, "_id", _editing_id); 
-    _students[index] = student;
+    var index = ByKeyValue(__termClass, "_id", _editing_id); 
+    __termClass[index] = student;
     _editing_id = null;
 }
 function _getMsg(message){
@@ -50,12 +48,13 @@ function _getMsg(message){
 function _deleteMsg(){
     _msg =null;
 }
-var SectorStore  = _.extend(BaseStore, {
-    getSectors: function() {
-       
-        return _sector;
+var TermClassStore  = _.extend(BaseStore, {
+    getTermClass: function() {       
+        return __termClass;
     },
-   
+    getCourses: function(){
+        return _courses;
+    },
     getMessage:function(){
         return _msg;
     },
@@ -70,8 +69,8 @@ var SectorStore  = _.extend(BaseStore, {
         if (!_editing_id) {
             return null;
         }
-        var index = ByKeyValue(_students, "_id", _editing_id);
-        return _students[index];        
+        var index = ByKeyValue(__termClass, "_id", _editing_id);
+        return __termClass[index];        
     },
     emitEditStudent: function(callback) {
         this.emit(CHANGE_EDIT_EVENT, callback);
@@ -82,14 +81,15 @@ var SectorStore  = _.extend(BaseStore, {
 });
 
 AppDispatcher.register(function(payload) {
-    switch (payload.action) {       
+    switch (payload.action) {
+       
 
-        case StudentConstants.GET_SECTOR:
-            _listSector(payload.data);
-            SectorStore.emitChange();
+        case StudentConstants.GET_TERM_CLASS:
+            _listTermClass(payload.data);
+            TermClassStore.emitChange();
             break;
             
-      
+    
     }
 });
-module.exports = SectorStore;
+module.exports = TermClassStore;

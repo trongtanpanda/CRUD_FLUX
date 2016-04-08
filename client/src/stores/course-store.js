@@ -7,39 +7,30 @@ var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 
 
-var _course= [];
+var _courses = [];
 
-function _addStudent(student) {
-    _departments.push(student);
-}
-function _listDepartment(data){
-    _departments= data;
-}
-function _listCourses(data){
-    _course =data;
+
+
+function _listCourses(data){ 
+       
+    _courses =data;
+    console.log('after',_courses);
 }
 
 var CourseStore  = _.extend(BaseStore, {
-    getCourses: function() {       
-        return _course;
+    getCourses: function() {
+       
+        return _courses;
     },
    
-    getMessage:function(){
-        return _msg;
-    },
-    // emitChange: function() {
-    //     this.emit(CHANGE_EVENT);
-    // },
-    // addChangeListener: function(callback) {
-    //     this.on(CHANGE_EVENT, callback);
-    // },
+  
 
 });
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
         
-        case StudentConstants.GET_COURSE:       
+        case StudentConstants.GET_COURSE:                    
             _listCourses(payload.data);
             CourseStore.emitChange();
             break;

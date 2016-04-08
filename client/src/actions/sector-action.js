@@ -4,7 +4,7 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 
 var SectorActions = {
 	fetchAddSectorFromServer: function() {		
-		SectorAPI.getSector({}).then(function(Sectors) {			
+		SectorAPI.getAllSector({}).then(function(sectors) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_SECTOR,
 				data: sectors,

@@ -4,7 +4,7 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 
 var UserActions = {
 	fetchAddUserFromServer: function() {		
-		UserAPI.getUser({}).then(function(user) {			
+		UserAPI.getAllUser({}).then(function(user) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_USER,
 				data: user,

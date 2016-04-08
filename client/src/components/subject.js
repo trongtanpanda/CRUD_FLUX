@@ -13,13 +13,11 @@ var Subject = React.createClass({
     _onChange: function() {
 
         this.setState({
-            subjects: SubjectStore.getSubjects(),
+            subjects: SubjectStore.getSubjects()
             //message: UserStore.getMessage(),
             // courses: UserStore.getCourses(),
         }); 
-        if(this.state.message){
-            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-        }
+        
                
     },
     getInitialState: function() {

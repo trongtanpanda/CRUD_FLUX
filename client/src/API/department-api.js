@@ -45,7 +45,7 @@ function createDepartment(department) {
 			.send({department: department})
 			.end(function(err,res) {
 				data = JSON.parse(res.text);
-				if(res.status === 201) {                    
+				if(res.status === 200) {
                     resolve(data);
 				}else {
 					reject(res.status, res);                    

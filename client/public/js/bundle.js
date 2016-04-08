@@ -23695,18 +23695,18 @@
 
 	var App = __webpack_require__(202);
 
-	var Course = __webpack_require__(266);
-	var Department = __webpack_require__(267);
-	var Mark = __webpack_require__(268);
-	var Sector = __webpack_require__(269);
-	var Student = __webpack_require__(263);
-	var Subject = __webpack_require__(272);
-	var Term_class = __webpack_require__(270);
-	var User = __webpack_require__(271);
+	var Course = __webpack_require__(204);
+	var Department = __webpack_require__(231);
+	var Mark = __webpack_require__(234);
+	var Sector = __webpack_require__(244);
+	var Student = __webpack_require__(249);
+	var Subject = __webpack_require__(255);
+	var Term_class = __webpack_require__(260);
+	var User = __webpack_require__(263);
 
-	var BeanListPage = __webpack_require__(233);
-	var BeanItemPage = __webpack_require__(258);
-	var BeanItemEditPage = __webpack_require__(257);
+	var BeanListPage = __webpack_require__(267);
+	var BeanItemPage = __webpack_require__(290);
+	var BeanItemEditPage = __webpack_require__(295);
 
 
 	var routes = (
@@ -23835,20 +23835,86 @@
 
 
 /***/ },
-/* 204 */,
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    CourseActions = __webpack_require__(205),
+	    //CourseActions = require('../actions/course-action'),
+	    CourseStore = __webpack_require__(222), 
+	   // ComboCourse = require("./combb-course"),   
+	    //StudentForm = require("./student/student-form"),
+	    CourseList = __webpack_require__(227);
+	    // Message = require("./message");
+
+
+
+	var Course = React.createClass({displayName: "Course",
+
+	    componentWillMount: function() {        
+	        this.setState({
+	            courses: CourseStore.getCourses()
+	            
+	        });
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            courses: CourseStore.getCourses(),
+	            
+	        }); 
+	        
+	               
+	    },
+	    getInitialState: function() {
+	        CourseActions.fetchAddCourseFromServer();        
+	        return {
+	            courses: CourseStore.getCourses(),           
+	        }
+	         this.setState({
+	            courses: CourseStore.getCourses(),
+	            
+	        }); 
+	        
+	    },
+	    componentDidMount: function() {
+	        CourseStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Khoa"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                                    
+	                    React.createElement(CourseList, {courses: this.state.courses})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Course;
+
+/***/ },
 /* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(206),
 		Contants = __webpack_require__(210),
-		StudentAPI = __webpack_require__(211);
+		CourseAPI = __webpack_require__(211);
 
-	var StudentActions = {
-		fetchAddStudentFromServer: function() {		
-			StudentAPI.getStudent({}).then(function(students) {			
+	var CourseActions = {
+		fetchAddCourseFromServer: function() {		
+			CourseAPI.getCourse({}).then(function(courses) {			
 				AppDispatcher.dispatch({
-					action:Contants.GET_STUDENT,
-					data: students,
+					action:Contants.GET_COURSE,
+					data: courses,
 					// params: {}
 				});
 			}, function(status, text) {
@@ -23856,10 +23922,10 @@
 			});
 		},
 
-		create: function(student) {        
-			StudentAPI.createStudent(student).then(function(data) {            
+		create: function(course) {        
+			CoursetAPI.createCourse(course).then(function(data) {            
 				AppDispatcher.dispatch({
-					action: Contants.CREATE_STUDENT,
+					action: Contants.CREATE_COURSE,
 					data: data
 				});
 			}, function(status, text) {
@@ -23867,27 +23933,27 @@
 			});
 		},
 
-		update: function(student) {		
-			StudentAPI.updateStudent(student).then(function(updateData){
+		update: function(course) {		
+			CoursetAPI.updateCourse(Course).then(function(updateData){
 				AppDispatcher.dispatch({
-					action: Contants.UPDATE_STUDENT,
+					action: Contants.UPDATE_COURSE,
 					data: updateData,
-	                user: student,
+	                course: course,
 				});
 			}, function(status,text){
 				// handle err
 			});
 		},
-		editStudent: function(index) {
+		editCourse: function(index) {
 		    AppDispatcher.dispatch({
 		        action: Contants.ACTION_EDIT,
 		        data: index,
 		    })
 	    },
 		destroy: function(id) {       
-			StudentAPI.deleteStudent(id).then(function(data){
+			CoursetAPI.deleteCourse(id).then(function(data){
 				AppDispatcher.dispatch({
-					action: Contants.DELETE_STUDENT,
+					action: Contants.DELETE_COURSE,
 					data: data,
 				});
 			},function(status, err){
@@ -23896,7 +23962,7 @@
 		}
 
 	};
-	module.exports = StudentActions;
+	module.exports = CourseActions;
 
 /***/ },
 /* 206 */
@@ -24292,14 +24358,14 @@
 		Contant = __webpack_require__(210);
 		promise = __webpack_require__(218).Promise;
 
-	var API_URL = 'http://localhost:3008/api/users';
-	var TIMEOUT = 10000;
+	var API_URL ='http://localhost:3008/co/course';
+	var TIMEOUT =10000;
 
-	var _pendingRequests = [];
+	var _pendingRequests =[];
 
 	function abortPendingRequests(key){
-		if(_pendingRequests[key]) {
-			_pendingRequests[key].callback = function(){};
+		if(_pendingRequests[key]){
+			_pendingRequests[key]._callback = function(){};
 			_pendingRequests[key].abort();
 			_pendingRequests[key] = null;
 		}
@@ -24309,8 +24375,8 @@
 		return API_URL + part;
 	}
 
-	function getStudentData() {	
-		var t = new promise(function(resolve, reject){
+	function getCourse(filter){
+		var c = new promise(function(resolve, reject){
 			request.get(API_URL)		
 				.timeout(TIMEOUT)
 				.end(function(err,res){				
@@ -24323,34 +24389,33 @@
 					}
 				});
 		});
-
-		return t;;
+		return c;
 	}
-
-	function createStudent(newStudent) {   
-		var t = new promise(function(resolve, reject){
-			request.post(API_URL)
+	function createCourse(newCourse) {
+		var c = new promise(function(resolve,reject){
+			request.post(API_URL +'/')
 				.timeout(TIMEOUT)
-				.send({student: newStudent})
-				.end(function(err,res) {
-					data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-	                    resolve(data);
-					}else {
-						reject(res.status, res);                    
+				.set('Content-Type', 'application/json')
+				.send({coursr: newCourse})
+				.end(function(res){
+					var data = JSON.parse(res.text);
+					if(res.status === 201){
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
 					}
 				});
 		});
+		return c;
 
-		return t;
 	}
 
-	function updateStudent(updateData) {	
+	function updateCourse(updateData) {	
 		var t = new promise(function(resolve, reject){
 			request.put(API_URL)
 				.timeout(TIMEOUT)
 				.set('Content-Type', 'application/json')
-				.send({student: updateData})
+				.send({Course: updateData})
 				.end(function(err,res) {
 	                data = JSON.parse(res.text);				
 					if(res.status === 201){
@@ -24365,12 +24430,12 @@
 		return t;
 	}
 
-	function deleteStudent(studentID) {    
+	function deleteCourse(CourseID) {    
 		var t = new promise(function(resolve, reject){
 			request.delete(API_URL+"/delete")
 	            .timeout(TIMEOUT)
 	            .set('Content-Type', 'application/json')
-	            .send({studentId: studentID})			
+	            .send({CourseId: CourseID})			
 				.end(function(err,res) {
 	                data = JSON.parse(res.text);
 					if(res.status === 201) {                    
@@ -24385,10 +24450,10 @@
 		return t;
 	}
 	module.exports = {
-		getStudent: getStudentData,
-		createStudent: createStudent,
-		deleteStudent: deleteStudent,
-		updateStudent: updateStudent
+		getCourse: getCourse,
+		createCourse: createCourse,
+		deleteCourse: deleteCourse,
+		updateCourse: updateCourse
 	};
 
 /***/ },
@@ -25903,7 +25968,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -26893,309 +26958,50 @@
 /* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(206),
-		Contants = __webpack_require__(210),
-		CourseAPI = __webpack_require__(223);
-
-	var CourseActions = {
-		fetchAddCourseFromServer: function() {		
-			CourseAPI.getCourse({}).then(function(courses) {			
-				AppDispatcher.dispatch({
-					action:Contants.GET_COURSE,
-					data: courses,
-					// params: {}
-				});
-			}, function(status, text) {
-				// Handle error!
-			});
-		},
-
-		create: function(course) {        
-			CoursetAPI.createCourse(course).then(function(data) {            
-				AppDispatcher.dispatch({
-					action: Contants.CREATE_COURSE,
-					data: data
-				});
-			}, function(status, text) {
-				// Handle error
-			});
-		},
-
-		update: function(course) {		
-			CoursetAPI.updateCourse(Course).then(function(updateData){
-				AppDispatcher.dispatch({
-					action: Contants.UPDATE_COURSE,
-					data: updateData,
-	                course: course,
-				});
-			}, function(status,text){
-				// handle err
-			});
-		},
-		editCourse: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_EDIT,
-		        data: index,
-		    })
-	    },
-		destroy: function(id) {       
-			CoursetAPI.deleteCourse(id).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.DELETE_COURSE,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
-		}
-
-	};
-	module.exports = CourseActions;
-
-/***/ },
-/* 223 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var request = __webpack_require__(212),
-		AppDispatcher = __webpack_require__(206),
-		Contant = __webpack_require__(210);
-		promise = __webpack_require__(218).Promise;
-
-	var API_URL ='http://localhost:3008/co/course';
-	var TIMEOUT =10000;
-
-	var _pendingRequests =[];
-
-	function abortPendingRequests(key){
-		if(_pendingRequests[key]){
-			_pendingRequests[key]._callback = function(){};
-			_pendingRequests[key].abort();
-			_pendingRequests[key] = null;
-		}
-	}
-
-	function makeUrl(part) {
-		return API_URL + part;
-	}
-
-	function getCourse(filter){
-		var c = new promise(function(resolve, reject){
-			request.get(API_URL)		
-				.timeout(TIMEOUT)
-				.end(function(err,res){				
-					var data = null;
-					if(res.status === 200) {
-						data = JSON.parse(res.text);
-						resolve(data);
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-		return c;
-	}
-	function createCourse(newCourse) {
-		var c = new promise(function(resolve,reject){
-			request.post(API_URL +'/')
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({coursr: newCourse})
-				.end(function(res){
-					var data = JSON.parse(res.text);
-					if(res.status === 201){
-						resolve(data);
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-		return c;
-
-	}
-
-	function updateCourse(updateData) {	
-		var t = new promise(function(resolve, reject){
-			request.put(API_URL)
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({Course: updateData})
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);				
-					if(res.status === 201){
-						resolve(data);                    
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function deleteCourse(CourseID) {    
-		var t = new promise(function(resolve, reject){
-			request.delete(API_URL+"/delete")
-	            .timeout(TIMEOUT)
-	            .set('Content-Type', 'application/json')
-	            .send({CourseId: CourseID})			
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-						resolve(data);
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-	module.exports = {
-		getCourse: getCourse,
-		createCourse: createCourse,
-		deleteCourse: deleteCourse,
-		updateCourse: updateCourse
-	};
-
-/***/ },
-/* 224 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(225),
+	var _ = __webpack_require__(223),
 	    StudentConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(226);
+	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
 
-	var _students = [];
-	var _courses= [];
-	var _editing_id = null;
-	var _msg;
 
-	function ByKeyValue(arraytosearch, key, valuetosearch) { 
-	    for (var i = 0; i < arraytosearch.length; i++) { 
-	        if (arraytosearch[i][key] == valuetosearch) {
-	            return i;
-	        }
-	    }
-	    return null;
-	}
+	var _courses = [];
 
 
-	function _addStudent(student) {
-	    _students.push(student);
-	}
-	function _listStudent(data){
-	    _students= data;
-	}
-	function _listCourse(data){
+
+	function _listCourses(data){ 
+	       
 	    _courses =data;
-	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_students, "_id", _id);
-	        _students.splice(i,1);
+	    console.log('after',_courses);
 	}
 
-	function _editStudent(index) {
-	    _editing_id = index;
-	}
-
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_students, "_id", _editing_id); 
-	    _students[index] = student;
-	    _editing_id = null;
-	}
-	function _getMsg(message){
-	    _msg=message;    
-	}
-	function _deleteMsg(){
-	    _msg =null;
-	}
-	var UserStore  = _.extend(BaseStore, {
-	    getStudents: function() {        
-	        for(var i=0; i<_students.length; i++){
-	            for (var j = 0; j < _courses.length; j++) {
-	                if(_students[i].course===_courses[j]._id){
-	                     _students[i].course = _courses[j];
-	                }
-	            };
-	        };
-	        return _students;
-
-	    },
-	    getCourses: function(){
+	var CourseStore  = _.extend(BaseStore, {
+	    getCourses: function() {
+	       
 	        return _courses;
 	    },
-	    getMessage:function(){
-	        return _msg;
-	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
+	   
+	  
 
-	    getEditingStudent: function() {
-	        if (!_editing_id) {
-	            return null;
-	        }
-	        var index = ByKeyValue(_students, "_id", _editing_id);
-	        return _students[index];        
-	    },
-	    emitEditStudent: function(callback) {
-	        this.emit(CHANGE_EDIT_EVENT, callback);
-	    },
-	    addEditStudentListener: function(callback) {
-	        this.on(CHANGE_EDIT_EVENT, callback);
-	    },
 	});
 
 	AppDispatcher.register(function(payload) {
 	    switch (payload.action) {
-	        case StudentConstants.CREATE_STUDENT:
-	            _getMsg(payload.data.Message);
-	            _addStudent(payload.data.Message.user);
-	            UserStore.emitChange();            
-	            break;
-
-	        case StudentConstants.DELETE_STUDENT:
-	            _removeStudent(payload.data.Message.studentId);
-	            _getMsg(payload.data.Message);                    
-	            UserStore.emitChange();           
-	            break;
-
-	        case StudentConstants.ACTION_EDIT:
-	            _editStudent(payload.data);
-	            UserStore.emitEditStudent();
-	            break;
-
-	        case StudentConstants.UPDATE_STUDENT:
-	            _updateStudent(payload.user);
-	            _getMsg(payload.data.Message);            
-	            UserStore.emitEditStudent();
-	            UserStore.emitChange();            
-	            break;
-
-	        case StudentConstants.GET_STUDENT:
-	            _listStudent(payload.data);
-	            UserStore.emitChange();
+	        
+	        case StudentConstants.GET_COURSE:                    
+	            _listCourses(payload.data);
+	            CourseStore.emitChange();
 	            break;
 	            
-	        case StudentConstants.GET_COURSE:
-	            _listCourse(payload.data);            
-	            UserStore.emitChange();
-	            break;
+	        
 	    }
 	});
-	module.exports = UserStore;
+	module.exports = CourseStore;
 
 /***/ },
-/* 225 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -28749,11 +28555,11 @@
 
 
 /***/ },
-/* 226 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assign = __webpack_require__(227);
-	var EventEmitter = __webpack_require__(228).EventEmitter;
+	var assign = __webpack_require__(225);
+	var EventEmitter = __webpack_require__(226).EventEmitter;
 	var CHANGE_EVENT = 'change';
 
 	var BaseStore = assign({}, EventEmitter.prototype, {
@@ -28775,7 +28581,7 @@
 
 
 /***/ },
-/* 227 */
+/* 225 */
 /***/ function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
@@ -28820,7 +28626,7 @@
 
 
 /***/ },
-/* 228 */
+/* 226 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -29124,7 +28930,1903 @@
 
 
 /***/ },
+/* 227 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    CourseStore = __webpack_require__(228),
+	    CoursesActions = __webpack_require__(229);
+	var CourseList = React.createClass({displayName: "CourseList",
+
+	    render: function() {
+	        var courseList = this.props.courses.map(function(course, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, course.course_id), 
+	                    React.createElement("td", null, course.name)
+	                    
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Khóa"), 
+	                             React.createElement("th", null, "Tên Khóa")
+	                                                        
+	                          )
+	                        ), 
+	                        courseList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = CourseList;
+
+/***/ },
+/* 228 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _departments = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+	function _addDepartment(department) {
+	    _departments.push(department);
+	}
+	function _listDepartment(data){
+	    _departments= data;    
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_departments, "_id", _id);
+	        _departments.splice(i,1);
+	}
+
+	function _editDepartment(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_departments, "_id", _editing_id); 
+	    _departments[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var DepartmentStore  = _.extend(BaseStore, {
+	    getDepartments: function() {
+	       
+	        return _departments;
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingDepartment: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_departments, "_id", _editing_id);
+	        return _departments[index];        
+	    },
+	    emitEditDepartment: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditDepartmentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        
+	        case StudentConstants.GET_DEPARTMENT:            
+	            _listDepartment(payload.data);
+	            DepartmentStore.emitChange();
+	            break;
+	        case StudentConstants.CREATE_DEPARTMENT: 
+	            _addDepartment(payload.data.department);
+	            DepartmentStore.emitChange();
+	            break;
+	        case StudentConstants.ACTION_EDIT: 
+	            _editDepartment(payload.data);
+	            DepartmentStore.emitEditDepartment();
+	            break;   
+	        
+	    }
+	});
+	module.exports = DepartmentStore;
+
+/***/ },
 /* 229 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		DepartmentAPI = __webpack_require__(230);
+
+	var DepartmentActions = {
+		fetchAddDepartmentFromServer: function() {		
+			DepartmentAPI.getAllDepartment({}).then(function(departments) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_DEPARTMENT,
+					data: departments,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(department) { 
+			DepartmentAPI.createDepartment(department).then(function(data) { 
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_DEPARTMENT,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(department) {		
+			DepartmentAPI.updateDepartment(department).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_DEPARTMENT,
+					data: updateData,
+	                department: department,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editDepartment: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			DepartmentAPI.deleteDepartment(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_DEPARTMENT,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = DepartmentActions;
+
+/***/ },
+/* 230 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/de/departments';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllDepartment() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);					
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createDepartment(department) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({department: department})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 200) {
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateDepartment(department) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({department: department})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteDepartment(department) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({department: department})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllDepartment: getAllDepartment,
+		createDepartment: createDepartment,
+		deleteDepartment: deleteDepartment,
+		updateDepartment: updateDepartment
+	};
+
+/***/ },
+/* 231 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    DepartmentActions = __webpack_require__(229),
+	    //CourseActions = require('../actions/course-action'),
+	    DepartmentStore = __webpack_require__(228), 
+	   // ComboCourse = require("./combb-course"),   
+	    DepartmentForm = __webpack_require__(232),
+	    DepartmentList = __webpack_require__(233);
+	    // Message = require("./message");
+
+
+
+	var Department = React.createClass({displayName: "Department",
+
+	    componentWillMount: function() {
+	        this.setState({
+	            departments: DepartmentStore.getDepartments()});
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            departments: DepartmentStore.getDepartments(),
+	            
+	        }); 
+	        
+	               
+	    },
+	    getInitialState: function() {
+	        DepartmentActions.fetchAddDepartmentFromServer();        
+	        return {
+	            departments: DepartmentStore.getDepartments(),           
+	        }
+	    },
+	    componentDidMount: function() {
+	        DepartmentStore.addChangeListener(this._onChange);             
+	        
+	    },    
+	    render: function() { 
+	        
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Khoa"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(DepartmentForm, null), 
+	                    React.createElement(DepartmentList, {departments: this.state.departments})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Department;
+
+/***/ },
+/* 232 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2), 
+	    DepartmentStore = __webpack_require__(228),
+	    DepartmentActions = __webpack_require__(229);
+
+	var DepartmentForm = React.createClass({displayName: "DepartmentForm",
+	    
+	   _onchangId: function(e){             
+	        this.setState({
+	            id: e.target.value,
+	        });
+	    },
+	    _onchangName: function(e){        
+	        this.setState({
+	            name: e.target.value,
+	        });
+	    },
+	    _onchangDean: function(e){        
+	        this.setState({
+	            dean: e.target.value,
+	        });
+	    },
+	    _onchangMinistry: function(e){        
+	        this.setState({
+	            ministry: e.target.value,
+	        });
+	    },
+	    _onchangPhone: function(e){        
+	        this.setState({
+	            phone: e.target.value,
+	        });
+	    },
+	     getInitialState: function() {
+	            return {
+	            id: "",
+	            name: "", 
+	            dean: "", 
+	            ministry: "", 
+	            phone: "",             
+	                       
+	        }
+	    },
+	     _onClickAdd: function() {
+	         var department = {
+	            id: this.state.id, 
+	            name: this.state.name,
+	            dean: this.state.dean,
+	            ministry: this.state.ministry,
+	            phone: this.state.phone
+	        };
+
+	        DepartmentActions.create(department);
+	        this.setState({
+	            id: "",
+	            name: "",
+	            dean:"",
+	            ministry: "",
+	            phone: "",                       
+	        });
+	       $("#close").click();
+	    },
+
+	    _onclickClose: function(){
+	        console.log('catch');
+	        this.setState({                        
+	            id: "",
+	            name: "",
+	            dean:"",
+	            ministry: "",
+	            phone: "",        
+	        });
+	    },
+
+	    _onEdit: function() {        
+	        var editingDepartment = DepartmentStore.getEditingDepartment();
+	        this.setState({
+	            editingDepartment: editingDepartment,
+	        });
+
+	        if (editingDepartment) {
+	            this.setState({
+	              id: editingDepartment.department_id, 
+	            name: editingDepartment.name,
+	            dean: editingDepartment.dean,
+	            ministry: editingDepartment.ministry,
+	            phone: editingDepartment.phone
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            editingStudent: null,            
+	        }
+	    },
+	    
+	    componentDidMount: function() {
+	        DepartmentStore.addEditDepartmentListener(this._onEdit);
+	    },
+	    render: function() {
+	     
+	        return (
+	             React.createElement("div", null, 
+	            React.createElement("button", {type: "button", className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", onClose: this._onclickClose, "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog", onClose: this._onclickClose}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã khoa"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.id, onChange: this._onchangId, ref: "id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên khoa"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangName, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Trưởng khoa"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.dean, onChange: this._onchangDean, ref: "dean", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Giáo vụ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.ministry, onChange: this._onchangMinistry, ref: "ministry", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Điện thoại"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.phone, onChange: this._onchangPhone, ref: "phone", className: "form-control", type: "text", placeholder: "Điện thoại", ref: "title", name: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu")
+	                  )
+	                )
+	              )
+	            )
+	        )  
+	                        
+	        );
+	    }
+	});
+
+	module.exports = DepartmentForm;
+
+/***/ },
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    DepartmentStore = __webpack_require__(228),
+	    DeparmentActions = __webpack_require__(229);
+	var DepartmentList = React.createClass({displayName: "DepartmentList",
+
+	    render: function() {
+	        var departmentList = this.props.departments.map(function(department, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, department.department_id), 
+	                    React.createElement("td", null, department.name), 
+	                    React.createElement("td", null, department.dean), 
+	                    React.createElement("td", null, department.ministry), 
+	                    React.createElement("td", null, department.phone), 
+	                    React.createElement("td", null, 
+	                      React.createElement("input", {type: "button", value: "Edit", "data-toggle": "modal", "data-target": "#myModal", className: "btn btn-success", onClick: DeparmentActions.editDepartment.bind(null,department._id)}), " ", 
+	                      React.createElement("input", {type: "button", value: "Remove", className: "btn btn-danger", onClick: DeparmentActions.destroy.bind(null,department._id)})
+	                    )
+	                    
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã khoa"), 
+	                             React.createElement("th", null, "Tên Khoa"), 
+	                             React.createElement("th", null, "Trưởng Khoa"), 
+	                             React.createElement("th", null, "Giáo vụ"), 
+	                             React.createElement("th", null, "Điện thoại"), 
+	                             React.createElement("th", null, "Action")
+	                          )
+	                        ), 
+	                        departmentList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = DepartmentList;
+
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    MarkActions = __webpack_require__(235),
+	    MarkStore = __webpack_require__(237),   
+	    MarkList = __webpack_require__(238),
+	    StudentAction = __webpack_require__(240),
+	    TermClassAction = __webpack_require__(242);
+	    // Message = require("./message");
+
+
+
+	var Mark = React.createClass({displayName: "Mark",
+	     componentWillMount: function() {
+	        this.setState({
+	            marks: MarkStore.getMarks()
+	            
+	        }); 
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            marks: MarkStore.getMarks(),
+	            
+	        }); 
+	       
+	               
+	    },
+	    getInitialState: function() {
+	        MarkActions.fetchAddMarkFromServer();
+	        StudentAction.fetchAddStudentFromServer();
+	        TermClassAction.fetchAddTerm_classFromServer();
+	        return {
+	            marks: MarkStore.getMarks(),           
+	        }
+	         this.setState({
+	            marks: MarkStore.getMarks(),
+	            
+	        });
+	    },
+	    componentDidMount: function() {
+	        MarkStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý điểm"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                        React.createElement(MarkList, {marks: this.state.marks})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Mark;
+
+/***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		MarkAPI = __webpack_require__(236);
+
+	var MarkActions = {
+		fetchAddMarkFromServer: function() {		
+			MarkAPI.getAllmark({}).then(function(marks) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_Mark,
+					data: marks,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(mark) {        
+			MarkAPI.createMark(mark).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_Mark,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(mark) {		
+			MarkAPI.updateMark(Mark).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_Mark,
+					data: updateData,
+	                mark: mark,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editMark: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			MarkAPI.deleteMark(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_Mark,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = MarkActions;
+
+/***/ },
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/ma/masks';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllmark() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createMark(mark) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({mark: mark})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateMark(mark) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({mark: mark})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteMark(mark) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({mark: mark})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllmark: getAllmark,
+		createMark: createMark,
+		deleteMark: deleteMark,
+		updateMark: updateMark
+	};
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _marks = [];
+	var _student= [];
+	var _termClass = [];
+
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    _students.push(student);
+	}
+	function _listMark(data){
+	    _marks= data;
+	}
+	function _listStudent(data){
+	    _student =data;
+	}
+	function _listTermClass(data){
+	    _termClass =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_students, "_id", _id);
+	        _students.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_students, "_id", _editing_id); 
+	    _students[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	function _mapTable(tb1, tb2){
+
+	}
+
+	var MarkStore  = _.extend(BaseStore, {
+	    getMarks: function() {
+	      for(var i=0; i<_marks.length; i++){
+	            for (var j = 0; j < _student.length; j++) {
+	                if(_marks[i].student===_student[j]._id){
+	                     _marks[i].student = _student[j];
+	                }
+	            };
+	            for (var j = 0; j < _termClass.length; j++) {
+	                if(_marks[i].term_class===_termClass[j]._id){
+	                     _marks[i].term_class = _termClass[j];
+	                }
+	            };
+	        };
+	      
+	        return _marks;
+	    },
+	    getStudent: function(){
+	        return _student;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingStudent: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_students, "_id", _editing_id);
+	        return _students[index];        
+	    },
+	    emitEditStudent: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditStudentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	   
+	        case StudentConstants.GET_MarkS:
+	            _listMark(payload.data);
+	            MarkStore.emitChange();
+	            break;
+	        case StudentConstants.GET_STUDENT:
+	            _listStudent(payload.data);
+	            MarkStore.emitChange();
+	            break;        
+	        case StudentConstants.GET_TERM_CLASS:
+	            _listTermClass(payload.data);
+	            MarkStore.emitChange();
+	            break;   
+	    }
+	});
+	module.exports = MarkStore;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    UserStore = __webpack_require__(239),
+	    StudentActions = __webpack_require__(240);
+	var MarkList = React.createClass({displayName: "MarkList",
+
+	    render: function() {
+	        var markList = this.props.marks.map(function(mark, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+
+	                    React.createElement("td", null, mark.student.lastname, " ", mark.student.midname, " ", mark.student.firstname), 
+	                    React.createElement("td", null, mark.term_class.name), 
+	                    React.createElement("td", null, mark.cc), 
+	                    React.createElement("td", null, mark.gk), 
+	                    React.createElement("td", null, mark.tbkt), 
+	                    React.createElement("td", null, mark.t1), 
+	                    React.createElement("td", null, mark.tkml1), 
+	                    React.createElement("td", null, mark.t2), 
+	                    React.createElement("td", null, mark.tkml2), 
+	                    React.createElement("td", null, mark.t3), 
+	                    React.createElement("td", null, mark.by_text), 
+	                    React.createElement("td", null, mark.by_number)
+
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                    React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Sinh viên"), 
+	                             React.createElement("th", null, "Lớp học phần"), 
+	                             React.createElement("th", null, "Cuối kỳ"), 
+	                             React.createElement("th", null, "Giữa kỳ"), 
+	                             React.createElement("th", null, "tbkt"), 
+	                             React.createElement("th", null, "t1"), 
+	                             React.createElement("th", null, "tkml1"), 
+	                             React.createElement("th", null, "t2"), 
+	                             React.createElement("th", null, "tkml2"), 
+	                             React.createElement("th", null, "t3"), 
+	                             React.createElement("th", null, "by_text"), 
+	                             React.createElement("th", null, "by_number")
+	                          )
+	                        ), 
+	                        markList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = MarkList;
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _users = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    _students.push(student);
+	}
+	function _listUser(data){
+	    _users= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_students, "_id", _id);
+	        _students.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_students, "_id", _editing_id); 
+	    _students[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var UserStore  = _.extend(BaseStore, {
+	    getUsers: function() {
+	       
+	        return _users;
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingStudent: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_students, "_id", _editing_id);
+	        return _students[index];        
+	    },
+	    emitEditStudent: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditStudentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {    
+
+	        case StudentConstants.GET_USER:
+	            _listUser(payload.data);
+	            UserStore.emitChange();
+	            break;
+	            
+	        
+	    }
+	});
+	module.exports = UserStore;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		StudentAPI = __webpack_require__(241);
+
+	var StudentActions = {
+		fetchAddStudentFromServer: function() {		
+			StudentAPI.getStudent({}).then(function(students) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_STUDENT,
+					data: students,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(student) {        
+			StudentAPI.createStudent(student).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_STUDENT,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(student) {		
+			StudentAPI.updateStudent(student).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_STUDENT,
+					data: updateData,
+	                user: student,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editStudent: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			StudentAPI.deleteStudent(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_STUDENT,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = StudentActions;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/st/students';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getStudentData() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createStudent(newStudent) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({student: newStudent})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateStudent(updateData) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({student: updateData})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteStudent(studentID) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL+"/delete")
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({studentId: studentID})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getStudent: getStudentData,
+		createStudent: createStudent,
+		deleteStudent: deleteStudent,
+		updateStudent: updateStudent
+	};
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		Term_classAPI = __webpack_require__(243);
+
+	var Term_classActions = {
+		fetchAddTerm_classFromServer: function() {		
+			Term_classAPI.getAllTerm_Class({}).then(function(term_class) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_TERM_CLASS,
+					data: term_class,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(term_class) {        
+			Term_classAPI.createTerm_class(term_class).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_TERM_CLASS,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(term_class) {		
+			Term_classAPI.updateTerm_class(term_class).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_TERM_CLASS,
+					data: updateData,
+	                term_class: term_class,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editTerm_class: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			Term_classAPI.deleteTerm_class(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_TERM_CLASS,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = Term_classActions;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/te/term_class';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllTerm_Class() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createTerm_Class(newClass) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({term_class: newClass})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateTerm_Class(term_class) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({term_class: term_class})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteTerm_Class(term_class) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({term_class: term_class})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllTerm_Class: getAllTerm_Class,
+		createTerm_Class: createTerm_Class,
+		deleteTerm_Class: deleteTerm_Class,
+		updateTerm_Class: updateTerm_Class
+	};
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SectorActions = __webpack_require__(245),    
+	    SectorStore = __webpack_require__(247),     
+	    SectorList = __webpack_require__(248);
+	    // Message = require("./message");
+
+
+
+	var Sector = React.createClass({displayName: "Sector",
+	     componentWillMount: function() {
+	        this.setState({
+	            sectors: SectorStore.getSectors()            
+	        });
+	        
+	    },
+	    _onChange: function() {
+	        this.setState({
+	            sectors: SectorStore.getSectors(),            
+	        }); 
+	       
+	               
+	    },
+	    getInitialState: function() {
+	        SectorActions.fetchAddSectorFromServer();        
+	        return {
+	            sectors: SectorStore.getSectors(),           
+	        }
+	         this.setState({
+	            sectors: SectorStore.getSectors(),            
+	        }); 
+	    },
+	    componentDidMount: function() {
+	        SectorStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Ngành"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                                 
+	                    React.createElement(SectorList, {sectors: this.state.sectors})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Sector;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		SectorAPI = __webpack_require__(246);
+
+	var SectorActions = {
+		fetchAddSectorFromServer: function() {		
+			SectorAPI.getAllSector({}).then(function(sectors) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_SECTOR,
+					data: sectors,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(sector) {        
+			SectorAPI.createSector(sector).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_SECTOR,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(sector) {		
+			SectorAPI.updateSector(sector).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_SECTOR,
+					data: updateData,
+	                sector: sector,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editSector: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			SectorAPI.deleteSector(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_SECTOR,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = SectorActions;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/se/sectors';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllSector() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createSector(sector) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({Sector: Sector})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateSector(sector) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({sector: sector})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteSector(sector) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({sector: sector})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllSector: getAllSector,
+		createSector: createSector,
+		deleteSector: deleteSector,
+		updateSector: updateSector
+	};
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _sector = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    _students.push(student);
+	}
+	function _listSector(data){
+	    _sector= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_students, "_id", _id);
+	        _students.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_students, "_id", _editing_id); 
+	    _students[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var SectorStore  = _.extend(BaseStore, {
+	    getSectors: function() {
+	       
+	        return _sector;
+	    },
+	   
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingStudent: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_students, "_id", _editing_id);
+	        return _students[index];        
+	    },
+	    emitEditStudent: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditStudentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {       
+
+	        case StudentConstants.GET_SECTOR:
+	            _listSector(payload.data);
+	            SectorStore.emitChange();
+	            break;
+	            
+	      
+	    }
+	});
+	module.exports = SectorStore;
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	   
+	var SectorList = React.createClass({displayName: "SectorList",
+
+	    render: function() {
+	        var sectorList = this.props.sectors.map(function(sector, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, sector.sector_id), 
+	                    React.createElement("td", null, sector.name), 
+	                    React.createElement("td", null, sector.short_name), 
+	                    React.createElement("td", null, sector.english_name)
+	                    
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Ngành"), 
+	                             React.createElement("th", null, "Tên Ngành"), 
+	                             React.createElement("th", null, "Tên viết tắt"), 
+	                             React.createElement("th", null, "Tên tiếng anh ")
+	                          )
+	                        ), 
+	                        sectorList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = SectorList;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    StudentActions = __webpack_require__(240),
+	    CourseActions = __webpack_require__(205),
+	    UserStore = __webpack_require__(239), 
+	    ComboCourse = __webpack_require__(250),   
+	    StudentForm = __webpack_require__(251),
+	    StudentList = __webpack_require__(253),
+	    Message = __webpack_require__(254);
+
+
+
+	var Student = React.createClass({displayName: "Student",
+	    _onChange: function() {
+	        this.setState({
+	            students: UserStore.getStudents()
+	           
+	        }); 
+	      
+	               
+	    },
+	    getInitialState: function() {
+	        StudentActions.fetchAddStudentFromServer();       
+	        return {
+	            students: UserStore.getStudents(),
+	            
+	           
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(StudentList, {students: this.state.students})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Student;
+
+/***/ },
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -29149,14 +30851,106 @@
 	module.exports = ComboCourse;
 
 /***/ },
-/* 230 */,
-/* 231 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(225),
+	var React = __webpack_require__(2),    
+	    UserStore = __webpack_require__(252),
+	    StudentActions = __webpack_require__(240);
+
+	var StudentForm = React.createClass({displayName: "StudentForm",
+	    
+	    _onClickAdd: function() {
+	         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
+
+	        StudentActions.create(student);
+	        this.setState({
+	            name: "", courser:"",
+	        });
+
+	    },
+	    _onClickUpdate: function() {
+	        var editingStudent = this.state.editingStudent;        
+	        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
+	        StudentActions.update(user);
+	        this.setState({
+	            name: "",
+	        });
+	    },
+	    _onchangCourse: function(e){        
+	        this.setState({
+	            courser: e.target.value,
+	        });
+	    },
+	    _onChangeName: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {        
+	        var editingStudent = UserStore.getEditingStudent();
+	        // console.log(editingStudent);
+	        this.setState({
+	            editingStudent: editingStudent,
+	        });
+
+	        if (editingStudent) {
+	            this.setState({
+	                name: editingStudent.name,
+	                courser: editingStudent.course._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            editingStudent: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        UserStore.addEditStudentListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = (React.createElement("input", {type: "button", value: "Add", className: "btn btn-primary", onClick: this._onClickAdd}));
+	        var btnUpdate = (React.createElement("input", {type: "button", value: "Update", className: "btn btn-primary", onClick: this._onClickUpdate}));
+	        var courses = this.props.listCourse.map(function(course) {
+	            return (
+	               React.createElement("option", {value: course._id}, course.name)
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", {className: "row", style: {margin: "10px"}}, 
+	                React.createElement("div", {className: "col-md-2"}, 
+	                    "Name:"
+	                ), 
+	                React.createElement("div", null, 
+	                    React.createElement("input", {className: "form-group col-md-3", ref: "name", value: this.state.name, onChange: this._onChangeName})
+	                ), 
+	                 React.createElement("div", {className: "col-md-2"}, 
+	                    "Course:"
+	                ), 
+	                 React.createElement("div", {className: "col-md-3"}, 
+	                    React.createElement("select", {className: "col-md-12", onChange: this._onchangCourse, ref: "course", value: this.state.courser}, courses)
+	                ), 
+	                React.createElement("div", {className: "col-md-2"}, 
+	                    this.state.editingStudent ? btnUpdate : btnAdd
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = StudentForm;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
 	    StudentConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(226);
+	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
@@ -29206,7 +31000,7 @@
 	    _msg =null;
 	}
 	var UserStore  = _.extend(BaseStore, {
-	    getStudents: function() {
+	    getStudents: function() {        
 	        for(var i=0; i<_students.length; i++){
 	            for (var j = 0; j < _courses.length; j++) {
 	                if(_students[i].course===_courses[j]._id){
@@ -29215,6 +31009,7 @@
 	            };
 	        };
 	        return _students;
+
 	    },
 	    getCourses: function(){
 	        return _courses;
@@ -29284,16 +31079,944 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 232 */,
-/* 233 */
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    UserStore = __webpack_require__(239),
+	 StudentActions = __webpack_require__(240);
+	var StudentList = React.createClass({displayName: "StudentList",
+
+	    render: function() {
+	        var studentList = this.props.students.map(function(student, index) {
+	          
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, student.student_id), 
+	                    React.createElement("td", null, student.lastname, " ", student.midname, " ", student.firstname), 
+	                                      
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Remove", className: "btn btn-danger", onClick: StudentActions.destroy.bind(null,student._id)}))
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        studentList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = StudentList;
+
+/***/ },
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanListActions = __webpack_require__(234);
-	var BeanListStore = __webpack_require__(252);
-	var ListenerMixin = __webpack_require__(253);
 
-	var BeanListItem = __webpack_require__(255);
+	var Message = React.createClass({displayName: "Message",
+	    render: function() {
+	        var message = this.props.messages.map(function(me) {
+	            return (
+	               React.createElement("td", null, "asdas")
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        message
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = Message;
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SubjectActions = __webpack_require__(256),
+	    //CourseActions = require('../actions/course-action'),
+	    SubjectStore = __webpack_require__(258), 
+	    //ComboCourse = require("./combb-course"),   
+	    
+	    SubjectList = __webpack_require__(259);
+	    // Message = require("./message");
+
+
+
+	var Subject = React.createClass({displayName: "Subject",
+	    _onChange: function() {
+
+	        this.setState({
+	            subjects: SubjectStore.getSubjects()
+	            //message: UserStore.getMessage(),
+	            // courses: UserStore.getCourses(),
+	        }); 
+	        
+	               
+	    },
+	    getInitialState: function() {
+	        SubjectActions.fetchAddSubjectFromServer();
+	        //CourseActions.getListCourse();      
+
+	        return {
+	            subjects: SubjectStore.getSubjects(),
+	            // message: SubjectStore.getMessage(),
+	            // courses: SubjectStore.getCourses(),
+	        }
+	        
+	    },
+	    componentWillMount: function() {
+	        this.setState({
+	            subjects: SubjectStore.getSubjects(),          
+	        }); 
+	        
+	    },
+	    componentDidMount: function() {
+	        SubjectStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý môn học"), 
+	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                                   
+	                    React.createElement(SubjectList, {subjects: this.state.subjects})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Subject;
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		SubjectAPI = __webpack_require__(257);
+
+	var SubjectActions = {
+		fetchAddSubjectFromServer: function() {		
+			SubjectAPI.getAllSubject({}).then(function(subjects) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_SUBJECT,
+					data: subjects,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(subject) {        
+			SubjectAPI.createSubject(subject).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_SUBJECT,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(subject) {		
+			SubjectAPI.updateSubject(subject).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_SUBJECT,
+					data: updateData,
+	                subject: subject,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editSubject: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			SubjectAPI.deleteSubject(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_SUBJECT,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = SubjectActions;
+
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+		
+	var API_URL = 'http://localhost:3008/su/subjects';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllSubject() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);					
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createSubject(subject) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({subject: subject})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateSubject(subject) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({subject: subject})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteSubject(subject) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({subject: subject})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllSubject: getAllSubject,
+		createSubject: createSubject,
+		deleteSubject: deleteSubject,
+		updateSubject: updateSubject
+	};
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var _subject = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+	function _addStudent(student) {
+	    _subject.push(subject);
+	}
+	function _listSubject(data){    
+	    _subject = data;   
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(_subject, "_id", _id);
+	        _subject.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(_subject, "_id", _editing_id); 
+	    _subject[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var SubjectStore  = _.extend(BaseStore, {
+	    getSubjects: function() {    
+	        return _subject;        
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingSubject: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_subject, "_id", _editing_id);
+	        return _subject[index];        
+	    },
+	    emitEditSubject: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditSubjectListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {       
+
+	        case StudentConstants.GET_SUBJECT:
+	            _listSubject(payload.data);
+	            SubjectStore.emitChange();
+	            break;
+	        
+	    }
+	});
+	module.exports = SubjectStore;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SubjectStore = __webpack_require__(258),
+	    SubjectActions = __webpack_require__(256);
+	var SubjectList = React.createClass({displayName: "SubjectList",
+
+	    render: function() {
+
+	        var subjectList = this.props.subjects.map(function(subject, index) {
+	            return (
+
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, subject.subject_id), 
+	                    React.createElement("td", null, subject.name), 
+	                    React.createElement("td", null, subject.short_name), 
+	                    React.createElement("td", null, subject.number)
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Môn học"), 
+	                             React.createElement("th", null, "Tên môn học"), 
+	                             React.createElement("th", null, "Tên rút gọn"), 
+	                             React.createElement("th", null, "Số tín chỉ")
+	                          )
+	                        ), 
+	                            subjectList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = SubjectList;
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    Term_ClassActions = __webpack_require__(242),    
+	    Term_ClassStore = __webpack_require__(261),     
+	    Term_ClassList = __webpack_require__(262);
+	    // Message = require("./message");
+
+
+
+	var Term_Class = React.createClass({displayName: "Term_Class",
+
+	    componentWillMount: function() {
+	          this.setState({
+	            termClasss: Term_ClassStore.getTermClass()
+	           
+	        }); 
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            termClasss: Term_ClassStore.getTermClass(),
+	           
+	        }); 
+	       
+	               
+	    },
+	    getInitialState: function() {
+	        Term_ClassActions.fetchAddTerm_classFromServer();
+	       
+	        return {
+	            termClasss: Term_ClassStore.getTermClass(),
+	           
+	        }
+	        this.setState({
+	            termClasss: Term_ClassStore.getTermClass()
+	           
+	        });
+	    },
+	    componentDidMount: function() {
+	        Term_ClassStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý Lớp học phần"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                        React.createElement(Term_ClassList, {termClass: this.state.termClasss})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Term_Class;
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    StudentConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+
+	var __termClass = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addStudent(student) {
+	    __termClass.push(student);
+	}
+	function _listTermClass(data){
+	    __termClass= data;
+	}
+
+	function _removeStudent(_id) {    
+	    var i = ByKeyValue(__termClass, "_id", _id);
+	        __termClass.splice(i,1);
+	}
+
+	function _editStudent(index) {
+	    _editing_id = index;
+	}
+
+	function _updateStudent(student) {
+	    var index = ByKeyValue(__termClass, "_id", _editing_id); 
+	    __termClass[index] = student;
+	    _editing_id = null;
+	}
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var TermClassStore  = _.extend(BaseStore, {
+	    getTermClass: function() {       
+	        return __termClass;
+	    },
+	    getCourses: function(){
+	        return _courses;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingStudent: function() {
+	        if (!_editing_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(__termClass, "_id", _editing_id);
+	        return __termClass[index];        
+	    },
+	    emitEditStudent: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditStudentListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	       
+
+	        case StudentConstants.GET_TERM_CLASS:
+	            _listTermClass(payload.data);
+	            TermClassStore.emitChange();
+	            break;
+	            
+	    
+	    }
+	});
+	module.exports = TermClassStore;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    TermClassStore = __webpack_require__(261),
+	    TermClassActions = __webpack_require__(242);
+	var TermClassList = React.createClass({displayName: "TermClassList",
+
+	    render: function() {
+	        var termClassList = this.props.termClass.map(function(termClass, index) {
+	           
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, termClass.term_class_id), 
+	                    React.createElement("td", null, termClass.name), 
+	                    React.createElement("td", null, termClass.number), 
+	                    React.createElement("td", null, termClass.theory), 
+	                    React.createElement("td", null, termClass.diligence), 
+	                    React.createElement("td", null, termClass.practive), 
+	                    React.createElement("td", null, termClass.self_taught), 
+	                    React.createElement("td", null, termClass.perceive), 
+	                    React.createElement("td", null, termClass.last_test)
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã Lớp học phần"), 
+	                             React.createElement("th", null, "Tên lớp học phần"), 
+	                             React.createElement("th", null, "Số tín chỉ"), 
+	                             React.createElement("th", null, "Lý thuyết"), 
+	                             React.createElement("th", null, "Chuyên cần"), 
+	                             React.createElement("th", null, "Thực hành"), 
+	                             React.createElement("th", null, "Tự học"), 
+	                             React.createElement("th", null, "Nhận thức"), 
+	                             React.createElement("th", null, "Cuối kỳ")
+	                          )
+	                        ), 
+	                        termClassList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = TermClassList;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    UserActions = __webpack_require__(264),   
+	    UserStore = __webpack_require__(239),    
+	    UserList = __webpack_require__(266);
+	    // Message = require("./message");
+
+
+
+	var User = React.createClass({displayName: "User",
+
+	    componentWillMount: function() {
+	        this.setState({
+	            users: UserStore.getUsers()
+	            
+	        });
+	        
+	    },
+	    _onChange: function() {
+
+	        this.setState({
+	            users: UserStore.getUsers(),
+	            
+	        });        
+	               
+	    },
+	    getInitialState: function() {
+	        UserActions.fetchAddUserFromServer();        
+	        return {
+	            users: UserStore.getUsers(),
+	            
+	        }
+	         this.setState({
+	            users: UserStore.getUsers()
+	            
+	        });
+	    },
+	    componentDidMount: function() {
+	        UserStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý người dùng"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                        React.createElement(UserList, {users: this.state.users})
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = User;
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		UserAPI = __webpack_require__(265);
+
+	var UserActions = {
+		fetchAddUserFromServer: function() {		
+			UserAPI.getAllUser({}).then(function(user) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_USER,
+					data: user,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(user) {        
+			UserAPI.createUser(user).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_USER,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(user) {		
+			UserAPI.updateUser(user).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_USER,
+					data: updateData,
+	                user: user,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editUser: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			UserAPI.deleteUser(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_USER,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		}
+
+	};
+	module.exports = UserActions;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/us/users';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllUser() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createUser(user) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({user: user})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateUser(user) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({user: user})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteUser(user) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({user: user})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllUser: getAllUser,
+		createUser: createUser,
+		deleteUser: deleteUser,
+		updateUser: updateUser
+	};
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    UserStore = __webpack_require__(239),
+	 UserActions = __webpack_require__(264);
+	var UserList = React.createClass({displayName: "UserList",
+
+	    render: function() {
+	        var userList = this.props.users.map(function(user, index) {
+	            
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, user.name)
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        userList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = UserList;
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2);
+	var BeanListActions = __webpack_require__(268);
+	var BeanListStore = __webpack_require__(286);
+	var ListenerMixin = __webpack_require__(287);
+
+	var BeanListItem = __webpack_require__(289);
 
 	var BeanListPage = React.createClass({displayName: "BeanListPage",
 	    mixins: [ListenerMixin],
@@ -29350,11 +32073,11 @@
 	module.exports = BeanListPage;
 
 /***/ },
-/* 234 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(235);
-	var BeanWebAPI = __webpack_require__(250);
+	var alt = __webpack_require__(269);
+	var BeanWebAPI = __webpack_require__(284);
 
 	function BeanListActions(){"use strict";}
 
@@ -29388,17 +32111,17 @@
 
 
 /***/ },
-/* 235 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Alt = __webpack_require__(236);
+	var Alt = __webpack_require__(270);
 
 	var alt = new Alt();
 
 	module.exports = alt;
 
 /***/ },
-/* 236 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global window*/
@@ -29421,29 +32144,29 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _flux = __webpack_require__(237);
+	var _flux = __webpack_require__(271);
 
-	var _utilsStateFunctions = __webpack_require__(240);
+	var _utilsStateFunctions = __webpack_require__(274);
 
 	var StateFunctions = _interopRequireWildcard(_utilsStateFunctions);
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(243);
+	var _utilsFunctions = __webpack_require__(277);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _store = __webpack_require__(244);
+	var _store = __webpack_require__(278);
 
 	var store = _interopRequireWildcard(_store);
 
-	var _utilsAltUtils = __webpack_require__(246);
+	var _utilsAltUtils = __webpack_require__(280);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _actions = __webpack_require__(249);
+	var _actions = __webpack_require__(283);
 
 	var _actions2 = _interopRequireDefault(_actions);
 
@@ -29713,7 +32436,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 237 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29725,11 +32448,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(238)
+	module.exports.Dispatcher = __webpack_require__(272)
 
 
 /***/ },
-/* 238 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -29746,7 +32469,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(239);
+	var invariant = __webpack_require__(273);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -29985,7 +32708,7 @@
 
 
 /***/ },
-/* 239 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/**
@@ -30044,7 +32767,7 @@
 
 
 /***/ },
-/* 240 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30059,11 +32782,11 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(243);
+	var _utilsFunctions = __webpack_require__(277);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -30117,7 +32840,7 @@
 	}
 
 /***/ },
-/* 241 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30128,7 +32851,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(242);
+	var _esSymbol = __webpack_require__(276);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
@@ -30181,7 +32904,7 @@
 	exports.STATE_CONTAINER = STATE_CONTAINER;
 
 /***/ },
-/* 242 */
+/* 276 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30337,7 +33060,7 @@
 
 
 /***/ },
-/* 243 */
+/* 277 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30373,7 +33096,7 @@
 	}
 
 /***/ },
-/* 244 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30398,27 +33121,27 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _eventemitter3 = __webpack_require__(245);
+	var _eventemitter3 = __webpack_require__(279);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(246);
+	var _utilsAltUtils = __webpack_require__(280);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _utilsFunctions = __webpack_require__(243);
+	var _utilsFunctions = __webpack_require__(277);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _AltStore = __webpack_require__(247);
+	var _AltStore = __webpack_require__(281);
 
 	var _AltStore2 = _interopRequireDefault(_AltStore);
 
-	var _StoreMixin = __webpack_require__(248);
+	var _StoreMixin = __webpack_require__(282);
 
 	var _StoreMixin2 = _interopRequireDefault(_StoreMixin);
 
@@ -30553,7 +33276,7 @@
 	}
 
 /***/ },
-/* 245 */
+/* 279 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30788,7 +33511,7 @@
 
 
 /***/ },
-/* 246 */
+/* 280 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30851,7 +33574,7 @@
 	}
 
 /***/ },
-/* 247 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30868,19 +33591,19 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _eventemitter3 = __webpack_require__(245);
+	var _eventemitter3 = __webpack_require__(279);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _esSymbol = __webpack_require__(242);
+	var _esSymbol = __webpack_require__(276);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(243);
+	var _utilsFunctions = __webpack_require__(277);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -30990,7 +33713,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 248 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31003,15 +33726,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(242);
+	var _esSymbol = __webpack_require__(276);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(243);
+	var _utilsFunctions = __webpack_require__(277);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -31200,7 +33923,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 249 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31219,15 +33942,15 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _esSymbol = __webpack_require__(242);
+	var _esSymbol = __webpack_require__(276);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(241);
+	var _symbolsSymbols = __webpack_require__(275);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(246);
+	var _utilsAltUtils = __webpack_require__(280);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
@@ -31293,10 +34016,10 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 250 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var fakeData = __webpack_require__(251);
+	var fakeData = __webpack_require__(285);
 
 	// Emulate API requests
 
@@ -31338,7 +34061,7 @@
 	module.exports = BeanWebApi;
 
 /***/ },
-/* 251 */
+/* 285 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -31447,11 +34170,11 @@
 	};
 
 /***/ },
-/* 252 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var BeanListActions = __webpack_require__(234);
-	var alt = __webpack_require__(235);
+	var BeanListActions = __webpack_require__(268);
+	var alt = __webpack_require__(269);
 
 
 	    function BeanListStore() {"use strict";
@@ -31478,11 +34201,11 @@
 	module.exports = alt.createStore(BeanListStore);
 
 /***/ },
-/* 253 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Subscribe = __webpack_require__(254)
+	var Subscribe = __webpack_require__(288)
 
 	var ListenerMixin = {
 	  componentWillMount: function () {
@@ -31512,11 +34235,11 @@
 
 
 /***/ },
-/* 254 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Symbol = __webpack_require__(242)
+	var Symbol = __webpack_require__(276)
 	var MIXIN_REGISTRY = Symbol('alt store listeners')
 
 	var Subscribe = {
@@ -31545,7 +34268,7 @@
 
 
 /***/ },
-/* 255 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -31571,38 +34294,16 @@
 	module.exports = BeanListItem;
 
 /***/ },
-/* 256 */,
-/* 257 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
+	var BeanItemStore = __webpack_require__(291);
+	var BeanItemActions = __webpack_require__(292);
+	var ListenerMixin = __webpack_require__(287);
 
-	// Editing beans is not implemented yet
-	// Todo: Make the edit page
-
-	var BeanItemEditPage = React.createClass({displayName: "BeanItemEditPage",
-	    render:function() {
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("h2", null, "e.d.i.t.i.n.g bean : ", this.props.params.beanID)
-	            )
-	        );
-	    }
-	});
-
-	module.exports = BeanItemEditPage;
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var BeanItemStore = __webpack_require__(259);
-	var BeanItemActions = __webpack_require__(260);
-	var ListenerMixin = __webpack_require__(253);
-
-	var BeanPowerListItem = __webpack_require__(261);
-	var BeanProfile = __webpack_require__(262);
+	var BeanPowerListItem = __webpack_require__(293);
+	var BeanProfile = __webpack_require__(294);
 
 	var BeanItemPage = React.createClass({displayName: "BeanItemPage",
 	    mixins: [ListenerMixin],
@@ -31664,11 +34365,11 @@
 	module.exports = BeanItemPage;
 
 /***/ },
-/* 259 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(235);
-	var BeanItemActions = __webpack_require__(260);
+	var alt = __webpack_require__(269);
+	var BeanItemActions = __webpack_require__(292);
 
 
 	    function BeanItemStore() {"use strict";
@@ -31702,11 +34403,11 @@
 	module.exports = alt.createStore(BeanItemStore);
 
 /***/ },
-/* 260 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(235);
-	var BeanWebAPI = __webpack_require__(250);
+	var alt = __webpack_require__(269);
+	var BeanWebAPI = __webpack_require__(284);
 
 	function BeanItemActions(){"use strict";}
 
@@ -31742,7 +34443,7 @@
 	module.exports = alt.createActions(BeanItemActions);
 
 /***/ },
-/* 261 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -31762,11 +34463,11 @@
 	module.exports = BeanPowerListItem;
 
 /***/ },
-/* 262 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanPowerListItem = __webpack_require__(261);
+	var BeanPowerListItem = __webpack_require__(293);
 
 	var BeanProfile = React.createClass({displayName: "BeanProfile",
 
@@ -31806,1572 +34507,25 @@
 	module.exports = BeanProfile;
 
 /***/ },
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(231), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(264),
-	    StudentList = __webpack_require__(265),
-	    Message = __webpack_require__(279);
-
-
-
-	var Student = React.createClass({displayName: "Student",
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Student;
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),    
-	    UserStore = __webpack_require__(224),
-	    StudentActions = __webpack_require__(205);
-
-	var StudentForm = React.createClass({displayName: "StudentForm",
-	    
-	    _onClickAdd: function() {
-	         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
-
-	        StudentActions.create(student);
-	        this.setState({
-	            name: "", courser:"",
-	        });
-
-	    },
-	    _onClickUpdate: function() {
-	        var editingStudent = this.state.editingStudent;        
-	        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
-	        StudentActions.update(user);
-	        this.setState({
-	            name: "",
-	        });
-	    },
-	    _onchangCourse: function(e){        
-	        this.setState({
-	            courser: e.target.value,
-	        });
-	    },
-	    _onChangeName: function(e) {
-	        this.setState({
-	            name: e.target.value, 
-	        });
-	    },
-	    _onEdit: function() {        
-	        var editingStudent = UserStore.getEditingStudent();
-	        // console.log(editingStudent);
-	        this.setState({
-	            editingStudent: editingStudent,
-	        });
-
-	        if (editingStudent) {
-	            this.setState({
-	                name: editingStudent.name,
-	                courser: editingStudent.course._id,
-	            });
-	        }
-	    },
-	    getInitialState: function() {
-	            return {
-	            name: "",            
-	            editingStudent: null,            
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addEditStudentListener(this._onEdit);
-	    },
-	    render: function() {
-	        var btnAdd = (React.createElement("input", {type: "button", value: "Add", className: "btn btn-primary", onClick: this._onClickAdd}));
-	        var btnUpdate = (React.createElement("input", {type: "button", value: "Update", className: "btn btn-primary", onClick: this._onClickUpdate}));
-	        var courses = this.props.listCourse.map(function(course) {
-	            return (
-	               React.createElement("option", {value: course._id}, course.name)
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", {className: "row", style: {margin: "10px"}}, 
-	                React.createElement("div", {className: "col-md-2"}, 
-	                    "Name:"
-	                ), 
-	                React.createElement("div", null, 
-	                    React.createElement("input", {className: "form-group col-md-3", ref: "name", value: this.state.name, onChange: this._onChangeName})
-	                ), 
-	                 React.createElement("div", {className: "col-md-2"}, 
-	                    "Course:"
-	                ), 
-	                 React.createElement("div", {className: "col-md-3"}, 
-	                    React.createElement("select", {className: "col-md-12", onChange: this._onchangCourse, ref: "course", value: this.state.courser}, courses)
-	                ), 
-	                React.createElement("div", {className: "col-md-2"}, 
-	                    this.state.editingStudent ? btnUpdate : btnAdd
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = StudentForm;
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    UserStore = __webpack_require__(231),
-	 StudentActions = __webpack_require__(205);
-	var StudentList = React.createClass({displayName: "StudentList",
-
-	    render: function() {
-	        var studentList = this.props.students.map(function(student, index) {
-	            var course;
-	            if(!student.course){
-	             course=React.createElement("td", null);
-	            }else{
-	             course=   React.createElement("td", null, student.course.name)
-	            };
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, student.name), 
-	                      course, 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", value: "Remove", className: "btn btn-danger", onClick: StudentActions.destroy.bind(null,student._id)}))
-	                )
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        studentList
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = StudentList;
-
-/***/ },
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    CourseActions = __webpack_require__(222),
-	    //CourseActions = require('../actions/course-action'),
-	    CourseStore = __webpack_require__(286), 
-	    //ComboCourse = require("./combb-course"),   
-	    //CourseForm = require("./course/course-form"),
-	    CourseList = __webpack_require__(285);
-	    // Message = require("./message");
-
-
-
-	var Course = React.createClass({displayName: "Course",
-
-	    componentWillMount: function() {
-	        this.setState({
-	            courses: CourseStore.getCourses(),
-	            
-	        });
-	    },
-	    _onChange: function() {
-
-	        this.setState({
-	            courses: CourseStore.getCourses(),
-	            
-	        });        
-	               
-	    },
-	    getInitialState: function() {
-	        CourseActions.fetchAddCourseFromServer();
-	        return {
-	            courses: CourseStore.getCourses(),
-	            
-	        }
-	    },
-	    componentDidMount: function() {
-	        CourseStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Khóa học"), 
-	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(CourseList, {courses: this.state.courses})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Course;
-
-/***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    DepartmentActions = __webpack_require__(281),
-	    //CourseActions = require('../actions/course-action'),
-	    DepartmentStore = __webpack_require__(280), 
-	   // ComboCourse = require("./combb-course"),   
-	    //StudentForm = require("./student/student-form"),
-	    DepartmentList = __webpack_require__(283);
-	    // Message = require("./message");
-
-
-
-	var Department = React.createClass({displayName: "Department",
-
-	    componentWillMount: function() {
-	        this.setState({
-	            departments: DepartmentStore.getDepartments(),
-	            
-	        });
-	        
-	    },
-	    _onChange: function() {
-
-	        this.setState({
-	            departments: DepartmentStore.getDepartments(),
-	            
-	        }); 
-	        
-	               
-	    },
-	    getInitialState: function() {
-	        DepartmentActions.fetchAddDepartmentFromServer();        
-	        return {
-	            departments: DepartmentStore.getDepartments(),           
-	        }
-	    },
-	    componentDidMount: function() {
-	        DepartmentStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Khoa"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                                    
-	                    React.createElement(DepartmentList, {departments: this.state.departments})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Department;
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(231), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(264),
-	    StudentList = __webpack_require__(265);
-	    // Message = require("./message");
-
-
-
-	var Student = React.createClass({displayName: "Student",
-
-	//     sumdays: function(data,day){    
-	//         switch(day){
-	//         case 0:return this.checkworkweek(data.su)
-	//         case 1:return this.checkworkweek(data.mo)
-	//         case 2:return this.checkworkweek(data.tu)
-	//         case 3:return this.checkworkweek(data.we) 
-	//         case 4:return this.checkworkweek(data.th)
-	//         case 5:return this.checkworkweek(data.fr)
-	//         case 6:return this.checkworkweek(data.sa)
-	//     }
-	//   },
-	//   checkworkweek: function(val){
-	//   switch(val){
-	//     case 'non':return 0
-	//     case 'half':return 0.5
-	//     case 'full':return 1
-	//   }
-	// },
-	// total: function(start, end,){
-	//     var that = this;
-	//     var fr='full';
-	//     var to ='morning';
-	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//     }
-	// },
-	//     _date: function(start, end){
-	//         var that = this;     
-
-	        
-	//         var st =start.toString().substring(0,10);
-	//         var ed =end.toString().substring(0,10);
-	//         console.log(st);
-	//         console.log(ed);
-	//         if(st==ed){//-----======-----//
-
-	//         }else{//////----######-----//
-
-	//         }
-
-	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//         }
-	        
-	//         return count.sun;
-	//     },
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý điểm"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Student;
-
-/***/ },
-/* 269 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(231), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(264),
-	    StudentList = __webpack_require__(265);
-	    // Message = require("./message");
-
-
-
-	var Student = React.createClass({displayName: "Student",
-
-	//     sumdays: function(data,day){    
-	//         switch(day){
-	//         case 0:return this.checkworkweek(data.su)
-	//         case 1:return this.checkworkweek(data.mo)
-	//         case 2:return this.checkworkweek(data.tu)
-	//         case 3:return this.checkworkweek(data.we) 
-	//         case 4:return this.checkworkweek(data.th)
-	//         case 5:return this.checkworkweek(data.fr)
-	//         case 6:return this.checkworkweek(data.sa)
-	//     }
-	//   },
-	//   checkworkweek: function(val){
-	//   switch(val){
-	//     case 'non':return 0
-	//     case 'half':return 0.5
-	//     case 'full':return 1
-	//   }
-	// },
-	// total: function(start, end,){
-	//     var that = this;
-	//     var fr='full';
-	//     var to ='morning';
-	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//     }
-	// },
-	//     _date: function(start, end){
-	//         var that = this;     
-
-	        
-	//         var st =start.toString().substring(0,10);
-	//         var ed =end.toString().substring(0,10);
-	//         console.log(st);
-	//         console.log(ed);
-	//         if(st==ed){//-----======-----//
-
-	//         }else{//////----######-----//
-
-	//         }
-
-	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//         }
-	        
-	//         return count.sun;
-	//     },
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Ngành"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Student;
-
-/***/ },
-/* 270 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(231), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(264),
-	    StudentList = __webpack_require__(265);
-	    // Message = require("./message");
-
-
-
-	var Student = React.createClass({displayName: "Student",
-
-	//     sumdays: function(data,day){    
-	//         switch(day){
-	//         case 0:return this.checkworkweek(data.su)
-	//         case 1:return this.checkworkweek(data.mo)
-	//         case 2:return this.checkworkweek(data.tu)
-	//         case 3:return this.checkworkweek(data.we) 
-	//         case 4:return this.checkworkweek(data.th)
-	//         case 5:return this.checkworkweek(data.fr)
-	//         case 6:return this.checkworkweek(data.sa)
-	//     }
-	//   },
-	//   checkworkweek: function(val){
-	//   switch(val){
-	//     case 'non':return 0
-	//     case 'half':return 0.5
-	//     case 'full':return 1
-	//   }
-	// },
-	// total: function(start, end,){
-	//     var that = this;
-	//     var fr='full';
-	//     var to ='morning';
-	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//     }
-	// },
-	//     _date: function(start, end){
-	//         var that = this;     
-
-	        
-	//         var st =start.toString().substring(0,10);
-	//         var ed =end.toString().substring(0,10);
-	//         console.log(st);
-	//         console.log(ed);
-	//         if(st==ed){//-----======-----//
-
-	//         }else{//////----######-----//
-
-	//         }
-
-	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//         }
-	        
-	//         return count.sun;
-	//     },
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý Lớp học phần"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Student;
-
-/***/ },
-/* 271 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    StudentActions = __webpack_require__(205),
-	    CourseActions = __webpack_require__(222),
-	    UserStore = __webpack_require__(231), 
-	    ComboCourse = __webpack_require__(229),   
-	    StudentForm = __webpack_require__(264),
-	    StudentList = __webpack_require__(265);
-	    // Message = require("./message");
-
-
-
-	var Student = React.createClass({displayName: "Student",
-
-	//     sumdays: function(data,day){    
-	//         switch(day){
-	//         case 0:return this.checkworkweek(data.su)
-	//         case 1:return this.checkworkweek(data.mo)
-	//         case 2:return this.checkworkweek(data.tu)
-	//         case 3:return this.checkworkweek(data.we) 
-	//         case 4:return this.checkworkweek(data.th)
-	//         case 5:return this.checkworkweek(data.fr)
-	//         case 6:return this.checkworkweek(data.sa)
-	//     }
-	//   },
-	//   checkworkweek: function(val){
-	//   switch(val){
-	//     case 'non':return 0
-	//     case 'half':return 0.5
-	//     case 'full':return 1
-	//   }
-	// },
-	// total: function(start, end,){
-	//     var that = this;
-	//     var fr='full';
-	//     var to ='morning';
-	//     var ww={su: 'non', mo: 'full', tu: 'full', we: 'full', th:'full', fr: 'non', sa:'non' };
-	//     for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//     }
-	// },
-	//     _date: function(start, end){
-	//         var that = this;     
-
-	        
-	//         var st =start.toString().substring(0,10);
-	//         var ed =end.toString().substring(0,10);
-	//         console.log(st);
-	//         console.log(ed);
-	//         if(st==ed){//-----======-----//
-
-	//         }else{//////----######-----//
-
-	//         }
-
-	//         for(var count= {sun:0}, i = start; i <= end;i.setDate(i.getDate() + 1)){ 
-	//             count.sun += that.sumdays(ww,i.getDay());  
-	//         }
-	        
-	//         return count.sun;
-	//     },
-	    _onChange: function() {
-
-	        this.setState({
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();
-	        CourseActions.getListCourse();
-	        return {
-	            students: UserStore.getStudents(),
-	            message:UserStore.getMessage(),
-	            courses: UserStore.getCourses(),
-	        }
-	    },
-	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý người dùng"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(StudentForm, {listCourse: this.state.courses}), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Student;
-
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    SubjectActions = __webpack_require__(276),
-	    //CourseActions = require('../actions/course-action'),
-	    SubjectStore = __webpack_require__(275), 
-	    //ComboCourse = require("./combb-course"),   
-	    
-	    SubjectList = __webpack_require__(274);
-	    // Message = require("./message");
-
-
-
-	var Subject = React.createClass({displayName: "Subject",
-	    _onChange: function() {
-
-	        this.setState({
-	            subjects: SubjectStore.getSubjects(),
-	            //message: UserStore.getMessage(),
-	            // courses: UserStore.getCourses(),
-	        }); 
-	        if(this.state.message){
-	            $.bootstrapGrowl(this.state.message.message, { type: this.state.message.type, delay: 5000 } );
-	        }
-	               
-	    },
-	    getInitialState: function() {
-	        SubjectActions.fetchAddSubjectFromServer();
-	        //CourseActions.getListCourse();      
-
-	        return {
-	            subjects: SubjectStore.getSubjects(),
-	            // message: SubjectStore.getMessage(),
-	            // courses: SubjectStore.getCourses(),
-	        }
-	        
-	    },
-	    componentWillMount: function() {
-	        this.setState({
-	            subjects: SubjectStore.getSubjects(),          
-	        }); 
-	        
-	    },
-	    componentDidMount: function() {
-	        SubjectStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý môn học"), 
-	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                                   
-	                    React.createElement(SubjectList, {subjects: this.state.subjects})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Subject;
-
-/***/ },
-/* 273 */,
-/* 274 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    SubjectStore = __webpack_require__(275),
-	    SubjectActions = __webpack_require__(276);
-	var SubjectList = React.createClass({displayName: "SubjectList",
-
-	    render: function() {
-
-	        var subjectList = this.props.subjects.map(function(subject, index) {
-	            return (
-
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, subject.subject_id), 
-	                    React.createElement("td", null, subject.name), 
-	                    React.createElement("td", null, subject.short_name), 
-	                    React.createElement("td", null, subject.number)
-	                )
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã Môn học"), 
-	                             React.createElement("th", null, "Tên môn học"), 
-	                             React.createElement("th", null, "Tên rút gọn"), 
-	                             React.createElement("th", null, "Số tín chỉ")
-	                          )
-	                        ), 
-	                            subjectList
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = SubjectList;
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(225),
-	    StudentConstants = __webpack_require__(210),
-	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(226);
-
-	var CHANGE_EVENT = 'change';
-	var CHANGE_EDIT_EVENT = 'change_edit';
-
-	var _subject = [];
-	var _courses= [];
-	var _editing_id = null;
-	var _msg;
-
-	function ByKeyValue(arraytosearch, key, valuetosearch) { 
-	    for (var i = 0; i < arraytosearch.length; i++) { 
-	        if (arraytosearch[i][key] == valuetosearch) {
-	            return i;
-	        }
-	    }
-	    return null;
-	}
-	function _addStudent(student) {
-	    _subject.push(subject);
-	}
-	function _listSubject(data){    
-	    _subject = data;   
-	}
-	function _listCourse(data){
-	    _courses =data;
-	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_subject, "_id", _id);
-	        _subject.splice(i,1);
-	}
-
-	function _editStudent(index) {
-	    _editing_id = index;
-	}
-
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_subject, "_id", _editing_id); 
-	    _subject[index] = student;
-	    _editing_id = null;
-	}
-	function _getMsg(message){
-	    _msg=message;    
-	}
-	function _deleteMsg(){
-	    _msg =null;
-	}
-	var SubjectStore  = _.extend(BaseStore, {
-	    getSubjects: function() {    
-	        return _subject;        
-	    },
-	    getCourses: function(){
-	        return _courses;
-	    },
-	    getMessage:function(){
-	        return _msg;
-	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
-
-	    getEditingSubject: function() {
-	        if (!_editing_id) {
-	            return null;
-	        }
-	        var index = ByKeyValue(_subject, "_id", _editing_id);
-	        return _subject[index];        
-	    },
-	    emitEditSubject: function(callback) {
-	        this.emit(CHANGE_EDIT_EVENT, callback);
-	    },
-	    addEditSubjectListener: function(callback) {
-	        this.on(CHANGE_EDIT_EVENT, callback);
-	    },
-	});
-
-	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {       
-
-	        case StudentConstants.GET_SUBJECT:
-	            _listSubject(payload.data);
-	            SubjectStore.emitChange();
-	            break;
-	        
-	    }
-	});
-	module.exports = SubjectStore;
-
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(206),
-		Contants = __webpack_require__(210),
-		SubjectAPI = __webpack_require__(277);
-
-	var SubjectActions = {
-		fetchAddSubjectFromServer: function() {		
-			SubjectAPI.getAllSubject({}).then(function(subjects) {			
-				AppDispatcher.dispatch({
-					action:Contants.GET_SUBJECT,
-					data: subjects,
-					// params: {}
-				});
-			}, function(status, text) {
-				// Handle error!
-			});
-		},
-
-		create: function(subject) {        
-			SubjectAPI.createSubject(subject).then(function(data) {            
-				AppDispatcher.dispatch({
-					action: Contants.CREATE_SUBJECT,
-					data: data
-				});
-			}, function(status, text) {
-				// Handle error
-			});
-		},
-
-		update: function(subject) {		
-			SubjectAPI.updateSubject(subject).then(function(updateData){
-				AppDispatcher.dispatch({
-					action: Contants.UPDATE_SUBJECT,
-					data: updateData,
-	                subject: subject,
-				});
-			}, function(status,text){
-				// handle err
-			});
-		},
-		editSubject: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_EDIT,
-		        data: index,
-		    })
-	    },
-		destroy: function(id) {       
-			SubjectAPI.deleteSubject(id).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.DELETE_SUBJECT,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
-		}
-
-	};
-	module.exports = SubjectActions;
-
-/***/ },
-/* 277 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var request = __webpack_require__(212),
-		AppDispatcher = __webpack_require__(206),
-		Contant = __webpack_require__(210);
-		promise = __webpack_require__(218).Promise;
-		
-	var API_URL = 'http://localhost:3008/su/subjects';
-	var TIMEOUT = 10000;
-
-	var _pendingRequests = [];
-
-	function abortPendingRequests(key){
-		if(_pendingRequests[key]) {
-			_pendingRequests[key].callback = function(){};
-			_pendingRequests[key].abort();
-			_pendingRequests[key] = null;
-		}
-	}
-
-	function makeUrl(part) {
-		return API_URL + part;
-	}
-
-	function getAllSubject() {	
-		var t = new promise(function(resolve, reject){
-			request.get(API_URL)		
-				.timeout(TIMEOUT)
-				.end(function(err,res){				
-					var data = null;
-					if(res.status === 200) {
-						data = JSON.parse(res.text);
-						resolve(data);					
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;;
-	}
-
-	function createSubject(subject) {   
-		var t = new promise(function(resolve, reject){
-			request.post(API_URL)
-				.timeout(TIMEOUT)
-				.send({subject: subject})
-				.end(function(err,res) {
-					data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-	                    resolve(data);
-					}else {
-						reject(res.status, res);                    
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function updateSubject(subject) {	
-		var t = new promise(function(resolve, reject){
-			request.put(API_URL)
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({subject: subject})
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);				
-					if(res.status === 201){
-						resolve(data);                    
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function deleteSubject(subject) {    
-		var t = new promise(function(resolve, reject){
-			request.delete(API_URL)
-	            .timeout(TIMEOUT)
-	            .set('Content-Type', 'application/json')
-	            .send({subject: subject})			
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-						resolve(data);
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-	module.exports = {
-		getAllSubject: getAllSubject,
-		createSubject: createSubject,
-		deleteSubject: deleteSubject,
-		updateSubject: updateSubject
-	};
-
-/***/ },
-/* 278 */,
-/* 279 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
 
-	var Message = React.createClass({displayName: "Message",
-	    render: function() {
-	        var message = this.props.messages.map(function(me) {
-	            return (
-	               React.createElement("td", null, "asdas")
-	            );
-	        }.bind(this));
+	// Editing beans is not implemented yet
+	// Todo: Make the edit page
 
+	var BeanItemEditPage = React.createClass({displayName: "BeanItemEditPage",
+	    render:function() {
 	        return (
 	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        message
-	                    )
-	                )
+	                React.createElement("h2", null, "e.d.i.t.i.n.g bean : ", this.props.params.beanID)
 	            )
 	        );
 	    }
 	});
 
-	module.exports = Message;
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(225),
-	    StudentConstants = __webpack_require__(210),
-	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(226);
-
-	var CHANGE_EVENT = 'change';
-	var CHANGE_EDIT_EVENT = 'change_edit';
-
-	var _departments = [];
-	var _courses= [];
-	var _editing_id = null;
-	var _msg;
-
-	function ByKeyValue(arraytosearch, key, valuetosearch) { 
-	    for (var i = 0; i < arraytosearch.length; i++) { 
-	        if (arraytosearch[i][key] == valuetosearch) {
-	            return i;
-	        }
-	    }
-	    return null;
-	}
-
-
-	function _addStudent(student) {
-	    _departments.push(student);
-	}
-	function _listDepartment(data){
-	    _departments= data;
-	}
-	function _listCourse(data){
-	    _courses =data;
-	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_departments, "_id", _id);
-	        _departments.splice(i,1);
-	}
-
-	function _editStudent(index) {
-	    _editing_id = index;
-	}
-
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_departments, "_id", _editing_id); 
-	    _departments[index] = student;
-	    _editing_id = null;
-	}
-	function _getMsg(message){
-	    _msg=message;    
-	}
-	function _deleteMsg(){
-	    _msg =null;
-	}
-	var DepartmentStore  = _.extend(BaseStore, {
-	    getDepartments: function() {
-	       
-	        return _departments;
-	    },
-	    getCourses: function(){
-	        return _courses;
-	    },
-	    getMessage:function(){
-	        return _msg;
-	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
-
-	});
-
-	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {
-	        
-	        case StudentConstants.GET_DEPARTMENT:            
-	            _listDepartment(payload.data);
-	            DepartmentStore.emitChange();
-	            break;
-	            
-	        
-	    }
-	});
-	module.exports = DepartmentStore;
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(206),
-		Contants = __webpack_require__(210),
-		DepartmentAPI = __webpack_require__(282);
-
-	var DepartmentActions = {
-		fetchAddDepartmentFromServer: function() {		
-			DepartmentAPI.getAllDepartment({}).then(function(departments) {			
-				AppDispatcher.dispatch({
-					action:Contants.GET_DEPARTMENT,
-					data: departments,
-					// params: {}
-				});
-			}, function(status, text) {
-				// Handle error!
-			});
-		},
-
-		create: function(department) {        
-			DepartmentAPI.createDepartment(department).then(function(data) {            
-				AppDispatcher.dispatch({
-					action: Contants.CREATE_DEPARTMENT,
-					data: data
-				});
-			}, function(status, text) {
-				// Handle error
-			});
-		},
-
-		update: function(department) {		
-			DepartmentAPI.updateDepartment(department).then(function(updateData){
-				AppDispatcher.dispatch({
-					action: Contants.UPDATE_DEPARTMENT,
-					data: updateData,
-	                department: department,
-				});
-			}, function(status,text){
-				// handle err
-			});
-		},
-		editDepartment: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_EDIT,
-		        data: index,
-		    })
-	    },
-		destroy: function(id) {       
-			DepartmentAPI.deleteDepartment(id).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.DELETE_DEPARTMENT,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
-		}
-
-	};
-	module.exports = DepartmentActions;
-
-/***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var request = __webpack_require__(212),
-		AppDispatcher = __webpack_require__(206),
-		Contant = __webpack_require__(210);
-		promise = __webpack_require__(218).Promise;
-
-	var API_URL = 'http://localhost:3008/de/departments';
-	var TIMEOUT = 10000;
-
-	var _pendingRequests = [];
-
-	function abortPendingRequests(key){
-		if(_pendingRequests[key]) {
-			_pendingRequests[key].callback = function(){};
-			_pendingRequests[key].abort();
-			_pendingRequests[key] = null;
-		}
-	}
-
-	function makeUrl(part) {
-		return API_URL + part;
-	}
-
-	function getAllDepartment() {	
-		var t = new promise(function(resolve, reject){
-			request.get(API_URL)		
-				.timeout(TIMEOUT)
-				.end(function(err,res){				
-					var data = null;
-					if(res.status === 200) {
-						data = JSON.parse(res.text);					
-						resolve(data);
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;;
-	}
-
-	function createDepartment(department) {   
-		var t = new promise(function(resolve, reject){
-			request.post(API_URL)
-				.timeout(TIMEOUT)
-				.send({department: department})
-				.end(function(err,res) {
-					data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-	                    resolve(data);
-					}else {
-						reject(res.status, res);                    
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function updateDepartment(department) {	
-		var t = new promise(function(resolve, reject){
-			request.put(API_URL)
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({department: department})
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);				
-					if(res.status === 201){
-						resolve(data);                    
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function deleteDepartment(department) {    
-		var t = new promise(function(resolve, reject){
-			request.delete(API_URL)
-	            .timeout(TIMEOUT)
-	            .set('Content-Type', 'application/json')
-	            .send({department: department})			
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-						resolve(data);
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-	module.exports = {
-		getAllDepartment: getAllDepartment,
-		createDepartment: createDepartment,
-		deleteDepartment: deleteDepartment,
-		updateDepartment: updateDepartment
-	};
-
-/***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    DepartmentStore = __webpack_require__(280),
-	    DeparmentActions = __webpack_require__(281);
-	var DepartmentList = React.createClass({displayName: "DepartmentList",
-
-	    render: function() {
-	        var departmentList = this.props.departments.map(function(departments, index) {
-	           
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, departments.department_id), 
-	                    React.createElement("td", null, departments.name), 
-	                    React.createElement("td", null, departments.dean), 
-	                    React.createElement("td", null, departments.ministry), 
-	                    React.createElement("td", null, departments.phone)
-	                    
-	                )
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã khoa"), 
-	                             React.createElement("th", null, "Tên Khoa"), 
-	                             React.createElement("th", null, "Trưởng Khoa"), 
-	                             React.createElement("th", null, "Giáo vụ"), 
-	                             React.createElement("th", null, "Điện thoại")
-	                          )
-	                        ), 
-	                        departmentList
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = DepartmentList;
-
-/***/ },
-/* 284 */,
-/* 285 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-
-	var CourseList = React.createClass({displayName: "CourseList",
-
-	    render: function() {
-	        var courseList = this.props.courses.map(function(course, index) {
-	           
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, course.course_id), 
-	                    React.createElement("td", null, course.name), 
-	                    React.createElement("td", null, course.incoming_year), 
-	                    React.createElement("td", null, course.full)
-	                                       
-	                   
-	                )
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã Khóa"), 
-	                             React.createElement("th", null, "Tên Khóa"), 
-	                             React.createElement("th", null, "Năm bắt đầu"), 
-	                             React.createElement("th", null, "Tên đầy đủ")
-	                          )
-	                        ), 
-	                        courseList
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = CourseList;
-
-/***/ },
-/* 286 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(225),
-	    StudentConstants = __webpack_require__(210),
-	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(226);
-
-	var CHANGE_EVENT = 'change';
-	var CHANGE_EDIT_EVENT = 'change_edit';
-
-
-	var _course= [];
-
-	function _addStudent(student) {
-	    _departments.push(student);
-	}
-	function _listDepartment(data){
-	    _departments= data;
-	}
-	function _listCourses(data){
-	    _course =data;
-	}
-
-	var CourseStore  = _.extend(BaseStore, {
-	    getCourses: function() {       
-	        return _course;
-	    },
-	   
-	    getMessage:function(){
-	        return _msg;
-	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
-
-	});
-
-	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {
-	        
-	        case StudentConstants.GET_COURSE:       
-	            _listCourses(payload.data);
-	            CourseStore.emitChange();
-	            break;
-	            
-	        
-	    }
-	});
-	module.exports = CourseStore;
+	module.exports = BeanItemEditPage;
 
 /***/ }
 /******/ ]);
