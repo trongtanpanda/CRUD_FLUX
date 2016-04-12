@@ -1,6 +1,7 @@
 var React = require("react"),
     DepartmentStore = require("../../stores/department-store"),
     DeparmentActions = require("../../actions/department-action.js");
+var Confirm = require('react-confirm-bootstrap');
 var DepartmentList = React.createClass({
 
     render: function() {

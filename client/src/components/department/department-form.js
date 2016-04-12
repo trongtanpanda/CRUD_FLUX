@@ -58,14 +58,35 @@ var DepartmentForm = React.createClass({
         });
        $("#close").click();
     },
+     _onClickUpdate: function() {
+        var editingDepartment = this.state.editingDepartment;
+         var department = {
+            _id: editingDepartment._id,
+            id: this.state.id, 
+            name: this.state.name,
+            dean: this.state.dean,
+            ministry: this.state.ministry,
+            phone: this.state.phone
+        };
 
+        DepartmentActions.update(department);
+        this.setState({
+            id: "",
+            name: "",
+            dean:"",
+            ministry: "",
+            phone: "",                       
+        });
+       $("#close").click();
+    },
     _onclickClose: function(){       
         this.setState({                        
             id: "",
             name: "",
             dean:"",
             ministry: "",
-            phone: "",        
+            phone: "", 
+            editingDepartment: "",       
         });
     },
 
@@ -88,7 +109,7 @@ var DepartmentForm = React.createClass({
     getInitialState: function() {
             return {
             name: "",            
-            editingStudent: null,            
+            editingDepartment: null,            
         }
     },
     
@@ -96,7 +117,10 @@ var DepartmentForm = React.createClass({
         DepartmentStore.addEditDepartmentListener(this._onEdit);
     },
     render: function() {
-     
+   
+        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
+
         return (
              <div>
             <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
@@ -145,7 +169,8 @@ var DepartmentForm = React.createClass({
                   </div>
                   <div className="modal-footer">
                     <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>
+                    {this.state.editingDepartment ? btnUpdate : btnAdd}
+
                   </div>
                 </div>
               </div>

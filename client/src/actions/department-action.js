@@ -27,6 +27,7 @@ var DepartmentActions = {
 	},
 
 	update: function(department) {		
+		console.log(department);;
 		DepartmentAPI.updateDepartment(department).then(function(updateData){
 			AppDispatcher.dispatch({
 				action: Contants.UPDATE_DEPARTMENT,
