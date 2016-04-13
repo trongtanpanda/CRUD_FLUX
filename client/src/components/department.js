@@ -17,7 +17,6 @@ var Department = React.createClass({
         
     },
     _onChange: function() {
-
         this.setState({
             departments: DepartmentStore.getDepartments(),
             

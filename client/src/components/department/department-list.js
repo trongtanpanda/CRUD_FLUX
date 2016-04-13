@@ -31,9 +31,7 @@ var DepartmentList = React.createClass({
                     <td>
                       <input type="button" value="Edit" data-toggle="modal" data-target="#myModal" className="btn btn-success" onClick={DeparmentActions.editDepartment.bind(null,department._id)} />&nbsp;
                       <input type="button" value="Remove" data-toggle="modal" data-target="#deleModal" className="btn btn-danger"  onClick={this._remove.bind(null,(department))}/>
-                   
-                    </td>
-                    
+                    </td>                    
                 </tr>
             );
         }.bind(this));
@@ -55,11 +53,11 @@ var DepartmentList = React.createClass({
                         {departmentList}
                     </tbody>
                 </table> 
-                <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+                 <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
                   <div className="modal-dialog" >
                     <div className="modal-content" >
                       <div className="modal-header">
-                        <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                        <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
                         <h4 className="modal-title" id="myModalLabel">Xóa Khoa</h4>
                       </div>
                       <div className="modal-body">
@@ -71,7 +69,7 @@ var DepartmentList = React.createClass({
                       </div>
                     </div>
                   </div>
-                </div>               
+                </div>              
             </div>
           
         );

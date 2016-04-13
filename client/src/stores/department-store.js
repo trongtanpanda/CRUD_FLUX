@@ -21,6 +21,7 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 function _addDepartment(department) {
+    console.log("inhear")
     _departments.push(department);
 }
 function _listDepartment(data){
@@ -29,7 +30,7 @@ function _listDepartment(data){
 function _listCourse(data){
     _courses =data;
 }
-function _removeStudent(_id) {    
+function _removeDepartment(_id) {    
     var i = ByKeyValue(_departments, "_id", _id);
         _departments.splice(i,1);
 }
@@ -97,7 +98,12 @@ AppDispatcher.register(function(payload) {
             _editDepartment(payload.data);
             DepartmentStore.emitEditDepartment();
             break;   
-        
+        case StudentConstants.DELETE_DEPARTMENT:
+            console.log(payload.data);
+            _removeDepartment(payload.data.Message.department);
+            // _getMsg(payload.data.Message);                    
+            UserStore.emitChange();           
+            break;
     }
 });
 module.exports = DepartmentStore;
