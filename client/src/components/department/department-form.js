@@ -109,7 +109,8 @@ var DepartmentForm = React.createClass({
     getInitialState: function() {
             return {
             name: "",            
-            editingDepartment: null,            
+            editingDepartment: null, 
+            deleteDepartment: "",           
         }
     },
     
