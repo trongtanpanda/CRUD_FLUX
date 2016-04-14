@@ -5,10 +5,11 @@ var _ = require("underscore"),
 
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
-
+var CHANGE_DELETE_EVENT = 'change_delete';
 var _departments = [];
 var _courses= [];
 var _editing_id = null;
+var _delete_id = null;
 var _msg;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -30,7 +31,7 @@ function _listDepartment(data){
 function _listCourse(data){
     _courses =data;
 }
-function _removeDepartment(_id) {    
+function _removeDepartment(_id) {  
     var i = ByKeyValue(_departments, "_id", _id);
         _departments.splice(i,1);
 }
@@ -38,7 +39,9 @@ function _removeDepartment(_id) {
 function _editDepartment(index) {
     _editing_id = index;
 }
-
+function _deleteDepartment(index) {
+    _delete_id = index;
+}
 function _updateStudent(student) {
     var index = ByKeyValue(_departments, "_id", _editing_id); 
     _departments[index] = student;
@@ -81,6 +84,20 @@ var DepartmentStore  = _.extend(BaseStore, {
     addEditDepartmentListener: function(callback) {
         this.on(CHANGE_EDIT_EVENT, callback);
     },
+
+    getDeleteDepartment: function() {
+        if (!_delete_id) {
+            return null;
+        }
+        var index = ByKeyValue(_departments, "_id", _delete_id);
+        return _departments[index];        
+    },
+    emitDeleteDepartment: function(callback) {
+        this.emit(CHANGE_DELETE_EVENT, callback);
+    },
+    addDeleteDepartmentListener: function(callback) {
+        this.on(CHANGE_DELETE_EVENT, callback);
+    },
 });
 
 AppDispatcher.register(function(payload) {
@@ -98,11 +115,13 @@ AppDispatcher.register(function(payload) {
             _editDepartment(payload.data);
             DepartmentStore.emitEditDepartment();
             break;   
+        case StudentConstants.ACTION_DELETE: 
+            _deleteDepartment(payload.data);
+            DepartmentStore.emitDeleteDepartment();
+            break;
         case StudentConstants.DELETE_DEPARTMENT:
-            console.log(payload.data);
-            _removeDepartment(payload.data.Message.department);
-            // _getMsg(payload.data.Message);                    
-            UserStore.emitChange();           
+            _removeDepartment(payload.data.Message.department);                               
+             DepartmentStore.emitChange();          
             break;
     }
 });

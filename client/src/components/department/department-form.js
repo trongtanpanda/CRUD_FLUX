@@ -58,6 +58,7 @@ var DepartmentForm = React.createClass({
         });
        $("#close").click();
     },
+   
      _onClickUpdate: function() {
         var editingDepartment = this.state.editingDepartment;
          var department = {
@@ -86,7 +87,8 @@ var DepartmentForm = React.createClass({
             dean:"",
             ministry: "",
             phone: "", 
-            editingDepartment: "",       
+            editingDepartment: "",  
+            deletingDepartment: "",    
         });
     },
 
@@ -106,16 +108,33 @@ var DepartmentForm = React.createClass({
             });
         }
     },
+    _onDelete: function() {    
+        var deletingDepartment = DepartmentStore.getDeleteDepartment();
+         this.setState({
+            deletingDepartment: deletingDepartment._id,
+            name: deletingDepartment.name,
+        });            
+    },
+     _delete: function(index){
+        console.log(index);
+        DepartmentActions.destroy(index);
+        this.setState({
+            deletingDepartment: null,
+            name: null,
+        }); 
+        $("#closes").click();
+    },   
     getInitialState: function() {
             return {
             name: "",            
             editingDepartment: null, 
-            deleteDepartment: "",           
+            deleteDepartment: null,           
         }
     },
     
     componentDidMount: function() {
         DepartmentStore.addEditDepartmentListener(this._onEdit);
+        DepartmentStore.addDeleteDepartmentListener(this._onDelete);
     },
     render: function() {
    
@@ -176,6 +195,23 @@ var DepartmentForm = React.createClass({
                 </div>
               </div>
             </div>
+             <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div className="modal-dialog" >
+                    <div className="modal-content" >
+                      <div className="modal-header">
+                        <button type="button" onClick={this._onclickClose}  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                        <h4 className="modal-title" id="myModalLabel">Xóa Khoa</h4>
+                      </div>
+                      <div className="modal-body">
+                       Bạn có muốn xóa khoa "<b>{this.state.name} </b>"?
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" id="closes" className="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button type="button" onClick={this._delete.bind(null,this.state.deletingDepartment)} className="btn btn-primary">OK</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>          
         </div>  
                         
         );

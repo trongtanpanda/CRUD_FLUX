@@ -26,8 +26,7 @@ var DepartmentActions = {
 		});
 	},
 
-	update: function(department) {		
-		console.log(department);;
+	update: function(department) {	
 		DepartmentAPI.updateDepartment(department).then(function(updateData){
 			AppDispatcher.dispatch({
 				action: Contants.UPDATE_DEPARTMENT,
@@ -44,7 +43,7 @@ var DepartmentActions = {
 	        data: index,
 	    })
     },
-	destroy: function(id) {       
+	destroy: function(id) {
 		DepartmentAPI.deleteDepartment(id).then(function(data){
 			AppDispatcher.dispatch({
 				action: Contants.DELETE_DEPARTMENT,
@@ -53,7 +52,13 @@ var DepartmentActions = {
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteDepartment: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = DepartmentActions;

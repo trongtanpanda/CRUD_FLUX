@@ -64,6 +64,7 @@ var StudentForm = React.createClass({
         }.bind(this));
 
         return (
+        <div>
             <div className="row" style={{margin: "10px"}}>
                 <div className="col-md-2">
                     Name:
@@ -81,6 +82,25 @@ var StudentForm = React.createClass({
                     {this.state.editingStudent ? btnUpdate : btnAdd}
                 </div>
             </div>
+            
+            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+              <div className="modal-dialog" >
+                <div className="modal-content" >
+                  <div className="modal-header">
+                    <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
+                  </div>
+                  <div className="modal-body">
+                   
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" id="close"  className="btn btn-default" data-dismiss="modal">Đóng</button>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>   
+        </div>
         );
     }
 });

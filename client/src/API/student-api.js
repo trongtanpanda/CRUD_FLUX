@@ -78,11 +78,12 @@ function updateStudent(updateData) {
 
 function deleteStudent(studentID) {    
 	var t = new promise(function(resolve, reject){
-		request.delete(API_URL+"/delete")
+		request.delete(API_URL)
             .timeout(TIMEOUT)
             .set('Content-Type', 'application/json')
-            .send({studentId: studentID})			
+            .send({student: studentID})			
 			.end(function(err,res) {
+				console.log(res);
                 data = JSON.parse(res.text);
 				if(res.status === 201) {                    
 					resolve(data);

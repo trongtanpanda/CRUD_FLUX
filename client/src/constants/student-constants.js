@@ -3,7 +3,7 @@ module.exports = {
     ACTION_REMOVE   : "ACTION_REMOVE",
     ACTION_EDIT     : "ACTION_EDIT",
     ACTION_UPDATE   : "ACTION_UPDATE",
-
+    ACTION_DELETE   : "ACTION_DELETE",
     //----------STUDENT----------------//
 
     GET_STUDENT     : "GET_STUDENT",

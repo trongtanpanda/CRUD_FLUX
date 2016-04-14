@@ -25,24 +25,19 @@ router.route('/students')
 		// console.log(departments);
  		});
  	})
- 	//--------------updata----------------------//
-	// .put(function(req, res) {
-	// 	Courses.update({_id:req.body._id},{$set:{name:req.body.name}},function(err, user) {
-	// 		if (err) res.send(err);
-	// 		res.json({me:{message: 'Successfully update'}, user: user });
-	// 	});
-	// })
-//-------------------delete---------------------//
-router.route('/Courses/:_id')
-  // delete the user by the username (accessed at DELETE http://localhost:8080/api/Courses/username/:username)
-	// .delete(function(req, res) {
-	// 	// console.log("asdsds" +req.params._id);
-	// 	Courses.remove({
-	// 		_id: req.params._id
-	// 	}, function(err) {
-	// 		if (err) res.send(err);
-	// 		res.json({ message: 'Successfully deleted' });
-	// 	});
-	// })
+ 	.delete(function(req, res) {   
+		Students.remove({
+			_id: req.body.student
+		}, function(err) {
+			if (err){
+                res.send(err);
+            }else{ 
+                res.status(201);
+                res.json({Message:{ message: 'Delete student had success!', type: 'success',student: req.body.student }});
+                res.send();
+            }
+		});
+	})
+
 	
 export default router;

@@ -16,13 +16,10 @@ var Department = React.createClass({
             departments: DepartmentStore.getDepartments()});
         
     },
-    _onChange: function() {
+    _onChange: function() {        
         this.setState({
-            departments: DepartmentStore.getDepartments(),
-            
-        }); 
-        
-               
+            departments: DepartmentStore.getDepartments(),            
+        });    
     },
     getInitialState: function() {
         DepartmentActions.fetchAddDepartmentFromServer();        
@@ -31,7 +28,8 @@ var Department = React.createClass({
         }
     },
     componentDidMount: function() {
-        DepartmentStore.addChangeListener(this._onChange);             
+        DepartmentStore.addChangeListener(this._onChange); 
+
         
     },    
     render: function() { 

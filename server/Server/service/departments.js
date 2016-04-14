@@ -5,7 +5,6 @@ const router = express.Router();
 router.route('/departments')
 // create a new user (accessed at POST http://localhost:8080/api/departments)
     .post(function(req, res) {
-			console.log(req.body);
 		Departments.create({			
 			department_id:req.body.department.id,
 			name: req.body.department.name, 
@@ -26,7 +25,7 @@ router.route('/departments')
 		// console.log(departments);
  		});
  	})
-	.delete(function(req, res) {
+	.delete(function(req, res) {   
 		Departments.remove({
 			_id: req.body.department
 		}, function(err) {
