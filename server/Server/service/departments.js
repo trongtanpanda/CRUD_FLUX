@@ -25,6 +25,29 @@ router.route('/departments')
 		// console.log(departments);
  		});
  	})
+ 	.put(function(req, res) {
+ 		  console.log(req.body);
+		Departments.update({_id:req.body.department._id},{$set:
+			{
+				department_id:req.body.department.id,
+				name: req.body.department.name, 
+				dean: req.body.department.dean, 
+				ministry: req.body.department.ministry, 
+				phone: req.body.department.phone
+			}
+
+		},function(err, department) {
+			if (err) {
+                res.send(err);
+            }else{
+			    res.status(201);
+                res.json({Message:{ message: 'Update student had success!', type: 'success',department: department }});
+                res.send();
+                console.log(department);
+            }
+			
+		});
+	})
 	.delete(function(req, res) {   
 		Departments.remove({
 			_id: req.body.department

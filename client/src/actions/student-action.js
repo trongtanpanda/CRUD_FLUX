@@ -52,7 +52,13 @@ var StudentActions = {
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteStudent: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = StudentActions;

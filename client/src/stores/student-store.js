@@ -5,10 +5,11 @@ var _ = require("underscore"),
 
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
-
+var CHANGE_DELETE_EVENT = 'change_delete';
 var _students = [];
 var _courses= [];
 var _editing_id = null;
+var _deleting_id = null;
 var _msg;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -39,18 +40,23 @@ function _editStudent(index) {
     _editing_id = index;
 }
 
+function _deleteStudent(index) {
+    _deleting_id = index;
+}
+
 function _updateStudent(student) {
     var index = ByKeyValue(_students, "_id", _editing_id); 
     _students[index] = student;
     _editing_id = null;
 }
+
 function _getMsg(message){
     _msg=message;    
 }
 function _deleteMsg(){
     _msg =null;
 }
-var UserStore  = _.extend(BaseStore, {
+var StudentStore  = _.extend(BaseStore, {
     getStudents: function() {        
         for(var i=0; i<_students.length; i++){
             for (var j = 0; j < _courses.length; j++) {
@@ -88,6 +94,20 @@ var UserStore  = _.extend(BaseStore, {
     addEditStudentListener: function(callback) {
         this.on(CHANGE_EDIT_EVENT, callback);
     },
+
+    getDeleteStudent: function() {
+        if (!_deleting_id) {
+            return null;
+        }
+        var index = ByKeyValue(_students, "_id", _deleting_id);
+        return _students[index];        
+    },
+    emitDeleteStudent: function(callback) {
+        this.emit(CHANGE_DELETE_EVENT, callback);
+    },
+    addDeleteStudentListener: function(callback) {
+        this.on(CHANGE_DELETE_EVENT, callback);
+    },
 });
 
 AppDispatcher.register(function(payload) {
@@ -95,36 +115,42 @@ AppDispatcher.register(function(payload) {
         case StudentConstants.CREATE_STUDENT:
             _getMsg(payload.data.Message);
             _addStudent(payload.data.Message.user);
-            UserStore.emitChange();            
+            StudentStore.emitChange();            
             break;
 
         case StudentConstants.DELETE_STUDENT:
-            _removeStudent(payload.data.Message.studentId);
+        console.log(payload.data.Message.student);
+            _removeStudent(payload.data.Message.student);
             _getMsg(payload.data.Message);                    
-            UserStore.emitChange();           
+            StudentStore.emitChange();           
             break;
 
         case StudentConstants.ACTION_EDIT:
             _editStudent(payload.data);
-            UserStore.emitEditStudent();
+            StudentStore.emitEditStudent();
+            break;
+        case StudentConstants.ACTION_DELETE:
+        console.log(payload.data);
+            _deleteStudent(payload.data);
+            StudentStore.emitDeleteStudent();
             break;
 
         case StudentConstants.UPDATE_STUDENT:
             _updateStudent(payload.user);
             _getMsg(payload.data.Message);            
-            UserStore.emitEditStudent();
-            UserStore.emitChange();            
+            StudentStore.emitEditStudent();
+            StudentStore.emitChange();            
             break;
 
         case StudentConstants.GET_STUDENT:
             _listStudent(payload.data);
-            UserStore.emitChange();
+            StudentStore.emitChange();
             break;
             
         case StudentConstants.GET_COURSE:
             _listCourse(payload.data);            
-            UserStore.emitChange();
+            StudentStore.emitChange();
             break;
     }
 });
-module.exports = UserStore;
+module.exports = StudentStore;
