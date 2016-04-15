@@ -30,3 +30,12 @@ background:rgba(0,211,255,1.00) !important;
 .btn-nav{
 	background-color:rgba(0,211,255,1.00);
 }
+table tr:nth-child(even) td, {
+    background-color: #A7A9AC;
+    margin-top: 15px;
+}
+
+table tr:nth-child(odd) td,
+table tr:nth-child(odd) th {
+    background-color: #F0F0F0;
+}

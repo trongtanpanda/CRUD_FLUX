@@ -55751,7 +55751,7 @@
 	           student_id:"", firstname: "", midname: "", lastname: ""
 	        });
 	         $("#close").click();
-
+	         this._onclickClose;
 	    },
 	    _onClickUpdate: function() {
 	        var editingStudent = this.state.editingStudent;        
@@ -55767,6 +55767,7 @@
 	            student_id:"", firstname: "", midname: "", lastname: ""
 	        });
 	         $("#close").click();
+	         this._onclickClose;
 	    },
 	    _onchangId: function(e){        
 	        this.setState({
@@ -55803,6 +55804,15 @@
 	            });
 	        }
 	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            student_id: "",
+	            firstname: "",
+	            midname:"",
+	            lastname: "",           
+	            editingStudent: "",                  
+	        });
+	    },
 	    getInitialState: function() {
 	            return {
 	            student_id: "", first: "", midname: "", lastname: "",            
@@ -55818,14 +55828,15 @@
 
 	        return (
 	            React.createElement("div", null, 
-	            React.createElement("button", {type: "button", className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
 	              "Thêm mới"
 	            ), 
+	           React.createElement("p", null, " "), 
 	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
 	              React.createElement("div", {className: "modal-dialog"}, 
 	                React.createElement("div", {className: "modal-content"}, 
 	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
 	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 
@@ -55857,7 +55868,7 @@
 	                    )
 	                  ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
 	                     this.state.editingStudent ? btnUpdate : btnAdd
 	                  )
 	                )
@@ -55951,12 +55962,10 @@
 	    // },
 
 	    getEditingStudents: function() {
-	        console.log('hear ');
 	        if (!_editing_id) {
 
 	            return null;
 	        }
-	         console.log(_editing_id);
 	        var index = ByKeyValue(_students, "_id", _editing_id);
 
 	        return _students[index];        
@@ -56006,7 +56015,6 @@
 	            break;
 
 	        case StudentConstants.UPDATE_STUDENT:
-	            console.log(payload.data.Message.student);
 	            _updateStudent(payload.data.Message.student);
 	            _getMsg(payload.data.Message);            
 	            StudentStore.emitEditStudent();
@@ -56077,6 +56085,14 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
+	                        React.createElement("thead", null, 
+	                          React.createElement("tr", null, 
+	                             React.createElement("th", null, "Mã sinh viên"), 
+	                             React.createElement("th", null, "Tên sinh viên"), 
+	                             React.createElement("th", null), 
+	                             React.createElement("th", null)
+	                          )
+	                        ), 
 	                        studentList
 	                    )
 	                ), 

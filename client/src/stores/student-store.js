@@ -74,12 +74,10 @@ var StudentStore  = _.extend(BaseStore, {
     // },
 
     getEditingStudents: function() {
-        console.log('hear ');
         if (!_editing_id) {
 
             return null;
         }
-         console.log(_editing_id);
         var index = ByKeyValue(_students, "_id", _editing_id);
 
         return _students[index];        
@@ -129,7 +127,6 @@ AppDispatcher.register(function(payload) {
             break;
 
         case StudentConstants.UPDATE_STUDENT:
-            console.log(payload.data.Message.student);
             _updateStudent(payload.data.Message.student);
             _getMsg(payload.data.Message);            
             StudentStore.emitEditStudent();

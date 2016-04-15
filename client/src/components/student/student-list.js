@@ -45,6 +45,14 @@ var StudentList = React.createClass({
             <div>
                 <table className="table">
                     <tbody>
+                        <thead>
+                          <tr>
+                             <th>Mã sinh viên</th>
+                             <th>Tên sinh viên</th>                             
+                             <th></th>
+                             <th></th>
+                          </tr>
+                        </thead>
                         {studentList}
                     </tbody>
                 </table>

@@ -26,8 +26,7 @@ router.route('/students')
 	 		Students.find(function(err, student) {
 	 		if (err)
 	 			res.send(err);
-			res.json(student);
-			// console.log(departments);
+				res.json(student);			
 	 		});
 	 	})
 	 	.put(function(req, res) {

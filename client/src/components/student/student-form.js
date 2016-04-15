@@ -17,7 +17,7 @@ var StudentForm = React.createClass({
            student_id:"", firstname: "", midname: "", lastname: ""
         });
          $("#close").click();
-
+         this._onclickClose;
     },
     _onClickUpdate: function() {
         var editingStudent = this.state.editingStudent;        
@@ -33,6 +33,7 @@ var StudentForm = React.createClass({
             student_id:"", firstname: "", midname: "", lastname: ""
         });
          $("#close").click();
+         this._onclickClose;
     },
     _onchangId: function(e){        
         this.setState({
@@ -69,6 +70,15 @@ var StudentForm = React.createClass({
             });
         }
     },
+    _onclickClose: function(){       
+        this.setState({                        
+            student_id: "",
+            firstname: "",
+            midname:"",
+            lastname: "",           
+            editingStudent: "",                  
+        });
+    },
     getInitialState: function() {
             return {
             student_id: "", first: "", midname: "", lastname: "",            
@@ -84,14 +94,15 @@ var StudentForm = React.createClass({
 
         return (
             <div>
-            <button type="button" className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
               Thêm mới
-            </button>                    
+            </button>  
+           <p>&nbsp;</p>              
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
                 <div className="modal-content" >
                   <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
                     <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
                   </div>
                   <div className="modal-body">
@@ -123,7 +134,7 @@ var StudentForm = React.createClass({
                     </form>                    
                   </div>
                   <div className="modal-footer">
-                    <button type="button" id="close" className="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
                      {this.state.editingStudent ? btnUpdate : btnAdd}
                   </div>
                 </div>
