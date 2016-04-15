@@ -1,88 +1,134 @@
 var React = require("react"),    
-    UserStore = require("../../stores/student-store"),
+    StudentStore = require("../../stores/student-store"),
     StudentActions = require("../../actions/student-action.js");
 
 var StudentForm = React.createClass({
     
     _onClickAdd: function() {
-         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
+         var student = {
+            student_id: this.state.student_id,
+            firstname: this.state.firstname,
+            midname: this.state.midname,
+            lastname: this.state.lastname
+        };
 
         StudentActions.create(student);
         this.setState({
-            name: "", courser:"",
+           student_id:"", firstname: "", midname: "", lastname: ""
         });
+         $("#close").click();
 
     },
     _onClickUpdate: function() {
         var editingStudent = this.state.editingStudent;        
-        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
+        var user ={
+            _id:editingStudent._id,
+            student_id: this.state.student_id,
+            firstname: this.state.firstname,
+            midname: this.state.midname,
+            lastname: this.state.lastname
+        };
         StudentActions.update(user);
         this.setState({
-            name: "",
+            student_id:"", firstname: "", midname: "", lastname: ""
         });
+         $("#close").click();
     },
-    _onchangCourse: function(e){        
+    _onchangId: function(e){        
         this.setState({
-            courser: e.target.value,
+            student_id: e.target.value,
         });
     },
-    _onChangeName: function(e) {
+    _onchangFirstname: function(e) {
         this.setState({
-            name: e.target.value, 
+            firstname: e.target.value, 
         });
     },
-    _onEdit: function() {        
-        var editingStudent = UserStore.getEditingStudent();
-        // console.log(editingStudent);
+    _onchangMidname: function(e) {
+        this.setState({
+            midname: e.target.value, 
+        });
+    },
+    _onchangLastname: function(e) {
+        this.setState({
+            lastname: e.target.value, 
+        });
+    },
+    _onEdit: function() {  
+        var editingStudent = StudentStore.getEditingStudents();
         this.setState({
             editingStudent: editingStudent,
         });
 
         if (editingStudent) {
             this.setState({
-                name: editingStudent.name,
-                courser: editingStudent.course._id,
+                student_id: editingStudent.student_id,
+                firstname: editingStudent.firstname,
+                midname: editingStudent.midname,
+                lastname: editingStudent.lastname,
             });
         }
     },
     getInitialState: function() {
             return {
-            name: "",            
+            student_id: "", first: "", midname: "", lastname: "",            
             editingStudent: null,            
         }
     },
     componentDidMount: function() {
-        UserStore.addEditStudentListener(this._onEdit);
+        StudentStore.addEditStudentListener(this._onEdit);
     },
     render: function() {
-        var btnAdd = (<input type="button" value="Add" className="btn btn-primary" onClick={this._onClickAdd} />);
-        var btnUpdate = (<input type="button" value="Update" className="btn btn-primary" onClick={this._onClickUpdate} />);
-        var courses = this.props.listCourse.map(function(course) {
-            return (
-               <option value={course._id}>{course.name}</option>
-            );
-        }.bind(this));
+        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
-        <div>
-            <div className="row" style={{margin: "10px"}}>
-                <div className="col-md-2">
-                    Name:
-                </div>               
-                <div>
-                    <input className="form-group col-md-3" ref="name" value={this.state.name} onChange={this._onChangeName} />
+            <div>
+            <button type="button" className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+              Thêm mới
+            </button>                    
+            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+              <div className="modal-dialog" >
+                <div className="modal-content" >
+                  <div className="modal-header">
+                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                  </div>
+                  <div className="modal-body">
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.student_id} onChange={this._onchangId} ref="student_id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                            </div>                       
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.firstname} onChange={this._onchangFirstname} ref="firstname" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.midname} onChange={this._onchangMidname} ref="midname" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.lastname} onChange={this._onchangLastname} ref="lastname" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                            </div>
+                        </div>                      
+                    </form>                    
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" id="close" className="btn btn-default" data-dismiss="modal">Đóng</button>
+                     {this.state.editingStudent ? btnUpdate : btnAdd}
+                  </div>
                 </div>
-                 <div className="col-md-2">
-                    Course:
-                </div> 
-                 <div className="col-md-3">
-                    <select className="col-md-12" onChange={this._onchangCourse} ref="course" value={this.state.courser}>{courses}</select>
-                </div>
-                <div className="col-md-2">
-                    {this.state.editingStudent ? btnUpdate : btnAdd}
-                </div>
-            </div>
-             
+              </div>
+            </div>             
             
         </div>
         );

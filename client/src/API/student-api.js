@@ -83,7 +83,6 @@ function deleteStudent(studentID) {
             .set('Content-Type', 'application/json')
             .send({student: studentID})			
 			.end(function(err,res) {
-				console.log(res);
                 data = JSON.parse(res.text);
 				if(res.status === 201) {                    
 					resolve(data);

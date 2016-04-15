@@ -36,8 +36,10 @@ var Student = React.createClass({
             
             <div>
                 <h1 className="text-center">Quản lý sinh viên</h1>
-                    <div className="col-md-10 col-md-offset-1">
+                    <div className="col-md-10 col-md-offset-1"> 
+                    <StudentForm />                   
                     <StudentList students={this.state.students} />
+
                 </div>
 
             </div>

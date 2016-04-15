@@ -15,8 +15,8 @@ var StudentActions = {
 		});
 	},
 
-	create: function(student) {        
-		StudentAPI.createStudent(student).then(function(data) {            
+	create: function(student) {		
+		StudentAPI.createStudent(student).then(function(data) {  
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_STUDENT,
 				data: data

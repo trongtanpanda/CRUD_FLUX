@@ -57,20 +57,12 @@ function _deleteMsg(){
     _msg =null;
 }
 var StudentStore  = _.extend(BaseStore, {
-    getStudents: function() {        
-        for(var i=0; i<_students.length; i++){
-            for (var j = 0; j < _courses.length; j++) {
-                if(_students[i].course===_courses[j]._id){
-                     _students[i].course = _courses[j];
-                }
-            };
-        };
+    getStudents: function() {       
+       
         return _students;
 
     },
-    getCourses: function(){
-        return _courses;
-    },
+  
     getMessage:function(){
         return _msg;
     },
@@ -81,11 +73,15 @@ var StudentStore  = _.extend(BaseStore, {
     //     this.on(CHANGE_EVENT, callback);
     // },
 
-    getEditingStudent: function() {
+    getEditingStudents: function() {
+        console.log('hear ');
         if (!_editing_id) {
+
             return null;
         }
+         console.log(_editing_id);
         var index = ByKeyValue(_students, "_id", _editing_id);
+
         return _students[index];        
     },
     emitEditStudent: function(callback) {
@@ -112,14 +108,12 @@ var StudentStore  = _.extend(BaseStore, {
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-        case StudentConstants.CREATE_STUDENT:
-            _getMsg(payload.data.Message);
-            _addStudent(payload.data.Message.user);
+        case StudentConstants.CREATE_STUDENT:           
+            _addStudent(payload.data.student);
             StudentStore.emitChange();            
             break;
 
         case StudentConstants.DELETE_STUDENT:
-        console.log(payload.data.Message.student);
             _removeStudent(payload.data.Message.student);
             _getMsg(payload.data.Message);                    
             StudentStore.emitChange();           
@@ -130,13 +124,13 @@ AppDispatcher.register(function(payload) {
             StudentStore.emitEditStudent();
             break;
         case StudentConstants.ACTION_DELETE:
-        console.log(payload.data);
             _deleteStudent(payload.data);
             StudentStore.emitDeleteStudent();
             break;
 
         case StudentConstants.UPDATE_STUDENT:
-            _updateStudent(payload.user);
+            console.log(payload.data.Message.student);
+            _updateStudent(payload.data.Message.student);
             _getMsg(payload.data.Message);            
             StudentStore.emitEditStudent();
             StudentStore.emitChange();            
