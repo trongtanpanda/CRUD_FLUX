@@ -1,42 +1,27 @@
 var React = require("react"),
-    CourseActions = require("../actions/course-action"),
-    //CourseActions = require('../actions/course-action'),
-    CourseStore = require("../stores/course-store"), 
-   // ComboCourse = require("./combb-course"),   
-    //StudentForm = require("./student/student-form"),
+    CourseActions = require("../actions/course-action.js"),   
+    CourseStore = require("../stores/course-store"),      
+     CourseForm = require("./course/course-form"),
     CourseList = require("./course/course-list");
-    // Message = require("./message");
+    // Message = require("./message.js");
 
 
 
 var Course = React.createClass({
-
-    componentWillMount: function() {        
-        this.setState({
-            courses: CourseStore.getCourses()
-            
-        });
-        
-    },
     _onChange: function() {
-
+        // console.log("onchane",CourseStore.getCourse());
         this.setState({
-            courses: CourseStore.getCourses(),
-            
-        }); 
-        
-               
+            courses: CourseStore.getCourse(),           
+        });  
     },
     getInitialState: function() {
-        CourseActions.fetchAddCourseFromServer();        
+
+        CourseActions.fetchAddCourseFromServer();
+        // console.log("this is",CourseStore.getCourse());       
         return {
-            courses: CourseStore.getCourses(),           
+            courses: CourseStore.getCourse(),          
+           
         }
-         this.setState({
-            courses: CourseStore.getCourses(),
-            
-        }); 
-        
     },
     componentDidMount: function() {
         CourseStore.addChangeListener(this._onChange);             
@@ -47,10 +32,11 @@ var Course = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Khoa</h1>
-                    <div className="col-md-10 col-md-offset-1">                                                     
-                                    
+                <h1 className="text-center">Quản lý sinh viên</h1>
+                    <div className="col-md-10 col-md-offset-1"> 
+                    <CourseForm />               
                     <CourseList courses={this.state.courses} />
+
                 </div>
 
             </div>

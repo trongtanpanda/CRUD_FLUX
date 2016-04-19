@@ -16,7 +16,7 @@ var CourseActions = {
 	},
 
 	create: function(course) {        
-		CoursetAPI.createCourse(course).then(function(data) {            
+		CourseAPI.createCourse(course).then(function(data) {  		         
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_COURSE,
 				data: data
@@ -26,12 +26,12 @@ var CourseActions = {
 		});
 	},
 
-	update: function(course) {		
-		CoursetAPI.updateCourse(Course).then(function(updateData){
+	update: function(course) {
+		CourseAPI.updateCourse(course).then(function(data){
+			// console.log(data); 
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_COURSE,
-				data: updateData,
-                course: course,
+				action: Contants.UPDATE_COURSESS,
+				data: data
 			});
 		}, function(status,text){
 			// handle err
@@ -39,20 +39,26 @@ var CourseActions = {
 	},
 	editCourse: function(index) {
 	    AppDispatcher.dispatch({
-	        action: Contants.ACTION_EDIT,
+	        action: Contants.ACTION_EDIT_COURSE,
 	        data: index,
 	    })
     },
 	destroy: function(id) {       
-		CoursetAPI.deleteCourse(id).then(function(data){
+		CourseAPI.deleteCourse(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_COURSE,
+				action: Contants.DELETE_COURSES,
 				data: data,
 			});
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteCourse: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE_COURSE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = CourseActions;

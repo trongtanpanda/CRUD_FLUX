@@ -4,7 +4,7 @@ ObjectId = Schema.ObjectId;
 const courseSchema = new Schema({
 	course_id: String,
 	name: String,
-	incoming_year: Number,
+	incoming_year: String,
 	full: String,
 
 

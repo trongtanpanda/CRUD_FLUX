@@ -24,9 +24,10 @@ function getCourse(filter){
 	var c = new promise(function(resolve, reject){
 		request.get(API_URL)		
 			.timeout(TIMEOUT)
-			.end(function(err,res){				
+			.end(function(err,res){	
+				// console.log(res);			
 				var data = null;
-				if(res.status === 200) {
+				if(res.status === 200) {					
 					data = JSON.parse(res.text);
 					resolve(data);
 				}else{
@@ -36,22 +37,23 @@ function getCourse(filter){
 	});
 	return c;
 }
-function createCourse(newCourse) {
-	var c = new promise(function(resolve,reject){
-		request.post(API_URL +'/')
+function createCourse(newStudent) {   
+	var t = new promise(function(resolve, reject){
+		request.post(API_URL)
 			.timeout(TIMEOUT)
-			.set('Content-Type', 'application/json')
-			.send({coursr: newCourse})
-			.end(function(res){
-				var data = JSON.parse(res.text);
-				if(res.status === 201){
-					resolve(data);
-				}else{
-					reject(res.status, res.text);
+			.send({course: newStudent})
+			.end(function(err,res) {
+				// console.log(res.text);
+				data = JSON.parse(res.text);
+				if(res.status === 201) {                    
+                    resolve(data);
+				}else {
+					reject(res.status, res);                    
 				}
 			});
 	});
-	return c;
+
+	return t;
 
 }
 
@@ -59,8 +61,7 @@ function updateCourse(updateData) {
 	var t = new promise(function(resolve, reject){
 		request.put(API_URL)
 			.timeout(TIMEOUT)
-			.set('Content-Type', 'application/json')
-			.send({Course: updateData})
+			.send({course: updateData})
 			.end(function(err,res) {
                 data = JSON.parse(res.text);				
 				if(res.status === 201){
@@ -77,10 +78,9 @@ function updateCourse(updateData) {
 
 function deleteCourse(CourseID) {    
 	var t = new promise(function(resolve, reject){
-		request.delete(API_URL+"/delete")
+		request.delete(API_URL)
             .timeout(TIMEOUT)
-            .set('Content-Type', 'application/json')
-            .send({CourseId: CourseID})			
+            .send({course: CourseID})			
 			.end(function(err,res) {
                 data = JSON.parse(res.text);
 				if(res.status === 201) {                    

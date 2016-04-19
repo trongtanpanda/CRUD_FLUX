@@ -1,88 +1,149 @@
 var React = require("react"),    
-    UserStore = require("../../stores/student-store"),
-    StudentActions = require("../../actions/student-action.js");
+    CourseStore = require("../../stores/course-store"),
+    CourseActions = require("../../actions/course-action.js");
 
-var StudentForm = React.createClass({
+var CourseForm = React.createClass({
     
     _onClickAdd: function() {
-         var student = {course: React.findDOMNode(this.refs.course).value.trim(), name: React.findDOMNode(this.refs.name).value.trim()};
+         var course = {
+            course_id: this.state.course_id,
+            name: this.state.name,
+            incoming_year: this.state.incoming_year,
+            full: this.state.full
+        };
 
-        StudentActions.create(student);
+        CourseActions.create(course);
         this.setState({
-            name: "", courser:"",
+           course_id:"", name: "", incoming_year: "", full: ""
         });
-
+         $("#close").click();
+         this._onclickClose;
     },
     _onClickUpdate: function() {
-        var editingStudent = this.state.editingStudent;        
-        var user ={_id:editingStudent._id, name: this.state.name, course: this.state.courser};
-        StudentActions.update(user);
+        var editingCourse = this.state.editingCourse;        
+        var user ={
+            _id:editingCourse._id,
+            course_id: this.state.course_id,
+            name: this.state.name,
+            incoming_year: this.state.incoming_year,
+            full: this.state.full
+        };
+        CourseActions.update(user);
         this.setState({
-            name: "",
+            course_id:"", name: "", incoming_year: "", full: ""
+        });
+         $("#close").click();
+         this._onclickClose;
+    },
+    _onchangId: function(e){        
+        this.setState({
+            course_id: e.target.value,
         });
     },
-    _onchangCourse: function(e){        
-        this.setState({
-            courser: e.target.value,
-        });
-    },
-    _onChangeName: function(e) {
+    _onchangname: function(e) {
         this.setState({
             name: e.target.value, 
         });
     },
-    _onEdit: function() {        
-        var editingStudent = UserStore.getEditingStudent();
-        // console.log(editingStudent);
+    _onchangincoming_year: function(e) {
         this.setState({
-            editingStudent: editingStudent,
+            incoming_year: e.target.value, 
+        });
+    },
+    _onchangfull: function(e) {
+        this.setState({
+            full: e.target.value, 
+        });
+    },
+    _onEdit: function() {  
+        var editingCourse = CourseStore.getEditingCourses();
+        this.setState({
+            editingCourse: editingCourse,
         });
 
-        if (editingStudent) {
+        if (editingCourse) {
             this.setState({
-                name: editingStudent.name,
-                courser: editingStudent.course._id,
+                course_id: editingCourse.course_id,
+                name: editingCourse.name,
+                incoming_year: editingCourse.incoming_year,
+                full: editingCourse.full,
             });
         }
     },
+    _onclickClose: function(){       
+        this.setState({                        
+            course_id: "",
+            name: "",
+            incoming_year:"",
+            full: "",           
+            editingCourse: "",                  
+        });
+    },
     getInitialState: function() {
             return {
-            name: "",            
-            editingStudent: null,            
+            course_id: "", first: "", incoming_year: "", full: "",            
+            editingCourse: null,            
         }
     },
     componentDidMount: function() {
-        UserStore.addEditStudentListener(this._onEdit);
+        CourseStore.addEditCourseListener(this._onEdit);
     },
     render: function() {
-        var btnAdd = (<input type="button" value="Add" className="btn btn-primary" onClick={this._onClickAdd} />);
-        var btnUpdate = (<input type="button" value="Update" className="btn btn-primary" onClick={this._onClickUpdate} />);
-        var courses = this.props.listCourse.map(function(course) {
-            return (
-               <option value={course._id}>{course.name}</option>
-            );
-        }.bind(this));
+        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
-            <div className="row" style={{margin: "10px"}}>
-                <div className="col-md-2">
-                    Name:
-                </div>               
-                <div>
-                    <input className="form-group col-md-3" ref="name" value={this.state.name} onChange={this._onChangeName} />
+            <div>
+            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+              Thêm mới
+            </button>  
+           <p>&nbsp;</p>              
+            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+              <div className="modal-dialog" >
+                <div className="modal-content" >
+                  <div className="modal-header">
+                    <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                  </div>
+                  <div className="modal-body">
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.course_id} onChange={this._onchangId} ref="course_id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                            </div>                       
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.incoming_year} onChange={this._onchangincoming_year} ref="incoming_year" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.full} onChange={this._onchangfull} ref="full" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                            </div>
+                        </div>                      
+                    </form>                    
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
+                     {this.state.editingCourse ? btnUpdate : btnAdd}
+                  </div>
                 </div>
-                 <div className="col-md-2">
-                    Course:
-                </div> 
-                 <div className="col-md-3">
-                    <select className="col-md-12" onChange={this._onchangCourse} ref="course" value={this.state.courser}>{courses}</select>
-                </div>
-                <div className="col-md-2">
-                    {this.state.editingStudent ? btnUpdate : btnAdd}
-                </div>
-            </div>
+              </div>
+            </div>             
+            
+        </div>
         );
     }
 });
 
-module.exports = StudentForm;
+module.exports = CourseForm;

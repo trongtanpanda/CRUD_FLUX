@@ -1,11 +1,11 @@
 var React = require("react"),
     StudentActions = require("../actions/student-action.js"),
-    CourseActions = require('../actions/course-action'),
+    // CourseActions = require('../actions/course-action'),
     StudentStore = require("../stores/student-store"), 
-    ComboCourse = require("./combb-course"),   
+    // ComboCourse = require("./combb-course"),   
     StudentForm = require("./student/student-form"),
-    StudentList = require("./student/student-list"),
-    Message = require("./message.js");
+    StudentList = require("./student/student-list");
+    // Message = require("./message.js");
 
 
 
