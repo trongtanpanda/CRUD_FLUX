@@ -1,7 +1,7 @@
 var React = require("react"),
     StudentActions = require("../actions/student-action.js"),
     CourseActions = require('../actions/course-action'),
-    UserStore = require("../stores/user-store"), 
+    StudentStore = require("../stores/student-store"), 
     ComboCourse = require("./combb-course"),   
     StudentForm = require("./student/student-form"),
     StudentList = require("./student/student-list"),
@@ -11,8 +11,9 @@ var React = require("react"),
 
 var Student = React.createClass({
     _onChange: function() {
+        console.log("onchane",StudentStore.getStudents());
         this.setState({
-            students: UserStore.getStudents()
+            students: StudentStore.getStudents(),
            
         }); 
       
@@ -21,13 +22,12 @@ var Student = React.createClass({
     getInitialState: function() {
         StudentActions.fetchAddStudentFromServer();       
         return {
-            students: UserStore.getStudents(),
-            
+            students: StudentStore.getStudents(),          
            
         }
     },
     componentDidMount: function() {
-        UserStore.addChangeListener(this._onChange);             
+        StudentStore.addChangeListener(this._onChange);             
         
     },
     render: function() { 

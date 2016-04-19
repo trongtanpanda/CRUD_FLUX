@@ -25968,7 +25968,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -55654,7 +55654,7 @@
 	var React = __webpack_require__(2),
 	    StudentActions = __webpack_require__(553),
 	    CourseActions = __webpack_require__(205),
-	    UserStore = __webpack_require__(552), 
+	    StudentStore = __webpack_require__(565), 
 	    ComboCourse = __webpack_require__(563),   
 	    StudentForm = __webpack_require__(564),
 	    StudentList = __webpack_require__(566),
@@ -55664,8 +55664,9 @@
 
 	var Student = React.createClass({displayName: "Student",
 	    _onChange: function() {
+	        console.log("onchane",StudentStore.getStudents());
 	        this.setState({
-	            students: UserStore.getStudents()
+	            students: StudentStore.getStudents(),
 	           
 	        }); 
 	      
@@ -55674,13 +55675,12 @@
 	    getInitialState: function() {
 	        StudentActions.fetchAddStudentFromServer();       
 	        return {
-	            students: UserStore.getStudents(),
-	            
+	            students: StudentStore.getStudents(),          
 	           
 	        }
 	    },
 	    componentDidMount: function() {
-	        UserStore.addChangeListener(this._onChange);             
+	        StudentStore.addChangeListener(this._onChange);             
 	        
 	    },
 	    render: function() { 
@@ -55946,7 +55946,7 @@
 	}
 	var StudentStore  = _.extend(BaseStore, {
 	    getStudents: function() {       
-	       
+	       console.log(_students);
 	        return _students;
 
 	    },
@@ -56000,6 +56000,7 @@
 	            break;
 
 	        case StudentConstants.DELETE_STUDENT:
+	            console.log(payload.data.Message.student);
 	            _removeStudent(payload.data.Message.student);
 	            _getMsg(payload.data.Message);                    
 	            StudentStore.emitChange();           
@@ -56009,6 +56010,7 @@
 	            _editStudent(payload.data);
 	            StudentStore.emitEditStudent();
 	            break;
+
 	        case StudentConstants.ACTION_DELETE:
 	            _deleteStudent(payload.data);
 	            StudentStore.emitDeleteStudent();
@@ -56085,14 +56087,7 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã sinh viên"), 
-	                             React.createElement("th", null, "Tên sinh viên"), 
-	                             React.createElement("th", null), 
-	                             React.createElement("th", null)
-	                          )
-	                        ), 
+	                        
 	                        studentList
 	                    )
 	                ), 

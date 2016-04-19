@@ -58,7 +58,7 @@ function _deleteMsg(){
 }
 var StudentStore  = _.extend(BaseStore, {
     getStudents: function() {       
-       
+       console.log(_students);
         return _students;
 
     },
@@ -112,6 +112,7 @@ AppDispatcher.register(function(payload) {
             break;
 
         case StudentConstants.DELETE_STUDENT:
+            console.log(payload.data.Message.student);
             _removeStudent(payload.data.Message.student);
             _getMsg(payload.data.Message);                    
             StudentStore.emitChange();           
@@ -121,6 +122,7 @@ AppDispatcher.register(function(payload) {
             _editStudent(payload.data);
             StudentStore.emitEditStudent();
             break;
+
         case StudentConstants.ACTION_DELETE:
             _deleteStudent(payload.data);
             StudentStore.emitDeleteStudent();
