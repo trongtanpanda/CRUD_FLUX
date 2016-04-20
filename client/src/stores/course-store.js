@@ -1,5 +1,5 @@
 var _ = require("underscore"),
-    CourseConstants = require("../constants/student-constants.js"),
+    CourseConstants = require("../constants/student-constants"),
     AppDispatcher = require("../dispatcher/app-dispatcher"),    
     BaseStore = require('./base-store');
 
@@ -102,14 +102,13 @@ var CourseStore  = _.extend(BaseStore, {
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-        case CourseConstants.CREATE_COURSE:           
+
+        case CourseConstants.CREATE_COURSE:  
             _addCourse(payload.data.course);
             CourseStore.emitChange();            
             break;
 
-        case CourseConstants.DELETE_COURSES:
-        console.log("this is update");
-            // console.log(payload.data.Message.course);
+        case CourseConstants.DELETE_COURSE:
             _removeCourse(payload.data.Message.course);
             _getMsg(payload.data.Message);                    
             CourseStore.emitChange();           
@@ -125,10 +124,10 @@ AppDispatcher.register(function(payload) {
             CourseStore.emitDeleteCourse();
             break;
 
-        case CourseConstants.UPDATE_COURSESS:
-        console.log("this is update");
+        case CourseConstants.UPDATE_COURSE:
+
             _updateCourse(payload.data.Message.course);
-            // _getMsg(payload.data.Message);            
+            // _getMsg(payload.data.Messageh);            
             CourseStore.emitEditCourse();
             CourseStore.emitChange();            
             break;

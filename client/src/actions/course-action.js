@@ -19,7 +19,7 @@ var CourseActions = {
 		CourseAPI.createCourse(course).then(function(data) {  		         
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_COURSE,
-				data: data
+				data: data,
 			});
 		}, function(status, text) {
 			// Handle error
@@ -27,14 +27,13 @@ var CourseActions = {
 	},
 
 	update: function(course) {
-		CourseAPI.updateCourse(course).then(function(data){
-			// console.log(data); 
-			AppDispatcher.dispatch({
-				action: Contants.UPDATE_COURSESS,
-				data: data
+		CourseAPI.updateCourse(course).then(function(data){		 
+			AppDispatcher.dispatch({				
+				action: Contants.UPDATE_COURSE,
+				data: data,
 			});
 		}, function(status,text){
-			// handle err
+			
 		});
 	},
 	editCourse: function(index) {
@@ -46,7 +45,7 @@ var CourseActions = {
 	destroy: function(id) {       
 		CourseAPI.deleteCourse(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_COURSES,
+				action: Contants.DELETE_COURSE,
 				data: data,
 			});
 		},function(status, err){

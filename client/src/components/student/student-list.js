@@ -44,8 +44,7 @@ var StudentList = React.createClass({
         return (
             <div>
                 <table className="table">
-                    <tbody>
-                        
+                    <tbody>                        
                         {studentList}
                     </tbody>
                 </table>
