@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema,
 ObjectId = Schema.ObjectId;
 const Term_classSchema = new Schema({
-	term_class_id: String,
+	termClass_id: String,
 	name: String,
 	number: Number,
 	theory: Number,

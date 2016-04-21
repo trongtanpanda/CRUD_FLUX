@@ -1,12 +1,12 @@
 var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.js'),
-	Term_classAPI = require('../API/term-class-api');
+	TermClassAPI = require('../API/termclass-api');
 
 var Term_classActions = {
 	fetchAddTerm_classFromServer: function() {		
-		Term_classAPI.getAllTerm_Class({}).then(function(term_class) {			
+		TermClassAPI.getAllTerm_Class({}).then(function(term_class) {			
 			AppDispatcher.dispatch({
-				action:Contants.GET_TERM_CLASS,
+				action:Contants.GET_TERMCLASS,
 				data: term_class,
 				// params: {}
 			});
@@ -16,9 +16,9 @@ var Term_classActions = {
 	},
 
 	create: function(term_class) {        
-		Term_classAPI.createTerm_class(term_class).then(function(data) {            
+		TermClassAPI.createTerm_class(term_class).then(function(data) {            
 			AppDispatcher.dispatch({
-				action: Contants.CREATE_TERM_CLASS,
+				action: Contants.CREATE_TERMCLASS,
 				data: data
 			});
 		}, function(status, text) {
@@ -27,9 +27,9 @@ var Term_classActions = {
 	},
 
 	update: function(term_class) {		
-		Term_classAPI.updateTerm_class(term_class).then(function(updateData){
+		TermClassAPI.updateTerm_class(term_class).then(function(updateData){
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_TERM_CLASS,
+				action: Contants.UPDATE_TERMCLASS,
 				data: updateData,
                 term_class: term_class,
 			});
@@ -44,9 +44,9 @@ var Term_classActions = {
 	    })
     },
 	destroy: function(id) {       
-		Term_classAPI.deleteTerm_class(id).then(function(data){
+		TermClassAPI.deleteTerm_class(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_TERM_CLASS,
+				action: Contants.DELETE_TERMCLASS,
 				data: data,
 			});
 		},function(status, err){

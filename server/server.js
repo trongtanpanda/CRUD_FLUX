@@ -42,7 +42,7 @@ app.use('/de', require('./Server/service/departments'));
 app.use('/se', require('./Server/service/sectors'));
 app.use('/su', require('./Server/service/subjects'));
 app.use('/ma', require('./Server/service/masks'));
-app.use('/te', require('./Server/service/term_class'));
+app.use('/te', require('./Server/service/termClass'));
 app.use('/st', require('./Server/service/students'));
 http.listen(3008, function(){
     console.log('Listening on *:3008');

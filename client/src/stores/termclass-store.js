@@ -1,14 +1,15 @@
 var _ = require("underscore"),
-    StudentConstants = require("../constants/student-constants"),
+    TermClassConstants = require("../constants/student-constants.js"),
     AppDispatcher = require("../dispatcher/app-dispatcher"),    
     BaseStore = require('./base-store');
 
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
-
-var __termClass = [];
+var CHANGE_DELETE_EVENT = 'change_delete';
+var _termClasss = [];
 var _courses= [];
 var _editing_id = null;
+var _deleting_id = null;
 var _msg;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -21,27 +22,34 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 
-function _addStudent(student) {
-    __termClass.push(student);
+function _addTermClass(termClass) {
+    _termClasss.push(termClass);
 }
 function _listTermClass(data){
-    __termClass= data;
+    _termClasss= data;
+}
+function _listCourse(data){
+    _courses =data;
+}
+function _removeTermClass(_id) {    
+    var i = ByKeyValue(_termClasss, "_id", _id);
+        _termClasss.splice(i,1);
 }
 
-function _removeStudent(_id) {    
-    var i = ByKeyValue(__termClass, "_id", _id);
-        __termClass.splice(i,1);
-}
-
-function _editStudent(index) {
+function _editTermClass(index) {
     _editing_id = index;
 }
 
-function _updateStudent(student) {
-    var index = ByKeyValue(__termClass, "_id", _editing_id); 
-    __termClass[index] = student;
+function _deleteTermClass(index) {
+    _deleting_id = index;
+}
+
+function _updateTermClass(termClass) {
+    var index = ByKeyValue(_termClasss, "_id", _editing_id); 
+    _termClasss[index] = termClass;
     _editing_id = null;
 }
+
 function _getMsg(message){
     _msg=message;    
 }
@@ -49,12 +57,12 @@ function _deleteMsg(){
     _msg =null;
 }
 var TermClassStore  = _.extend(BaseStore, {
-    getTermClass: function() {       
-        return __termClass;
+    getTermClasss: function() {       
+       console.log(_termClasss);
+        return _termClasss;
+
     },
-    getCourses: function(){
-        return _courses;
-    },
+  
     getMessage:function(){
         return _msg;
     },
@@ -65,31 +73,77 @@ var TermClassStore  = _.extend(BaseStore, {
     //     this.on(CHANGE_EVENT, callback);
     // },
 
-    getEditingStudent: function() {
+    getEditingTermClasss: function() {
         if (!_editing_id) {
+
             return null;
         }
-        var index = ByKeyValue(__termClass, "_id", _editing_id);
-        return __termClass[index];        
+        var index = ByKeyValue(_termClasss, "_id", _editing_id);
+
+        return _termClasss[index];        
     },
-    emitEditStudent: function(callback) {
+    emitEditTermClass: function(callback) {
         this.emit(CHANGE_EDIT_EVENT, callback);
     },
-    addEditStudentListener: function(callback) {
+    addEditTermClassListener: function(callback) {
         this.on(CHANGE_EDIT_EVENT, callback);
+    },
+
+    getDeleteTermClass: function() {
+        if (!_deleting_id) {
+            return null;
+        }
+        var index = ByKeyValue(_termClasss, "_id", _deleting_id);
+        return _termClasss[index];        
+    },
+    emitDeleteTermClass: function(callback) {
+        this.emit(CHANGE_DELETE_EVENT, callback);
+    },
+    addDeleteTermClassListener: function(callback) {
+        this.on(CHANGE_DELETE_EVENT, callback);
     },
 });
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-       
+        case TermClassConstants.CREATE_TERMCLASS:           
+            _addTermClass(payload.data.termClass);
+            TermClassStore.emitChange();            
+            break;
 
-        case StudentConstants.GET_TERM_CLASS:
+        case TermClassConstants.DELETE_TERMCLASS:
+            console.log(payload.data.Message.termClass);
+            _removeTermClass(payload.data.Message.termClass);
+            _getMsg(payload.data.Message);                    
+            TermClassStore.emitChange();           
+            break;
+
+        case TermClassConstants.ACTION_EDIT:
+            _editTermClass(payload.data);
+            TermClassStore.emitEditTermClass();
+            break;
+
+        case TermClassConstants.ACTION_DELETE:
+            _deleteTermClass(payload.data);
+            TermClassStore.emitDeleteTermClass();
+            break;
+
+        case TermClassConstants.UPDATE_TERMCLASS:
+            _updateTermClass(payload.data.Message.termClass);
+            _getMsg(payload.data.Message);            
+            TermClassStore.emitEditTermClass();
+            TermClassStore.emitChange();            
+            break;
+
+        case TermClassConstants.GET_TERMCLASS:
             _listTermClass(payload.data);
             TermClassStore.emitChange();
             break;
             
-    
+        case TermClassConstants.GET_COURSE:
+            _listCourse(payload.data);            
+            TermClassStore.emitChange();
+            break;
     }
 });
 module.exports = TermClassStore;

@@ -24332,12 +24332,12 @@
 	    UPDATE_USER     : "UPDATE_USER",
 	    DELETE_USER     : "DELETE_USER",
 
-	    //----------TERM_CLASS----------------//
+	    //----------TERMCLASS----------------//
 
-	    GET_TERM_CLASS        : "GET_TERM_CLASS",
-	    CREATE_TERM_CLASS     : "CREATE_TERM_CLASS",
-	    UPDATE_TERM_CLASS     : "UPDATE_TERM_CLASS",
-	    DELETE_TERM_CLASS     : "DELETE_TERM_CLASS",
+	    GET_TERMCLASS        : "GET_TERMCLASS",
+	    CREATE_TERMCLASS     : "CREATE_TERMCLASS",
+	    UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
+	    DELETE_TERMCLASS     : "DELETE_TERMCLASS",
 
 	}
 
@@ -55387,13 +55387,13 @@
 
 	var AppDispatcher = __webpack_require__(206),
 		Contants = __webpack_require__(210),
-		Term_classAPI = __webpack_require__(557);
+		TermClassAPI = __webpack_require__(610);
 
 	var Term_classActions = {
 		fetchAddTerm_classFromServer: function() {		
-			Term_classAPI.getAllTerm_Class({}).then(function(term_class) {			
+			TermClassAPI.getAllTerm_Class({}).then(function(term_class) {			
 				AppDispatcher.dispatch({
-					action:Contants.GET_TERM_CLASS,
+					action:Contants.GET_TERMCLASS,
 					data: term_class,
 					// params: {}
 				});
@@ -55403,9 +55403,9 @@
 		},
 
 		create: function(term_class) {        
-			Term_classAPI.createTerm_class(term_class).then(function(data) {            
+			TermClassAPI.createTerm_class(term_class).then(function(data) {            
 				AppDispatcher.dispatch({
-					action: Contants.CREATE_TERM_CLASS,
+					action: Contants.CREATE_TERMCLASS,
 					data: data
 				});
 			}, function(status, text) {
@@ -55414,9 +55414,9 @@
 		},
 
 		update: function(term_class) {		
-			Term_classAPI.updateTerm_class(term_class).then(function(updateData){
+			TermClassAPI.updateTerm_class(term_class).then(function(updateData){
 				AppDispatcher.dispatch({
-					action: Contants.UPDATE_TERM_CLASS,
+					action: Contants.UPDATE_TERMCLASS,
 					data: updateData,
 	                term_class: term_class,
 				});
@@ -55431,9 +55431,9 @@
 		    })
 	    },
 		destroy: function(id) {       
-			Term_classAPI.deleteTerm_class(id).then(function(data){
+			TermClassAPI.deleteTerm_class(id).then(function(data){
 				AppDispatcher.dispatch({
-					action: Contants.DELETE_TERM_CLASS,
+					action: Contants.DELETE_TERMCLASS,
 					data: data,
 				});
 			},function(status, err){
@@ -55445,114 +55445,7 @@
 	module.exports = Term_classActions;
 
 /***/ },
-/* 557 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var request = __webpack_require__(212),
-		AppDispatcher = __webpack_require__(206),
-		Contant = __webpack_require__(210);
-		promise = __webpack_require__(218).Promise;
-
-	var API_URL = 'http://localhost:3008/te/term_class';
-	var TIMEOUT = 10000;
-
-	var _pendingRequests = [];
-
-	function abortPendingRequests(key){
-		if(_pendingRequests[key]) {
-			_pendingRequests[key].callback = function(){};
-			_pendingRequests[key].abort();
-			_pendingRequests[key] = null;
-		}
-	}
-
-	function makeUrl(part) {
-		return API_URL + part;
-	}
-
-	function getAllTerm_Class() {	
-		var t = new promise(function(resolve, reject){
-			request.get(API_URL)		
-				.timeout(TIMEOUT)
-				.end(function(err,res){				
-					var data = null;
-					if(res.status === 200) {
-						data = JSON.parse(res.text);
-						resolve(data);
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;;
-	}
-
-	function createTerm_Class(newClass) {   
-		var t = new promise(function(resolve, reject){
-			request.post(API_URL)
-				.timeout(TIMEOUT)
-				.send({term_class: newClass})
-				.end(function(err,res) {
-					data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-	                    resolve(data);
-					}else {
-						reject(res.status, res);                    
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function updateTerm_Class(term_class) {	
-		var t = new promise(function(resolve, reject){
-			request.put(API_URL)
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({term_class: term_class})
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);				
-					if(res.status === 201){
-						resolve(data);                    
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-
-	function deleteTerm_Class(term_class) {    
-		var t = new promise(function(resolve, reject){
-			request.delete(API_URL)
-	            .timeout(TIMEOUT)
-	            .set('Content-Type', 'application/json')
-	            .send({term_class: term_class})			
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-						resolve(data);
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-	module.exports = {
-		getAllTerm_Class: getAllTerm_Class,
-		createTerm_Class: createTerm_Class,
-		deleteTerm_Class: deleteTerm_Class,
-		updateTerm_Class: updateTerm_Class
-	};
-
-/***/ },
+/* 557 */,
 /* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -56998,16 +56891,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
-	    StudentConstants = __webpack_require__(210),
+	    TermClassConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
 	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
-
-	var __termClass = [];
+	var CHANGE_DELETE_EVENT = 'change_delete';
+	var _termClasss = [];
 	var _courses= [];
 	var _editing_id = null;
+	var _deleting_id = null;
 	var _msg;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -57020,27 +56914,34 @@
 	}
 
 
-	function _addStudent(student) {
-	    __termClass.push(student);
+	function _addTermClass(termClass) {
+	    _termClasss.push(termClass);
 	}
 	function _listTermClass(data){
-	    __termClass= data;
+	    _termClasss= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeTermClass(_id) {    
+	    var i = ByKeyValue(_termClasss, "_id", _id);
+	        _termClasss.splice(i,1);
 	}
 
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(__termClass, "_id", _id);
-	        __termClass.splice(i,1);
-	}
-
-	function _editStudent(index) {
+	function _editTermClass(index) {
 	    _editing_id = index;
 	}
 
-	function _updateStudent(student) {
-	    var index = ByKeyValue(__termClass, "_id", _editing_id); 
-	    __termClass[index] = student;
+	function _deleteTermClass(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateTermClass(termClass) {
+	    var index = ByKeyValue(_termClasss, "_id", _editing_id); 
+	    _termClasss[index] = termClass;
 	    _editing_id = null;
 	}
+
 	function _getMsg(message){
 	    _msg=message;    
 	}
@@ -57048,12 +56949,12 @@
 	    _msg =null;
 	}
 	var TermClassStore  = _.extend(BaseStore, {
-	    getTermClass: function() {       
-	        return __termClass;
+	    getTermClasss: function() {       
+	       console.log(_termClasss);
+	        return _termClasss;
+
 	    },
-	    getCourses: function(){
-	        return _courses;
-	    },
+	  
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -57064,31 +56965,77 @@
 	    //     this.on(CHANGE_EVENT, callback);
 	    // },
 
-	    getEditingStudent: function() {
+	    getEditingTermClasss: function() {
 	        if (!_editing_id) {
+
 	            return null;
 	        }
-	        var index = ByKeyValue(__termClass, "_id", _editing_id);
-	        return __termClass[index];        
+	        var index = ByKeyValue(_termClasss, "_id", _editing_id);
+
+	        return _termClasss[index];        
 	    },
-	    emitEditStudent: function(callback) {
+	    emitEditTermClass: function(callback) {
 	        this.emit(CHANGE_EDIT_EVENT, callback);
 	    },
-	    addEditStudentListener: function(callback) {
+	    addEditTermClassListener: function(callback) {
 	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+
+	    getDeleteTermClass: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_termClasss, "_id", _deleting_id);
+	        return _termClasss[index];        
+	    },
+	    emitDeleteTermClass: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteTermClassListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
 	    },
 	});
 
 	AppDispatcher.register(function(payload) {
 	    switch (payload.action) {
-	       
+	        case TermClassConstants.CREATE_TERMCLASS:           
+	            _addTermClass(payload.data.termClass);
+	            TermClassStore.emitChange();            
+	            break;
 
-	        case StudentConstants.GET_TERM_CLASS:
+	        case TermClassConstants.DELETE_TERMCLASS:
+	            console.log(payload.data.Message.termClass);
+	            _removeTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);                    
+	            TermClassStore.emitChange();           
+	            break;
+
+	        case TermClassConstants.ACTION_EDIT:
+	            _editTermClass(payload.data);
+	            TermClassStore.emitEditTermClass();
+	            break;
+
+	        case TermClassConstants.ACTION_DELETE:
+	            _deleteTermClass(payload.data);
+	            TermClassStore.emitDeleteTermClass();
+	            break;
+
+	        case TermClassConstants.UPDATE_TERMCLASS:
+	            _updateTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);            
+	            TermClassStore.emitEditTermClass();
+	            TermClassStore.emitChange();            
+	            break;
+
+	        case TermClassConstants.GET_TERMCLASS:
 	            _listTermClass(payload.data);
 	            TermClassStore.emitChange();
 	            break;
 	            
-	    
+	        case TermClassConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            TermClassStore.emitChange();
+	            break;
 	    }
 	});
 	module.exports = TermClassStore;
@@ -60240,6 +60187,114 @@
 	});
 
 	module.exports = SubjectForm;
+
+/***/ },
+/* 610 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL = 'http://localhost:3008/te/termclass';
+	var TIMEOUT = 10000;
+
+	var _pendingRequests = [];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllTerm_Class() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createTerm_Class(newClass) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({term_class: newClass})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateTerm_Class(term_class) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({term_class: term_class})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteTerm_Class(term_class) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({term_class: term_class})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllTerm_Class: getAllTerm_Class,
+		createTerm_Class: createTerm_Class,
+		deleteTerm_Class: deleteTerm_Class,
+		updateTerm_Class: updateTerm_Class
+	};
 
 /***/ }
 /******/ ]);

@@ -55,11 +55,11 @@ module.exports = {
     UPDATE_USER     : "UPDATE_USER",
     DELETE_USER     : "DELETE_USER",
 
-    //----------TERM_CLASS----------------//
+    //----------TERMCLASS----------------//
 
-    GET_TERM_CLASS        : "GET_TERM_CLASS",
-    CREATE_TERM_CLASS     : "CREATE_TERM_CLASS",
-    UPDATE_TERM_CLASS     : "UPDATE_TERM_CLASS",
-    DELETE_TERM_CLASS     : "DELETE_TERM_CLASS",
+    GET_TERMCLASS        : "GET_TERMCLASS",
+    CREATE_TERMCLASS     : "CREATE_TERMCLASS",
+    UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
+    DELETE_TERMCLASS     : "DELETE_TERMCLASS",
 
 }
