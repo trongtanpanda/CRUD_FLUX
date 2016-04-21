@@ -6,7 +6,7 @@ router.route('/departments')
 // create a new user (accessed at POST http://localhost:8080/api/departments)
     .post(function(req, res) {
 		Departments.create({			
-			department_id:req.body.department.id,
+			department_id:req.body.department.department_id,
 			name: req.body.department.name, 
 			dean: req.body.department.dean, 
 			ministry: req.body.department.ministry, 
@@ -29,21 +29,20 @@ router.route('/departments')
  		  console.log(req.body);
 		Departments.update({_id:req.body.department._id},{$set:
 			{
-				department_id:req.body.department.id,
+				department_id:req.body.department.department_id,
 				name: req.body.department.name, 
 				dean: req.body.department.dean, 
 				ministry: req.body.department.ministry, 
 				phone: req.body.department.phone
 			}
 
-		},function(err, department) {
+		},function(err) {
 			if (err) {
                 res.send(err);
             }else{
 			    res.status(201);
-                res.json({Message:{ message: 'Update student had success!', type: 'success',department: department }});
+                res.json({Message:{ message: 'Update student had success!', type: 'success',department: req.body.department }});
                 res.send();
-                console.log(department);
             }
 			
 		});

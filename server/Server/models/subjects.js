@@ -5,7 +5,7 @@ const SubjectsSchema = new Schema({
 	subject_id: String,
 	name: String,
 	short_name: String,
-	number : Number,	
+	number : String,	
 });
 
 export default module.exports = mongoose.model('Subjects', SubjectsSchema);

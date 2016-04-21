@@ -1,41 +1,30 @@
 var React = require("react"),
     SubjectActions = require("../actions/subject-action.js"),
-    //CourseActions = require('../actions/course-action'),
+    // CourseActions = require('../actions/course-action'),
     SubjectStore = require("../stores/subject-store"), 
-    //ComboCourse = require("./combb-course"),   
-    
+    // ComboCourse = require("./combb-course"),   
+    SubjectForm = require("./subject/subject-form"),
     SubjectList = require("./subject/subject-list");
-    // Message = require("./message");
+    // Message = require("./message.js");
 
 
 
 var Subject = React.createClass({
     _onChange: function() {
-
+        console.log("onchane",SubjectStore.getSubjects());
         this.setState({
-            subjects: SubjectStore.getSubjects()
-            //message: UserStore.getMessage(),
-            // courses: UserStore.getCourses(),
+            subjects: SubjectStore.getSubjects(),
+           
         }); 
-        
+      
                
     },
     getInitialState: function() {
-        SubjectActions.fetchAddSubjectFromServer();
-        //CourseActions.getListCourse();      
-
+        SubjectActions.fetchAddSubjectFromServer();       
         return {
-            subjects: SubjectStore.getSubjects(),
-            // message: SubjectStore.getMessage(),
-            // courses: SubjectStore.getCourses(),
-        }
-        
-    },
-    componentWillMount: function() {
-        this.setState({
             subjects: SubjectStore.getSubjects(),          
-        }); 
-        
+           
+        }
     },
     componentDidMount: function() {
         SubjectStore.addChangeListener(this._onChange);             
@@ -46,10 +35,11 @@ var Subject = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Quản lý môn học</h1>
-                <div className="col-md-10 col-md-offset-1">                                                     
-                                   
+                <h1 className="text-center">Quản lý sinh viên</h1>
+                    <div className="col-md-10 col-md-offset-1"> 
+                    <SubjectForm />                   
                     <SubjectList subjects={this.state.subjects} />
+
                 </div>
 
             </div>

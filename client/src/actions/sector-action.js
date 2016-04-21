@@ -15,8 +15,9 @@ var SectorActions = {
 		});
 	},
 
-	create: function(sector) {        
-		SectorAPI.createSector(sector).then(function(data) {            
+	create: function(sector) {  
+		SectorAPI.createSector(sector).then(function(data) {   
+			console.log('in action',data);        
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_SECTOR,
 				data: data
@@ -52,7 +53,13 @@ var SectorActions = {
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteSector: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = SectorActions;

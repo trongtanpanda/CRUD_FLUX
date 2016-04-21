@@ -1,221 +1,164 @@
-var React = require("react"), 
-    DepartmentStore = require('../../stores/department-store'),
-    DepartmentActions = require("../../actions/department-action");
+var React = require("react"),    
+    DeparmentStore = require("../../stores/department-store"),
+    DeparmentActions = require("../../actions/department-action.js");
 
-var DepartmentForm = React.createClass({
+var StudentForm = React.createClass({
     
-   _onchangId: function(e){             
-        this.setState({
-            id: e.target.value,
-        });
-    },
-    _onchangName: function(e){        
-        this.setState({
-            name: e.target.value,
-        });
-    },
-    _onchangDean: function(e){        
-        this.setState({
-            dean: e.target.value,
-        });
-    },
-    _onchangMinistry: function(e){        
-        this.setState({
-            ministry: e.target.value,
-        });
-    },
-    _onchangPhone: function(e){        
-        this.setState({
-            phone: e.target.value,
-        });
-    },
-     getInitialState: function() {
-            return {
-            id: "",
-            name: "", 
-            dean: "", 
-            ministry: "", 
-            phone: "",             
-                       
-        }
-    },
-     _onClickAdd: function() {
-         var department = {
-            id: this.state.id, 
+    _onClickAdd: function() {
+
+         var student = {
+            department_id: this.state.department_id,
             name: this.state.name,
             dean: this.state.dean,
             ministry: this.state.ministry,
             phone: this.state.phone
         };
-
-        DepartmentActions.create(department);
+        DeparmentActions.create(student);
         this.setState({
-            id: "",
-            name: "",
-            dean:"",
-            ministry: "",
-            phone: "",                       
+           department_id:"", name: "", dean: "", ministry: "", phone:""
         });
-       $("#close").click();
+         $("#close").click();
+         this._onclickClose;
     },
-   
-     _onClickUpdate: function() {
-        var editingDepartment = this.state.editingDepartment;
-         var department = {
-            _id: editingDepartment._id,
-            id: this.state.id, 
+    _onClickUpdate: function() {
+        var editingDepartment = this.state.editingDepartment;        
+        var user ={
+            _id:editingDepartment._id,
+            department_id: this.state.department_id,
             name: this.state.name,
             dean: this.state.dean,
             ministry: this.state.ministry,
             phone: this.state.phone
         };
-
-        DepartmentActions.update(department);
+        DeparmentActions.update(user);
         this.setState({
-            id: "",
-            name: "",
-            dean:"",
-            ministry: "",
-            phone: "",                       
+            department_id:"", name: "", dean: "", ministry: "", phone: ""
         });
-       $("#close").click();
+         $("#close").click();
+         this._onclickClose;
     },
-    _onclickClose: function(){       
-        this.setState({                        
-            id: "",
-            name: "",
-            dean:"",
-            ministry: "",
-            phone: "", 
-            editingDepartment: "",  
-            deletingDepartment: "",    
+    _onchangId: function(e){        
+        this.setState({
+            department_id: e.target.value,
         });
     },
-
-    _onEdit: function() {        
-        var editingDepartment = DepartmentStore.getEditingDepartment();
+    _onchangname: function(e) {
+        this.setState({
+            name: e.target.value, 
+        });
+    },
+    _onchangdean: function(e) {
+        this.setState({
+            dean: e.target.value, 
+        });
+    },
+    _onchangministry: function(e) {
+        this.setState({
+            ministry: e.target.value, 
+        });
+    },
+    _onchangphone: function(e) {
+        this.setState({
+            phone: e.target.value, 
+        });
+    },
+    _onEdit: function() {  
+        var editingDepartment = DeparmentStore.geteditingDepartments();
         this.setState({
             editingDepartment: editingDepartment,
         });
 
         if (editingDepartment) {
             this.setState({
-              id: editingDepartment.department_id, 
-            name: editingDepartment.name,
-            dean: editingDepartment.dean,
-            ministry: editingDepartment.ministry,
-            phone: editingDepartment.phone
+                department_id: editingDepartment.department_id,
+                name: editingDepartment.name,
+                dean: editingDepartment.dean,
+                ministry: editingDepartment.ministry,
+                phone: editingDepartment.phone,
             });
         }
     },
-    _onDelete: function() {    
-        var deletingDepartment = DepartmentStore.getDeleteDepartment();
-         this.setState({
-            deletingDepartment: deletingDepartment._id,
-            name: deletingDepartment.name,
-        });            
+    _onclickClose: function(){       
+        this.setState({                        
+            department_id: "",
+            name: "",
+            dean:"",
+            ministry: "",  
+            phone: "",         
+            editingDepartment: "",                  
+        });
     },
-     _delete: function(index){
-        console.log(index);
-        DepartmentActions.destroy(index);
-        this.setState({
-            deletingDepartment: null,
-            name: null,
-        }); 
-        $("#closes").click();
-    },   
     getInitialState: function() {
             return {
-            name: "",            
-            editingDepartment: null, 
-            deleteDepartment: null,           
+            department_id: "", first: "", dean: "", ministry: "",phone: "",            
+            editingDepartment: null,            
         }
     },
-    
     componentDidMount: function() {
-        DepartmentStore.addEditDepartmentListener(this._onEdit);
-        DepartmentStore.addDeleteDepartmentListener(this._onDelete);
+        DeparmentStore.addEditStudentListener(this._onEdit);
     },
     render: function() {
-   
         var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
         var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
-             <div>
+            <div>
             <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
               Thêm mới
-            </button>                    
-            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" onClose={this._onclickClose} aria-labelledby="myModalLabel" aria-hidden="true">
-              <div className="modal-dialog" onClose={this._onclickClose}>
-                <div className="modal-content" onClose={this._onclickClose}>
+            </button>  
+           <p>&nbsp;</p>              
+            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+              <div className="modal-dialog" >
+                <div className="modal-content" >
                   <div className="modal-header">
                     <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
+                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
                   </div>
                   <div className="modal-body">
                     <form className="form-horizontal">
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Mã khoa</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.id} onChange={this._onchangId} ref="id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.department_id} onChange={this._onchangId} ref="department_id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
                             </div>                       
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên khoa</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.name} onChange={this._onchangName} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
                             </div>
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Trưởng khoa</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.dean} onChange={this._onchangDean} ref="dean" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.dean} onChange={this._onchangdean} ref="dean" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
                             </div>
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Giáo vụ</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.ministry} onChange={this._onchangMinistry} ref="ministry" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.ministry} onChange={this._onchangministry} ref="ministry" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
                             </div>
-                        </div>
+                        </div>   
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Điện thoại</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.phone} onChange={this._onchangPhone} ref="phone" className="form-control" type="text" placeholder="Điện thoại" ref="title" name="title"/>
+                                <input id="title" value={this.state.phone} onChange={this._onchangphone} ref="phone" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
                             </div>
-                        </div>
-                    </form>
+                        </div>                        
+                    </form>                    
                   </div>
                   <div className="modal-footer">
                     <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                    {this.state.editingDepartment ? btnUpdate : btnAdd}
-
+                     {this.state.editingDepartment ? btnUpdate : btnAdd}
                   </div>
                 </div>
               </div>
-            </div>
-             <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-                  <div className="modal-dialog" >
-                    <div className="modal-content" >
-                      <div className="modal-header">
-                        <button type="button" onClick={this._onclickClose}  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                        <h4 className="modal-title" id="myModalLabel">Xóa Khoa</h4>
-                      </div>
-                      <div className="modal-body">
-                       Bạn có muốn xóa khoa "<b>{this.state.name} </b>"?
-                      </div>
-                      <div className="modal-footer">
-                        <button type="button" id="closes" className="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <button type="button" onClick={this._delete.bind(null,this.state.deletingDepartment)} className="btn btn-primary">OK</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>          
-        </div>  
-                        
+            </div>             
+            
+        </div>
         );
     }
 });
 
-module.exports = DepartmentForm;
+module.exports = StudentForm;

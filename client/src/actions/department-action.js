@@ -3,8 +3,8 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	DepartmentAPI = require('../API/department-api');
 
 var DepartmentActions = {
-	fetchAddDepartmentFromServer: function() {		
-		DepartmentAPI.getAllDepartment({}).then(function(departments) {			
+	fetchAddDepartmentFromServer: function() {
+		DepartmentAPI.getAllDepartment({}).then(function(departments) {	
 			AppDispatcher.dispatch({
 				action:Contants.GET_DEPARTMENT,
 				data: departments,
@@ -16,6 +16,7 @@ var DepartmentActions = {
 	},
 
 	create: function(department) { 
+		console.log('action',department);
 		DepartmentAPI.createDepartment(department).then(function(data) { 
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_DEPARTMENT,

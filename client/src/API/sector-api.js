@@ -42,7 +42,7 @@ function createSector(sector) {
 	var t = new promise(function(resolve, reject){
 		request.post(API_URL)
 			.timeout(TIMEOUT)
-			.send({Sector: Sector})
+			.send({sector: sector})
 			.end(function(err,res) {
 				data = JSON.parse(res.text);
 				if(res.status === 201) {                    

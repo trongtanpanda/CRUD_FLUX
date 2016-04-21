@@ -4,17 +4,21 @@ const router = express.Router();
 
 router.route('/sectors')
 // create a new user (accessed at POST http://localhost:8080/api/sectors)
-    .post(function(req, res) {
-			
+    .post(function(req, res) {		
 		Sectors.create({
-			sector_id:req.body.id,
-			name: req.body.name,
-			short_name: req.body.short_name,
-			english_name: req.body.english_name
+			sector_id:req.body.sector.sector_id, 
+			name: req.body.sector.name,
+			short_name: req.body.sector.short_name,
+			english_name: req.body.sector.english_name
 		}, function(err,sector){
 			// console.log(user);
-			if(err) res.json({message: 'error'});
-			res.json({Message:{message: 'Successfully!'}, sector: sector});
+			if(err) {
+						res.json({message: 'error'});
+			}else{
+				res.status(201);
+				res.json({Message:{message: 'Successfully!'}, sector: sector});
+				res.send();
+			}
 		})
 	})    	
 	.get(function(req, res) {
@@ -25,24 +29,39 @@ router.route('/sectors')
 		// console.log(departments);
  		});
  	})
- 	//--------------updata----------------------//
-	// .put(function(req, res) {
-	// 	Courses.update({_id:req.body._id},{$set:{name:req.body.name}},function(err, user) {
-	// 		if (err) res.send(err);
-	// 		res.json({me:{message: 'Successfully update'}, user: user });
-	// 	});
-	// })
-//-------------------delete---------------------//
-router.route('/Courses/:_id')
-  // delete the user by the username (accessed at DELETE http://localhost:8080/api/Courses/username/:username)
-	// .delete(function(req, res) {
-	// 	// console.log("asdsds" +req.params._id);
-	// 	Courses.remove({
-	// 		_id: req.params._id
-	// 	}, function(err) {
-	// 		if (err) res.send(err);
-	// 		res.json({ message: 'Successfully deleted' });
-	// 	});
-	// })
+		.put(function(req, res) {
+		Sectors.update({_id:req.body.sector._id},{$set:
+		{
+			sector_id:req.body.sector.sector_id, 
+			name: req.body.sector.name,
+			short_name: req.body.sector.short_name,
+			english_name: req.body.sector.english_name
+		}
+
+		},function(err) {
+			if (err) {
+                res.send(err);
+            }else{
+			    res.status(201);
+                res.json({Message:{ message: 'Update sector had success!', type: 'success',sector: req.body.sector }});
+                res.send();
+            }
+		
+		});
+	})
+ 	.delete(function(req, res) {   
+		Sectors.remove({
+			_id: req.body.sector
+		}, function(err) {
+			if (err){
+                res.send(err);
+            }else{ 
+                res.status(201);
+                res.json({Message:{ message: 'Delete sector had success!', type: 'success',sector: req.body.sector }});
+                res.send();
+            }
+		});
+	})
+
 	
 export default router;

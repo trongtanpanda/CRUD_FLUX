@@ -4,17 +4,16 @@ const router = express.Router();
 
 router.route('/subjects')
 // create a new user (accessed at POST http://localhost:8080/api/sectors)
-    .post(function(req, res) {
-			
+    .post(function(req, res) {			
 		Subjects.create({
-				subject_id:req.body.id, 
-				name: req.body.name, 
-				short_name: req.body.short_name,
-				number: req.body.english_name
-			}, function(err,subject){
-			// console.log(user);
-			if(err) res.json({message: 'error'});
-			res.json({Message:{message: 'Successfully!'}, subject: subject});
+			subject_id:req.body.subject.subject_id, 
+			name: req.body.subject.name,
+			short_name: req.body.subject.short_name,
+			number: req.body.subject.number
+			}, function(err,subject){			
+				res.status(201);
+	            res.json({Message:{ message: 'Update subject had success!', type: 'success',subject: req.body.subject }});
+	            res.send();
 		})
 	})    	
 	.get(function(req, res) {
@@ -25,24 +24,38 @@ router.route('/subjects')
 		// console.log(departments);
  		});
  	})
- 	//--------------updata----------------------//
-	// .put(function(req, res) {
-	// 	Courses.update({_id:req.body._id},{$set:{name:req.body.name}},function(err, user) {
-	// 		if (err) res.send(err);
-	// 		res.json({me:{message: 'Successfully update'}, user: user });
-	// 	});
-	// })
-//-------------------delete---------------------//
-router.route('/Courses/:_id')
-  // delete the user by the username (accessed at DELETE http://localhost:8080/api/Courses/username/:username)
-	// .delete(function(req, res) {
-	// 	// console.log("asdsds" +req.params._id);
-	// 	Courses.remove({
-	// 		_id: req.params._id
-	// 	}, function(err) {
-	// 		if (err) res.send(err);
-	// 		res.json({ message: 'Successfully deleted' });
-	// 	});
-	// })
+ 	.put(function(req, res) {
+		Subjects.update({_id:req.body.subject._id},{$set:
+		{
+			subject_id:req.body.subject.subject_id, 
+			name: req.body.subject.name,
+			short_name: req.body.subject.short_name,
+			number: req.body.subject.number
+		}
+
+		},function(err) {
+			if (err) {
+                res.send(err);
+            }else{
+			    res.status(201);
+                res.json({Message:{ message: 'Update subject had success!', type: 'success',subject: req.body.subject }});
+                res.send();
+            }
+		
+		});
+	})
+ 	.delete(function(req, res) {   
+		Subjects.remove({
+			_id: req.body.subject
+		}, function(err) {
+			if (err){
+                res.send(err);
+            }else{ 
+                res.status(201);
+                res.json({Message:{ message: 'Delete subject had success!', type: 'success',subject: req.body.subject }});
+                res.send();
+            }
+		});
+	})
 	
 export default router;

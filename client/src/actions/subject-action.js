@@ -52,7 +52,13 @@ var SubjectActions = {
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteSubject: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = SubjectActions;

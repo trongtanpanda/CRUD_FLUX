@@ -54045,47 +54045,45 @@
 
 	var React = __webpack_require__(2),
 	    DepartmentActions = __webpack_require__(543),
-	    //CourseActions = require('../actions/course-action'),
+	    // CourseActions = require('../actions/course-action'),
 	    DepartmentStore = __webpack_require__(545), 
-	   // ComboCourse = require("./combb-course"),   
+	    // ComboCourse = require("./combb-course"),   
 	    DepartmentForm = __webpack_require__(546),
 	    DepartmentList = __webpack_require__(547);
-	    // Message = require("./message");
+	    // Message = require("./message.js");
 
 
 
-	var Department = React.createClass({displayName: "Department",
-
-	    componentWillMount: function() {
+	var department = React.createClass({displayName: "department",
+	    _onChange: function() {
 	        this.setState({
-	            departments: DepartmentStore.getDepartments()});
-	        
+	            departments: DepartmentStore.getDepartments(),
+	           
+	        }); 
+	      
+	               
 	    },
-	    _onChange: function() {        
-	        this.setState({
-	            departments: DepartmentStore.getDepartments(),            
-	        });    
-	    },
-	    getInitialState: function() {
-	        DepartmentActions.fetchAddDepartmentFromServer();        
+	    getInitialState: function() {        
+	        DepartmentActions.fetchAddDepartmentFromServer();       
 	        return {
-	            departments: DepartmentStore.getDepartments(),           
+	            departments: DepartmentStore.getDepartments(),          
+	           
 	        }
 	    },
 	    componentDidMount: function() {
-	        DepartmentStore.addChangeListener(this._onChange); 
-
+	        DepartmentStore.addChangeListener(this._onChange);             
 	        
-	    },    
+	    },
 	    render: function() { 
-	        
+	       
 	        return (
 	            
 	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Khoa"), 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
 	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
 	                    React.createElement(DepartmentForm, null), 
 	                    React.createElement(DepartmentList, {departments: this.state.departments})
+
 	                )
 
 	            )
@@ -54094,7 +54092,7 @@
 	    }
 	});
 
-	module.exports = Department;
+	module.exports = department;
 
 /***/ },
 /* 543 */
@@ -54105,8 +54103,8 @@
 		DepartmentAPI = __webpack_require__(544);
 
 	var DepartmentActions = {
-		fetchAddDepartmentFromServer: function() {		
-			DepartmentAPI.getAllDepartment({}).then(function(departments) {			
+		fetchAddDepartmentFromServer: function() {
+			DepartmentAPI.getAllDepartment({}).then(function(departments) {	
 				AppDispatcher.dispatch({
 					action:Contants.GET_DEPARTMENT,
 					data: departments,
@@ -54118,6 +54116,7 @@
 		},
 
 		create: function(department) { 
+			console.log('action',department);
 			DepartmentAPI.createDepartment(department).then(function(data) { 
 				AppDispatcher.dispatch({
 					action: Contants.CREATE_DEPARTMENT,
@@ -54278,7 +54277,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
-	    StudentConstants = __webpack_require__(210),
+	    DepartmentConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
 	    BaseStore = __webpack_require__(224);
 
@@ -54288,7 +54287,7 @@
 	var _departments = [];
 	var _courses= [];
 	var _editing_id = null;
-	var _delete_id = null;
+	var _deleting_id = null;
 	var _msg;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -54300,17 +54299,17 @@
 	    return null;
 	}
 
+
 	function _addDepartment(department) {
-	    console.log("inhear")
 	    _departments.push(department);
 	}
 	function _listDepartment(data){
-	    _departments= data;    
+	    _departments= data;
 	}
 	function _listCourse(data){
 	    _courses =data;
 	}
-	function _removeDepartment(_id) {  
+	function _removeDepartment(_id) {    
 	    var i = ByKeyValue(_departments, "_id", _id);
 	        _departments.splice(i,1);
 	}
@@ -54318,14 +54317,17 @@
 	function _editDepartment(index) {
 	    _editing_id = index;
 	}
+
 	function _deleteDepartment(index) {
-	    _delete_id = index;
+	    _deleting_id = index;
 	}
-	function _updateStudent(student) {
+
+	function _updateDepartment(department) {
 	    var index = ByKeyValue(_departments, "_id", _editing_id); 
-	    _departments[index] = student;
+	    _departments[index] = department;
 	    _editing_id = null;
 	}
+
 	function _getMsg(message){
 	    _msg=message;    
 	}
@@ -54333,13 +54335,11 @@
 	    _msg =null;
 	}
 	var DepartmentStore  = _.extend(BaseStore, {
-	    getDepartments: function() {
-	       
+	    getDepartments: function() { 
 	        return _departments;
+
 	    },
-	    getCourses: function(){
-	        return _courses;
-	    },
+	  
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -54350,11 +54350,13 @@
 	    //     this.on(CHANGE_EVENT, callback);
 	    // },
 
-	    getEditingDepartment: function() {
+	    geteditingDepartments: function() {
 	        if (!_editing_id) {
+
 	            return null;
 	        }
 	        var index = ByKeyValue(_departments, "_id", _editing_id);
+
 	        return _departments[index];        
 	    },
 	    emitEditDepartment: function(callback) {
@@ -54365,10 +54367,10 @@
 	    },
 
 	    getDeleteDepartment: function() {
-	        if (!_delete_id) {
+	        if (!_deleting_id) {
 	            return null;
 	        }
-	        var index = ByKeyValue(_departments, "_id", _delete_id);
+	        var index = ByKeyValue(_departments, "_id", _deleting_id);
 	        return _departments[index];        
 	    },
 	    emitDeleteDepartment: function(callback) {
@@ -54381,26 +54383,42 @@
 
 	AppDispatcher.register(function(payload) {
 	    switch (payload.action) {
-	        
-	        case StudentConstants.GET_DEPARTMENT:            
-	            _listDepartment(payload.data);
-	            DepartmentStore.emitChange();
-	            break;
-	        case StudentConstants.CREATE_DEPARTMENT: 
+	        case DepartmentConstants.CREATE_DEPARTMENT:           
 	            _addDepartment(payload.data.department);
-	            DepartmentStore.emitChange();
+	            DepartmentStore.emitChange();            
 	            break;
-	        case StudentConstants.ACTION_EDIT: 
+
+	        case DepartmentConstants.DELETE_DEPARTMENT:
+	            _removeDepartment(payload.data.Message.department);
+	            _getMsg(payload.data.Message);                    
+	            DepartmentStore.emitChange();           
+	            break;
+
+	        case DepartmentConstants.ACTION_EDIT:
 	            _editDepartment(payload.data);
 	            DepartmentStore.emitEditDepartment();
-	            break;   
-	        case StudentConstants.ACTION_DELETE: 
+	            break;
+
+	        case DepartmentConstants.ACTION_DELETE:
 	            _deleteDepartment(payload.data);
 	            DepartmentStore.emitDeleteDepartment();
 	            break;
-	        case StudentConstants.DELETE_DEPARTMENT:
-	            _removeDepartment(payload.data.Message.department);                               
-	             DepartmentStore.emitChange();          
+
+	        case DepartmentConstants.UPDATE_DEPARTMENT:        
+	            _updateDepartment(payload.data.Message.department);
+	            _getMsg(payload.data.Message);            
+	            DepartmentStore.emitEditDepartment();
+	            DepartmentStore.emitChange();            
+	            break;
+
+	        case DepartmentConstants.GET_DEPARTMENT:
+	            _listDepartment(payload.data);
+	            DepartmentStore.emitChange();
+	            break;
+	            
+	        case DepartmentConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            DepartmentStore.emitChange();
 	            break;
 	    }
 	});
@@ -54410,227 +54428,170 @@
 /* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2), 
-	    DepartmentStore = __webpack_require__(545),
-	    DepartmentActions = __webpack_require__(543);
+	var React = __webpack_require__(2),    
+	    DeparmentStore = __webpack_require__(545),
+	    DeparmentActions = __webpack_require__(543);
 
-	var DepartmentForm = React.createClass({displayName: "DepartmentForm",
+	var StudentForm = React.createClass({displayName: "StudentForm",
 	    
-	   _onchangId: function(e){             
-	        this.setState({
-	            id: e.target.value,
-	        });
-	    },
-	    _onchangName: function(e){        
-	        this.setState({
-	            name: e.target.value,
-	        });
-	    },
-	    _onchangDean: function(e){        
-	        this.setState({
-	            dean: e.target.value,
-	        });
-	    },
-	    _onchangMinistry: function(e){        
-	        this.setState({
-	            ministry: e.target.value,
-	        });
-	    },
-	    _onchangPhone: function(e){        
-	        this.setState({
-	            phone: e.target.value,
-	        });
-	    },
-	     getInitialState: function() {
-	            return {
-	            id: "",
-	            name: "", 
-	            dean: "", 
-	            ministry: "", 
-	            phone: "",             
-	                       
-	        }
-	    },
-	     _onClickAdd: function() {
-	         var department = {
-	            id: this.state.id, 
+	    _onClickAdd: function() {
+
+	         var student = {
+	            department_id: this.state.department_id,
 	            name: this.state.name,
 	            dean: this.state.dean,
 	            ministry: this.state.ministry,
 	            phone: this.state.phone
 	        };
-
-	        DepartmentActions.create(department);
+	        DeparmentActions.create(student);
 	        this.setState({
-	            id: "",
-	            name: "",
-	            dean:"",
-	            ministry: "",
-	            phone: "",                       
+	           department_id:"", name: "", dean: "", ministry: "", phone:""
 	        });
-	       $("#close").click();
+	         $("#close").click();
+	         this._onclickClose;
 	    },
-	   
-	     _onClickUpdate: function() {
-	        var editingDepartment = this.state.editingDepartment;
-	         var department = {
-	            _id: editingDepartment._id,
-	            id: this.state.id, 
+	    _onClickUpdate: function() {
+	        var editingDepartment = this.state.editingDepartment;        
+	        var user ={
+	            _id:editingDepartment._id,
+	            department_id: this.state.department_id,
 	            name: this.state.name,
 	            dean: this.state.dean,
 	            ministry: this.state.ministry,
 	            phone: this.state.phone
 	        };
-
-	        DepartmentActions.update(department);
+	        DeparmentActions.update(user);
 	        this.setState({
-	            id: "",
-	            name: "",
-	            dean:"",
-	            ministry: "",
-	            phone: "",                       
+	            department_id:"", name: "", dean: "", ministry: "", phone: ""
 	        });
-	       $("#close").click();
+	         $("#close").click();
+	         this._onclickClose;
 	    },
-	    _onclickClose: function(){       
-	        this.setState({                        
-	            id: "",
-	            name: "",
-	            dean:"",
-	            ministry: "",
-	            phone: "", 
-	            editingDepartment: "",  
-	            deletingDepartment: "",    
+	    _onchangId: function(e){        
+	        this.setState({
+	            department_id: e.target.value,
 	        });
 	    },
-
-	    _onEdit: function() {        
-	        var editingDepartment = DepartmentStore.getEditingDepartment();
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangdean: function(e) {
+	        this.setState({
+	            dean: e.target.value, 
+	        });
+	    },
+	    _onchangministry: function(e) {
+	        this.setState({
+	            ministry: e.target.value, 
+	        });
+	    },
+	    _onchangphone: function(e) {
+	        this.setState({
+	            phone: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {  
+	        var editingDepartment = DeparmentStore.geteditingDepartments();
 	        this.setState({
 	            editingDepartment: editingDepartment,
 	        });
 
 	        if (editingDepartment) {
 	            this.setState({
-	              id: editingDepartment.department_id, 
-	            name: editingDepartment.name,
-	            dean: editingDepartment.dean,
-	            ministry: editingDepartment.ministry,
-	            phone: editingDepartment.phone
+	                department_id: editingDepartment.department_id,
+	                name: editingDepartment.name,
+	                dean: editingDepartment.dean,
+	                ministry: editingDepartment.ministry,
+	                phone: editingDepartment.phone,
 	            });
 	        }
 	    },
-	    _onDelete: function() {    
-	        var deletingDepartment = DepartmentStore.getDeleteDepartment();
-	         this.setState({
-	            deletingDepartment: deletingDepartment._id,
-	            name: deletingDepartment.name,
-	        });            
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            department_id: "",
+	            name: "",
+	            dean:"",
+	            ministry: "",  
+	            phone: "",         
+	            editingDepartment: "",                  
+	        });
 	    },
-	     _delete: function(index){
-	        console.log(index);
-	        DepartmentActions.destroy(index);
-	        this.setState({
-	            deletingDepartment: null,
-	            name: null,
-	        }); 
-	        $("#closes").click();
-	    },   
 	    getInitialState: function() {
 	            return {
-	            name: "",            
-	            editingDepartment: null, 
-	            deleteDepartment: null,           
+	            department_id: "", first: "", dean: "", ministry: "",phone: "",            
+	            editingDepartment: null,            
 	        }
 	    },
-	    
 	    componentDidMount: function() {
-	        DepartmentStore.addEditDepartmentListener(this._onEdit);
-	        DepartmentStore.addDeleteDepartmentListener(this._onDelete);
+	        DeparmentStore.addEditStudentListener(this._onEdit);
 	    },
 	    render: function() {
-	   
 	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
 	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
 
 	        return (
-	             React.createElement("div", null, 
+	            React.createElement("div", null, 
 	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
 	              "Thêm mới"
 	            ), 
-	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", onClose: this._onclickClose, "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	              React.createElement("div", {className: "modal-dialog", onClose: this._onclickClose}, 
-	                React.createElement("div", {className: "modal-content", onClose: this._onclickClose}, 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
 	                  React.createElement("div", {className: "modal-header"}, 
 	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("form", {className: "form-horizontal"}, 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã khoa"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.id, onChange: this._onchangId, ref: "id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.department_id, onChange: this._onchangId, ref: "department_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên khoa"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangName, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Trưởng khoa"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.dean, onChange: this._onchangDean, ref: "dean", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.dean, onChange: this._onchangdean, ref: "dean", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Giáo vụ"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.ministry, onChange: this._onchangMinistry, ref: "ministry", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.ministry, onChange: this._onchangministry, ref: "ministry", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Điện thoại"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.phone, onChange: this._onchangPhone, ref: "phone", className: "form-control", type: "text", placeholder: "Điện thoại", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.phone, onChange: this._onchangphone, ref: "phone", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
 	                            )
 	                        )
 	                    )
 	                  ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
 	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                    this.state.editingDepartment ? btnUpdate : btnAdd
-
+	                     this.state.editingDepartment ? btnUpdate : btnAdd
 	                  )
 	                )
 	              )
-	            ), 
-	             React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	                  React.createElement("div", {className: "modal-dialog"}, 
-	                    React.createElement("div", {className: "modal-content"}, 
-	                      React.createElement("div", {className: "modal-header"}, 
-	                        React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                        React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Xóa Khoa")
-	                      ), 
-	                      React.createElement("div", {className: "modal-body"}, 
-	                       "Bạn có muốn xóa khoa \"", React.createElement("b", null, this.state.name, " "), "\"?"
-	                      ), 
-	                      React.createElement("div", {className: "modal-footer"}, 
-	                        React.createElement("button", {type: "button", id: "closes", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                        React.createElement("button", {type: "button", onClick: this._delete.bind(null,this.state.deletingDepartment), className: "btn btn-primary"}, "OK")
-	                      )
-	                    )
-	                  )
-	                )
-	        )  
-	                        
+	            )
+	            
+	        )
 	        );
 	    }
 	});
 
-	module.exports = DepartmentForm;
+	module.exports = StudentForm;
 
 /***/ },
 /* 547 */
@@ -54638,12 +54599,36 @@
 
 	var React = __webpack_require__(2),
 	    DepartmentStore = __webpack_require__(545),
-	    DeparmentActions = __webpack_require__(543);
+	    DepartmentActions = __webpack_require__(543);
 	var Confirm = __webpack_require__(229);
 	var DepartmentList = React.createClass({displayName: "DepartmentList",
+	     _onDelete: function() {        
+	        var deletingDepartment = DepartmentStore.getDeleteDepartment();
+	        // console.log(editingDepartment);
+	        this.setState({
+	            deletingDepartment: deletingDepartment,
+	        });
+
+	        if (deletingDepartment) {
+	            this.setState({
+	                name: deletingDepartment.name,
+	                _id: deletingDepartment._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            deletingDepartment: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        DepartmentStore.addDeleteDepartmentListener(this._onDelete);
+	    },
 	    render: function() {
 	        var departmentList = this.props.departments.map(function(department, index) {
-	           
+	          
 	            return (
 	                React.createElement("tr", {key: index}, 
 	                    React.createElement("td", null, department.department_id), 
@@ -54651,11 +54636,9 @@
 	                    React.createElement("td", null, department.dean), 
 	                    React.createElement("td", null, department.ministry), 
 	                    React.createElement("td", null, department.phone), 
-	                    React.createElement("td", null, 
-	                      React.createElement("input", {type: "button", value: "Edit", "data-toggle": "modal", "data-target": "#myModal", className: "btn btn-success", onClick: DeparmentActions.editDepartment.bind(null,department._id)}), " ", 
-	                      React.createElement("input", {type: "button", value: "Delete", "data-toggle": "modal", "data-target": "#myModal", className: "btn btn-danger", onClick: DeparmentActions.destroy.bind(null,department._id)})
-	                    )
-	                    
+	                                      
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: DepartmentActions.editDepartment.bind(null,department._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: DepartmentActions.deleteDepartment.bind(null,department._id)}))
 	                )
 	            );
 	        }.bind(this));
@@ -54664,21 +54647,28 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã khoa"), 
-	                             React.createElement("th", null, "Tên Khoa"), 
-	                             React.createElement("th", null, "Trưởng Khoa"), 
-	                             React.createElement("th", null, "Giáo vụ"), 
-	                             React.createElement("th", null, "Điện thoại"), 
-	                             React.createElement("th", null, "Action")
-	                          )
-	                        ), 
 	                        departmentList
 	                    )
+	                ), 
+	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                   this.state.name
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: DepartmentActions.destroy.bind(null,this.state._id)}, "DELETE")
+
+	                  )
 	                )
+	              )
 	            )
-	          
+	            )
 	        );
 	    }
 	});
@@ -55567,35 +55557,30 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SectorActions = __webpack_require__(559),    
-	    SectorStore = __webpack_require__(561),     
+	    SectorActions = __webpack_require__(559),
+	    // CourseActions = require('../actions/course-action'),
+	    SectorStore = __webpack_require__(561), 
+	    // ComboCourse = require("./combb-course"),   
+	    SectorForm = __webpack_require__(608),
 	    SectorList = __webpack_require__(562);
-	    // Message = require("./message");
+	    // Message = require("./message.js");
 
 
 
 	var Sector = React.createClass({displayName: "Sector",
-	     componentWillMount: function() {
-	        this.setState({
-	            sectors: SectorStore.getSectors()            
-	        });
-	        
-	    },
 	    _onChange: function() {
 	        this.setState({
-	            sectors: SectorStore.getSectors(),            
+	            sectors: SectorStore.getSectors(),           
 	        }); 
-	       
+	      
 	               
 	    },
 	    getInitialState: function() {
-	        SectorActions.fetchAddSectorFromServer();        
+	        SectorActions.fetchAddSectorFromServer();       
 	        return {
-	            sectors: SectorStore.getSectors(),           
+	            sectors: SectorStore.getSectors(),          
+	           
 	        }
-	         this.setState({
-	            sectors: SectorStore.getSectors(),            
-	        }); 
 	    },
 	    componentDidMount: function() {
 	        SectorStore.addChangeListener(this._onChange);             
@@ -55606,10 +55591,11 @@
 	        return (
 	            
 	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Ngành"), 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
 	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                                 
+	                    React.createElement(SectorForm, null), 
 	                    React.createElement(SectorList, {sectors: this.state.sectors})
+
 	                )
 
 	            )
@@ -55641,8 +55627,9 @@
 			});
 		},
 
-		create: function(sector) {        
-			SectorAPI.createSector(sector).then(function(data) {            
+		create: function(sector) {  
+			SectorAPI.createSector(sector).then(function(data) {   
+				console.log('in action',data);        
 				AppDispatcher.dispatch({
 					action: Contants.CREATE_SECTOR,
 					data: data
@@ -55678,7 +55665,13 @@
 			},function(status, err){
 				// Handle error
 			});
-		}
+		},
+		deleteSector: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE,
+		        data: index,
+		    })
+	    },
 
 	};
 	module.exports = SectorActions;
@@ -55731,7 +55724,7 @@
 		var t = new promise(function(resolve, reject){
 			request.post(API_URL)
 				.timeout(TIMEOUT)
-				.send({Sector: Sector})
+				.send({sector: sector})
 				.end(function(err,res) {
 					data = JSON.parse(res.text);
 					if(res.status === 201) {                    
@@ -55796,16 +55789,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
-	    StudentConstants = __webpack_require__(210),
+	    SectorConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
 	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
-
-	var _sector = [];
+	var CHANGE_DELETE_EVENT = 'change_delete';
+	var _sectors = [];
 	var _courses= [];
 	var _editing_id = null;
+	var _deleting_id = null;
 	var _msg;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -55818,29 +55812,34 @@
 	}
 
 
-	function _addStudent(student) {
-	    _students.push(student);
+	function _addSector(sector) {
+	    _sectors.push(sector);
 	}
 	function _listSector(data){
-	    _sector= data;
+	    _sectors= data;
 	}
 	function _listCourse(data){
 	    _courses =data;
 	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_students, "_id", _id);
-	        _students.splice(i,1);
+	function _removeSector(_id) {    
+	    var i = ByKeyValue(_sectors, "_id", _id);
+	        _sectors.splice(i,1);
 	}
 
-	function _editStudent(index) {
+	function _editSector(index) {
 	    _editing_id = index;
 	}
 
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_students, "_id", _editing_id); 
-	    _students[index] = student;
+	function _deleteSector(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateSector(sector) {
+	    var index = ByKeyValue(_sectors, "_id", _editing_id); 
+	    _sectors[index] = sector;
 	    _editing_id = null;
 	}
+
 	function _getMsg(message){
 	    _msg=message;    
 	}
@@ -55848,11 +55847,12 @@
 	    _msg =null;
 	}
 	var SectorStore  = _.extend(BaseStore, {
-	    getSectors: function() {
-	       
-	        return _sector;
+	    getSectors: function() {       
+	       console.log(_sectors);
+	        return _sectors;
+
 	    },
-	   
+	  
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -55863,30 +55863,78 @@
 	    //     this.on(CHANGE_EVENT, callback);
 	    // },
 
-	    getEditingStudent: function() {
+	    getEditingSectors: function() {
 	        if (!_editing_id) {
+
 	            return null;
 	        }
-	        var index = ByKeyValue(_students, "_id", _editing_id);
-	        return _students[index];        
+	        var index = ByKeyValue(_sectors, "_id", _editing_id);
+
+	        return _sectors[index];        
 	    },
-	    emitEditStudent: function(callback) {
+	    emitEditSector: function(callback) {
 	        this.emit(CHANGE_EDIT_EVENT, callback);
 	    },
-	    addEditStudentListener: function(callback) {
+	    addEditSectorListener: function(callback) {
 	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+
+	    getDeleteSector: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_sectors, "_id", _deleting_id);
+	        return _sectors[index];        
+	    },
+	    emitDeleteSector: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteSectorListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
 	    },
 	});
 
 	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {       
+	    console.log(payload.action);
+	    switch (payload.action) {        
+	        case SectorConstants.CREATE_SECTOR: 
+	            console.log(payload.data);
+	            _addSector(payload.data.sector);
+	            SectorStore.emitChange();            
+	            break;
 
-	        case StudentConstants.GET_SECTOR:
+	        case SectorConstants.DELETE_SECTOR:
+	            _removeSector(payload.data.Message.sector);
+	            _getMsg(payload.data.Message);                    
+	            SectorStore.emitChange();           
+	            break;
+
+	        case SectorConstants.ACTION_EDIT:
+	            _editSector(payload.data);
+	            SectorStore.emitEditSector();
+	            break;
+
+	        case SectorConstants.ACTION_DELETE:
+	            _deleteSector(payload.data);
+	            SectorStore.emitDeleteSector();
+	            break;
+
+	        case SectorConstants.UPDATE_SECTOR:
+	            _updateSector(payload.data.Message.sector);
+	            _getMsg(payload.data.Message);            
+	            SectorStore.emitEditSector();
+	            SectorStore.emitChange();            
+	            break;
+
+	        case SectorConstants.GET_SECTOR:
 	            _listSector(payload.data);
 	            SectorStore.emitChange();
 	            break;
 	            
-	      
+	        case SectorConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            SectorStore.emitChange();
+	            break;
 	    }
 	});
 	module.exports = SectorStore;
@@ -55895,20 +55943,46 @@
 /* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2);
-	   
+	var React = __webpack_require__(2),
+	    SectorStore = __webpack_require__(561),
+	    SectorActions = __webpack_require__(559);
+	var Confirm = __webpack_require__(229);
 	var SectorList = React.createClass({displayName: "SectorList",
+	     _onDelete: function() {        
+	        var deletingSector = SectorStore.getDeleteSector();
+	        // console.log(editingSector);
+	        this.setState({
+	            deletingSector: deletingSector,
+	        });
 
+	        if (deletingSector) {
+	            this.setState({
+	                name: deletingSector.firstname,
+	                _id: deletingSector._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            deletingSector: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        SectorStore.addDeleteSectorListener(this._onDelete);
+	    },
 	    render: function() {
 	        var sectorList = this.props.sectors.map(function(sector, index) {
-	           
+	          
 	            return (
 	                React.createElement("tr", {key: index}, 
 	                    React.createElement("td", null, sector.sector_id), 
 	                    React.createElement("td", null, sector.name), 
 	                    React.createElement("td", null, sector.short_name), 
-	                    React.createElement("td", null, sector.english_name)
-	                    
+	                    React.createElement("td", null, sector.english_name), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: SectorActions.editSector.bind(null,sector._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: SectorActions.deleteSector.bind(null,sector._id)}))
 	                )
 	            );
 	        }.bind(this));
@@ -55917,17 +55991,27 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã Ngành"), 
-	                             React.createElement("th", null, "Tên Ngành"), 
-	                             React.createElement("th", null, "Tên viết tắt"), 
-	                             React.createElement("th", null, "Tên tiếng anh ")
-	                          )
-	                        ), 
 	                        sectorList
 	                    )
+	                ), 
+	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                   this.state.name
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: SectorActions.destroy.bind(null,this.state._id)}, "DELETE")
+
+	                  )
 	                )
+	              )
+	            )
 	            )
 	        );
 	    }
@@ -56384,42 +56468,31 @@
 
 	var React = __webpack_require__(2),
 	    SubjectActions = __webpack_require__(568),
-	    //CourseActions = require('../actions/course-action'),
+	    // CourseActions = require('../actions/course-action'),
 	    SubjectStore = __webpack_require__(570), 
-	    //ComboCourse = require("./combb-course"),   
-	    
+	    // ComboCourse = require("./combb-course"),   
+	    SubjectForm = __webpack_require__(609),
 	    SubjectList = __webpack_require__(571);
-	    // Message = require("./message");
+	    // Message = require("./message.js");
 
 
 
 	var Subject = React.createClass({displayName: "Subject",
 	    _onChange: function() {
-
+	        console.log("onchane",SubjectStore.getSubjects());
 	        this.setState({
-	            subjects: SubjectStore.getSubjects()
-	            //message: UserStore.getMessage(),
-	            // courses: UserStore.getCourses(),
+	            subjects: SubjectStore.getSubjects(),
+	           
 	        }); 
-	        
+	      
 	               
 	    },
 	    getInitialState: function() {
-	        SubjectActions.fetchAddSubjectFromServer();
-	        //CourseActions.getListCourse();      
-
+	        SubjectActions.fetchAddSubjectFromServer();       
 	        return {
-	            subjects: SubjectStore.getSubjects(),
-	            // message: SubjectStore.getMessage(),
-	            // courses: SubjectStore.getCourses(),
-	        }
-	        
-	    },
-	    componentWillMount: function() {
-	        this.setState({
 	            subjects: SubjectStore.getSubjects(),          
-	        }); 
-	        
+	           
+	        }
 	    },
 	    componentDidMount: function() {
 	        SubjectStore.addChangeListener(this._onChange);             
@@ -56430,10 +56503,11 @@
 	        return (
 	            
 	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý môn học"), 
-	                React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                                   
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(SubjectForm, null), 
 	                    React.createElement(SubjectList, {subjects: this.state.subjects})
+
 	                )
 
 	            )
@@ -56502,7 +56576,13 @@
 			},function(status, err){
 				// Handle error
 			});
-		}
+		},
+		deleteSubject: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE,
+		        data: index,
+		    })
+	    },
 
 	};
 	module.exports = SubjectActions;
@@ -56620,16 +56700,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
-	    StudentConstants = __webpack_require__(210),
+	    SubjectConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
 	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
-
-	var _subject = [];
+	var CHANGE_DELETE_EVENT = 'change_delete';
+	var _subjects = [];
 	var _courses= [];
 	var _editing_id = null;
+	var _deleting_id = null;
 	var _msg;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -56640,29 +56721,36 @@
 	    }
 	    return null;
 	}
-	function _addStudent(student) {
-	    _subject.push(subject);
+
+
+	function _addSubject(subject) {
+	    _subjects.push(subject);
 	}
-	function _listSubject(data){    
-	    _subject = data;   
+	function _listSubject(data){
+	    _subjects= data;
 	}
 	function _listCourse(data){
 	    _courses =data;
 	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_subject, "_id", _id);
-	        _subject.splice(i,1);
+	function _removeSubject(_id) {    
+	    var i = ByKeyValue(_subjects, "_id", _id);
+	        _subjects.splice(i,1);
 	}
 
-	function _editStudent(index) {
+	function _editSubject(index) {
 	    _editing_id = index;
 	}
 
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_subject, "_id", _editing_id); 
-	    _subject[index] = student;
+	function _deleteSubject(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateSubject(subject) {
+	    var index = ByKeyValue(_subjects, "_id", _editing_id); 
+	    _subjects[index] = subject;
 	    _editing_id = null;
 	}
+
 	function _getMsg(message){
 	    _msg=message;    
 	}
@@ -56670,12 +56758,12 @@
 	    _msg =null;
 	}
 	var SubjectStore  = _.extend(BaseStore, {
-	    getSubjects: function() {    
-	        return _subject;        
+	    getSubjects: function() {       
+	       console.log(_subjects);
+	        return _subjects;
+
 	    },
-	    getCourses: function(){
-	        return _courses;
-	    },
+	  
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -56686,12 +56774,14 @@
 	    //     this.on(CHANGE_EVENT, callback);
 	    // },
 
-	    getEditingSubject: function() {
+	    getEditingSubjects: function() {
 	        if (!_editing_id) {
+
 	            return null;
 	        }
-	        var index = ByKeyValue(_subject, "_id", _editing_id);
-	        return _subject[index];        
+	        var index = ByKeyValue(_subjects, "_id", _editing_id);
+
+	        return _subjects[index];        
 	    },
 	    emitEditSubject: function(callback) {
 	        this.emit(CHANGE_EDIT_EVENT, callback);
@@ -56699,16 +56789,61 @@
 	    addEditSubjectListener: function(callback) {
 	        this.on(CHANGE_EDIT_EVENT, callback);
 	    },
+
+	    getDeleteSubject: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_subjects, "_id", _deleting_id);
+	        return _subjects[index];        
+	    },
+	    emitDeleteSubject: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteSubjectListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
+	    },
 	});
 
 	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {       
+	    switch (payload.action) {
+	        case SubjectConstants.CREATE_SUBJECT:   
+	            _addSubject(payload.data.Message.subject);
+	            SubjectStore.emitChange();            
+	            break;
 
-	        case StudentConstants.GET_SUBJECT:
+	        case SubjectConstants.DELETE_SUBJECT:
+	            _removeSubject(payload.data.Message.subject);
+	            _getMsg(payload.data.Message);                    
+	            SubjectStore.emitChange();           
+	            break;
+
+	        case SubjectConstants.ACTION_EDIT:
+	            _editSubject(payload.data);
+	            SubjectStore.emitEditSubject();
+	            break;
+
+	        case SubjectConstants.ACTION_DELETE:
+	            _deleteSubject(payload.data);
+	            SubjectStore.emitDeleteSubject();
+	            break;
+
+	        case SubjectConstants.UPDATE_SUBJECT:
+	            _updateSubject(payload.data.Message.subject);
+	            _getMsg(payload.data.Message);            
+	            SubjectStore.emitEditSubject();
+	            SubjectStore.emitChange();            
+	            break;
+
+	        case SubjectConstants.GET_SUBJECT:
 	            _listSubject(payload.data);
 	            SubjectStore.emitChange();
 	            break;
-	        
+	            
+	        case SubjectConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            SubjectStore.emitChange();
+	            break;
 	    }
 	});
 	module.exports = SubjectStore;
@@ -56720,18 +56855,44 @@
 	var React = __webpack_require__(2),
 	    SubjectStore = __webpack_require__(570),
 	    SubjectActions = __webpack_require__(568);
+	var Confirm = __webpack_require__(229);
 	var SubjectList = React.createClass({displayName: "SubjectList",
+	     _onDelete: function() {        
+	        var deletingSubject = SubjectStore.getDeleteSubject();
+	        // console.log(editingSubject);
+	        this.setState({
+	            deletingSubject: deletingSubject,
+	        });
 
+	        if (deletingSubject) {
+	            this.setState({
+	                name: deletingSubject.name,
+	                _id: deletingSubject._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            deletingSubject: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        SubjectStore.addDeleteSubjectListener(this._onDelete);
+	    },
 	    render: function() {
-
 	        var subjectList = this.props.subjects.map(function(subject, index) {
+	          
 	            return (
-
 	                React.createElement("tr", {key: index}, 
 	                    React.createElement("td", null, subject.subject_id), 
 	                    React.createElement("td", null, subject.name), 
 	                    React.createElement("td", null, subject.short_name), 
-	                    React.createElement("td", null, subject.number)
+	                    React.createElement("td", null, subject.number), 
+	                                      
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: SubjectActions.editSubject.bind(null,subject._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: SubjectActions.deleteSubject.bind(null,subject._id)}))
 	                )
 	            );
 	        }.bind(this));
@@ -56740,17 +56901,27 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã Môn học"), 
-	                             React.createElement("th", null, "Tên môn học"), 
-	                             React.createElement("th", null, "Tên rút gọn"), 
-	                             React.createElement("th", null, "Số tín chỉ")
-	                          )
-	                        ), 
-	                            subjectList
+	                        subjectList
 	                    )
+	                ), 
+	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                   this.state.name
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: SubjectActions.destroy.bind(null,this.state._id)}, "DELETE")
+
+	                  )
 	                )
+	              )
+	            )
 	            )
 	        );
 	    }
@@ -59761,6 +59932,314 @@
 	});
 
 	module.exports = BeanItemEditPage;
+
+/***/ },
+/* 608 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),    
+	    SectorStore = __webpack_require__(561),
+	    SectorActions = __webpack_require__(559);
+
+	var SectorForm = React.createClass({displayName: "SectorForm",
+	    
+	    _onClickAdd: function() {
+	         var sector = {
+	            sector_id: this.state.sector_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            english_name: this.state.english_name
+	        };
+
+	        SectorActions.create(sector);
+	        this.setState({
+	           sector_id:"", name: "", short_name: "", english_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingSector = this.state.editingSector;        
+	        var user ={
+	            _id:editingSector._id,
+	            sector_id: this.state.sector_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            english_name: this.state.english_name
+	        };
+	        SectorActions.update(user);
+	        this.setState({
+	            sector_id:"", name: "", short_name: "", english_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onchangId: function(e){        
+	        this.setState({
+	            sector_id: e.target.value,
+	        });
+	    },
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangshort_name: function(e) {
+	        this.setState({
+	            short_name: e.target.value, 
+	        });
+	    },
+	    _onchangenglish_name: function(e) {
+	        this.setState({
+	            english_name: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {  
+	        var editingSector = SectorStore.getEditingSectors();
+	        this.setState({
+	            editingSector: editingSector,
+	        });
+
+	        if (editingSector) {
+	            this.setState({
+	                sector_id: editingSector.sector_id,
+	                name: editingSector.name,
+	                short_name: editingSector.short_name,
+	                english_name: editingSector.english_name,
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            sector_id: "",
+	            name: "",
+	            short_name:"",
+	            english_name: "",           
+	            editingSector: "",                  
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            sector_id: "", first: "", short_name: "", english_name: "",            
+	            editingSector: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        SectorStore.addEditSectorListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
+
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.sector_id, onChange: this._onchangId, ref: "sector_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.english_name, onChange: this._onchangenglish_name, ref: "english_name", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingSector ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
+
+	module.exports = SectorForm;
+
+/***/ },
+/* 609 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),    
+	    SubjectStore = __webpack_require__(570),
+	    SubjectActions = __webpack_require__(568);
+
+	var SubjectForm = React.createClass({displayName: "SubjectForm",
+	    
+	    _onClickAdd: function() {
+	         var subject = {
+	            subject_id: this.state.subject_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            number: this.state.number
+	        };
+
+	        SubjectActions.create(subject);
+	        this.setState({
+	           subject_id:"", name: "", short_name: "", number: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingSubject = this.state.editingSubject;        
+	        var user ={
+	            _id:editingSubject._id,
+	            subject_id: this.state.subject_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            number: this.state.number
+	        };
+	        SubjectActions.update(user);
+	        this.setState({
+	            subject_id:"", name: "", short_name: "", number: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onchangId: function(e){        
+	        this.setState({
+	            subject_id: e.target.value,
+	        });
+	    },
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangshort_name: function(e) {
+	        this.setState({
+	            short_name: e.target.value, 
+	        });
+	    },
+	    _onchangnumber: function(e) {
+	        this.setState({
+	            number: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {  
+	        var editingSubject = SubjectStore.getEditingSubjects();
+	        this.setState({
+	            editingSubject: editingSubject,
+	        });
+
+	        if (editingSubject) {
+	            this.setState({
+	                subject_id: editingSubject.subject_id,
+	                name: editingSubject.name,
+	                short_name: editingSubject.short_name,
+	                number: editingSubject.number,
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            subject_id: "",
+	            name: "",
+	            short_name:"",
+	            number: "",           
+	            editingSubject: "",                  
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            subject_id: "", first: "", short_name: "", number: "",            
+	            editingSubject: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        SubjectStore.addEditSubjectListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
+
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.subject_id, onChange: this._onchangId, ref: "subject_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingSubject ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
+
+	module.exports = SubjectForm;
 
 /***/ }
 /******/ ]);
