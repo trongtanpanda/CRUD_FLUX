@@ -5,12 +5,11 @@ const router = express.Router();
 router.route('/termClass')
 // create a new user (accessed at POST http://localhost:8080/api/sectors)
     .post(function(req, res) {
-			
 		TermClass.create({	
 			termClass_id:req.body.termClass.termClass_id, 
 			name: req.body.termClass.name,
-			number: req.body.termClass.short_name,
-			theory: req.body.termClass.number,
+			number: req.body.termClass.number,
+			theory: req.body.termClass.theory,
 			perceive : req.body.termClass.perceive, 
 			self_taught : req.body.termClass.self_taught, 
 			test_student :req.body.termClass.test_student, 
@@ -24,20 +23,19 @@ router.route('/termClass')
 		})
 	})    	
 	.get(function(req, res) {
- 		TermClass.find(function(err, termClass) {
- 		if (err)
- 			res.send(err);
-		res.json(termClass);
-		// console.log(departments);
- 		});
- 	})
+	 		TermClass.find(function(err, termClass) {
+	 		if (err)
+	 			res.send(err);
+				res.json(termClass);			
+	 		});
+	 	})
  	.put(function(req, res) {
 		TermClass.update({_id:req.body.termClass._id},{$set:
 		{
 			termClass_id:req.body.termClass.termClass_id, 
 			name: req.body.termClass.name,
-			number: req.body.termClass.short_name,
-			theory: req.body.termClass.number,
+			number: req.body.termClass.number,
+			theory: req.body.termClass.theory,
 			perceive : req.body.termClass.perceive, 
 			self_taught : req.body.termClass.self_taught, 
 			test_student :req.body.termClass.test_student, 

@@ -1,16 +1,15 @@
 var _ = require("underscore"),
-    StudentConstants = require("../constants/student-constants.js"),
+    MarkConstants = require("../constants/student-constants.js"),
     AppDispatcher = require("../dispatcher/app-dispatcher"),    
     BaseStore = require('./base-store');
 
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
-
+var CHANGE_DELETE_EVENT = 'change_delete';
 var _marks = [];
-var _student= [];
-var _termClass = [];
-
+var _courses= [];
 var _editing_id = null;
+var _deleting_id = null;
 var _msg;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -23,62 +22,47 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 
-function _addStudent(student) {
-    _students.push(student);
+function _addMark(mark) {
+    _marks.push(mark);
 }
 function _listMark(data){
     _marks= data;
 }
-function _listStudent(data){
-    _student =data;
+function _listCourse(data){
+    _courses =data;
 }
-function _listTermClass(data){
-    _termClass =data;
-}
-function _removeStudent(_id) {    
-    var i = ByKeyValue(_students, "_id", _id);
-        _students.splice(i,1);
+function _removeMark(_id) {    
+    var i = ByKeyValue(_marks, "_id", _id);
+        _marks.splice(i,1);
 }
 
-function _editStudent(index) {
+function _editMark(index) {
     _editing_id = index;
 }
 
-function _updateStudent(student) {
-    var index = ByKeyValue(_students, "_id", _editing_id); 
-    _students[index] = student;
+function _deleteMark(index) {
+    _deleting_id = index;
+}
+
+function _updateMark(mark) {
+    var index = ByKeyValue(_marks, "_id", _editing_id); 
+    _marks[index] = mark;
     _editing_id = null;
 }
+
 function _getMsg(message){
     _msg=message;    
 }
 function _deleteMsg(){
     _msg =null;
 }
-function _mapTable(tb1, tb2){
-
-}
-
 var MarkStore  = _.extend(BaseStore, {
-    getMarks: function() {
-      for(var i=0; i<_marks.length; i++){
-            for (var j = 0; j < _student.length; j++) {
-                if(_marks[i].student===_student[j]._id){
-                     _marks[i].student = _student[j];
-                }
-            };
-            for (var j = 0; j < _termClass.length; j++) {
-                if(_marks[i].term_class===_termClass[j]._id){
-                     _marks[i].term_class = _termClass[j];
-                }
-            };
-        };
-      
+    getMarks: function() {       
+       console.log(_marks);
         return _marks;
+
     },
-    getStudent: function(){
-        return _student;
-    },
+  
     getMessage:function(){
         return _msg;
     },
@@ -89,36 +73,77 @@ var MarkStore  = _.extend(BaseStore, {
     //     this.on(CHANGE_EVENT, callback);
     // },
 
-    getEditingStudent: function() {
+    getEditingMarks: function() {
         if (!_editing_id) {
+
             return null;
         }
-        var index = ByKeyValue(_students, "_id", _editing_id);
-        return _students[index];        
+        var index = ByKeyValue(_marks, "_id", _editing_id);
+
+        return _marks[index];        
     },
-    emitEditStudent: function(callback) {
+    emitEditMark: function(callback) {
         this.emit(CHANGE_EDIT_EVENT, callback);
     },
-    addEditStudentListener: function(callback) {
+    addEditMarkListener: function(callback) {
         this.on(CHANGE_EDIT_EVENT, callback);
+    },
+
+    getDeleteMark: function() {
+        if (!_deleting_id) {
+            return null;
+        }
+        var index = ByKeyValue(_marks, "_id", _deleting_id);
+        return _marks[index];        
+    },
+    emitDeleteMark: function(callback) {
+        this.emit(CHANGE_DELETE_EVENT, callback);
+    },
+    addDeleteMarkListener: function(callback) {
+        this.on(CHANGE_DELETE_EVENT, callback);
     },
 });
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-   
-        case StudentConstants.GET_MarkS:
+        case MarkConstants.CREATE_MARK:           
+            _addMark(payload.data.mark);
+            MarkStore.emitChange();            
+            break;
+
+        case MarkConstants.DELETE_MARK:
+            console.log(payload.data.Message.mark);
+            _removeMark(payload.data.Message.mark);
+            _getMsg(payload.data.Message);                    
+            MarkStore.emitChange();           
+            break;
+
+        case MarkConstants.ACTION_EDIT:
+            _editMark(payload.data);
+            MarkStore.emitEditMark();
+            break;
+
+        case MarkConstants.ACTION_DELETE:
+            _deleteMark(payload.data);
+            MarkStore.emitDeleteMark();
+            break;
+
+        case MarkConstants.UPDATE_MARK:
+            _updateMark(payload.data.Message.mark);
+            _getMsg(payload.data.Message);            
+            MarkStore.emitEditMark();
+            MarkStore.emitChange();            
+            break;
+
+        case MarkConstants.GET_MARK:
             _listMark(payload.data);
             MarkStore.emitChange();
             break;
-        case StudentConstants.GET_STUDENT:
-            _listStudent(payload.data);
+            
+        case MarkConstants.GET_COURSE:
+            _listCourse(payload.data);            
             MarkStore.emitChange();
-            break;        
-        case StudentConstants.GET_TERM_CLASS:
-            _listTermClass(payload.data);
-            MarkStore.emitChange();
-            break;   
+            break;
     }
 });
 module.exports = MarkStore;

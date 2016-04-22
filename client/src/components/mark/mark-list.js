@@ -1,27 +1,51 @@
 var React = require("react"),
-    UserStore = require("../../stores/user-store"),
-    StudentActions = require("../../actions/student-action.js");
+    MarkStore = require("../../stores/mark-store"),
+    MarkActions = require("../../actions/mark-action.js");
+var Confirm = require('react-confirm-bootstrap');
 var MarkList = React.createClass({
+     _onDelete: function() {        
+        var deletingMark = MarkStore.getDeleteMark();
+        // console.log(editingMark);
+        this.setState({
+            deletingMark: deletingMark,
+        });
 
+        if (deletingMark) {
+            this.setState({
+                firstname: deletingMark.firstname,
+                _id: deletingMark._id,
+            });
+        }
+    },
+    getInitialState: function() {
+            return {
+            firstname: "",            
+            deletingMark: null, 
+            id: null,           
+        }
+    },
+    componentDidMount: function() {
+        MarkStore.addDeleteMarkListener(this._onDelete);
+    },
     render: function() {
         var markList = this.props.marks.map(function(mark, index) {
-           
+          
             return (
                 <tr key={index}>
-
-                    <td>{mark.student.lastname} {mark.student.midname} {mark.student.firstname}</td>                    
-                    <td>{mark.term_class.name}</td>
-                    <td>{mark.cc}</td>
-                    <td>{mark.gk}</td>                    
-                    <td>{mark.tbkt}</td>
-                    <td>{mark.t1}</td>
-                    <td>{mark.tkml1}</td>
-                    <td>{mark.t2}</td>
-                    <td>{mark.tkml2}</td>
-                    <td>{mark.t3}</td>
-                    <td>{mark.by_text}</td>
-                    <td>{mark.by_number}</td>
-
+                    <td>{mark.student}</td> 
+                    <td>{mark.termClass}</td> 
+                    <td>{mark.cc}</td> 
+                    <td>{mark.gk}</td> 
+                    <td>{mark.tbkt}</td> 
+                    <td>{mark.t1}</td> 
+                    <td>{mark.tkml1}</td> 
+                    <td>{mark.t2}</td> 
+                    <td>{mark.tkml2}</td>  
+                    <td>{mark.t3}</td>   
+                    <td>{mark.by_text}</td>                                        
+                    <td>{mark.by_number}</td>                     
+                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={MarkActions.editMark.bind(null,mark._id)} /></td>
+                    
                 </tr>
             );
         }.bind(this));
@@ -29,26 +53,10 @@ var MarkList = React.createClass({
         return (
             <div>
                 <table className="table">
-                    <tbody>
-                    <thead>
-                          <tr>
-                             <th>Sinh viên</th>
-                             <th>Lớp học phần</th>
-                             <th>Cuối kỳ</th>
-                             <th>Giữa kỳ</th>
-                             <th>tbkt</th>
-                             <th>t1</th>
-                             <th>tkml1</th>
-                             <th>t2</th>
-                             <th>tkml2</th>
-                             <th>t3</th>
-                             <th>by_text</th>
-                             <th>by_number</th>
-                          </tr>
-                        </thead>
+                    <tbody>                        
                         {markList}
                     </tbody>
-                </table>
+                </table>                  
             </div>
         );
     }

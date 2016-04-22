@@ -1,18 +1,18 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema,
 ObjectId = Schema.ObjectId;
-const Term_classSchema = new Schema({
+const TermClassSchema = new Schema({
 	termClass_id: String,
 	name: String,
-	number: Number,
-	theory: Number,
-	perceive : Number,
-	self_taught : Number,
-	test_student : Number,
-	practive: Number,
-	diligence: Number,
-	last_test: Number,
+	number: String,
+	theory: String,
+	perceive : String,
+	self_taught : String,
+	test_student : String,
+	practive: String,
+	diligence: String,
+	last_test: String,
 	
 });
 
-export default module.exports = mongoose.model('Term_class', Term_classSchema);
+export default module.exports = mongoose.model('TeamClass', TermClassSchema);

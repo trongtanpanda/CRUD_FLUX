@@ -1,41 +1,30 @@
 var React = require("react"),
-    MarkActions = require("../actions/mark-action"),
-    MarkStore = require("../stores/mark-store"),   
-    MarkList = require("./mark/mark-list"),
-    StudentAction = require("../actions/student-action"),
-    TermClassAction = require("../actions/term-class");
-    // Message = require("./message");
+    MarkActions = require("../actions/mark-action.js"),
+    // CourseActions = require('../actions/course-action'),
+    MarkStore = require("../stores/mark-store"), 
+    // ComboCourse = require("./combb-course"),   
+    MarkForm = require("./mark/mark-form"),
+    MarkList = require("./mark/mark-list");
+    // Message = require("./message.js");
 
 
 
 var Mark = React.createClass({
-     componentWillMount: function() {
-        this.setState({
-            marks: MarkStore.getMarks()
-            
-        }); 
-        
-    },
     _onChange: function() {
-
+        console.log("onchane",MarkStore.getMarks());
         this.setState({
             marks: MarkStore.getMarks(),
-            
+           
         }); 
-       
+      
                
     },
     getInitialState: function() {
-        MarkActions.fetchAddMarkFromServer();
-        StudentAction.fetchAddStudentFromServer();
-        TermClassAction.fetchAddTerm_classFromServer();
+        MarkActions.fetchAddMarkFromServer();       
         return {
-            marks: MarkStore.getMarks(),           
+            marks: MarkStore.getMarks(),          
+           
         }
-         this.setState({
-            marks: MarkStore.getMarks(),
-            
-        });
     },
     componentDidMount: function() {
         MarkStore.addChangeListener(this._onChange);             
@@ -46,9 +35,12 @@ var Mark = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Quản lý điểm</h1>
-                    <div className="col-md-10 col-md-offset-1">
-                        <MarkList marks={this.state.marks} />
+                <h1 className="text-center">Quản lý sinh viên</h1>
+                    <div className="col-md-10 col-md-offset-1"> 
+                    <MarkForm />                   
+                    <MarkList marks={this.state.marks} />
+
+
                 </div>
 
             </div>

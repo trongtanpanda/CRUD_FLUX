@@ -3,7 +3,7 @@ var request = require('superagent'),
 	Contant = require('../constants/student-constants');
 	promise = require('es6-promise').Promise;
 
-var API_URL = 'http://localhost:3008/ma/masks';
+var API_URL = 'http://localhost:3008/ma/marks';
 var TIMEOUT = 10000;
 
 var _pendingRequests = [];

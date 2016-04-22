@@ -20,7 +20,7 @@ function makeUrl(part) {
 	return API_URL + part;
 }
 
-function getAllTerm_Class() {	
+function getAllTermClass() {	
 	var t = new promise(function(resolve, reject){
 		request.get(API_URL)		
 			.timeout(TIMEOUT)
@@ -38,11 +38,11 @@ function getAllTerm_Class() {
 	return t;;
 }
 
-function createTerm_Class(newClass) {   
+function createTermClass(newClass) {   
 	var t = new promise(function(resolve, reject){
 		request.post(API_URL)
 			.timeout(TIMEOUT)
-			.send({term_class: newClass})
+			.send({termClass: newClass})
 			.end(function(err,res) {
 				data = JSON.parse(res.text);
 				if(res.status === 201) {                    
@@ -56,12 +56,12 @@ function createTerm_Class(newClass) {
 	return t;
 }
 
-function updateTerm_Class(term_class) {	
+function updateTermClass(termClass) {	
 	var t = new promise(function(resolve, reject){
 		request.put(API_URL)
 			.timeout(TIMEOUT)
 			.set('Content-Type', 'application/json')
-			.send({term_class: term_class})
+			.send({termClass: termClass})
 			.end(function(err,res) {
                 data = JSON.parse(res.text);				
 				if(res.status === 201){
@@ -76,12 +76,12 @@ function updateTerm_Class(term_class) {
 	return t;
 }
 
-function deleteTerm_Class(term_class) {    
+function deleteTermClass(termClass) {    
 	var t = new promise(function(resolve, reject){
 		request.delete(API_URL)
             .timeout(TIMEOUT)
             .set('Content-Type', 'application/json')
-            .send({term_class: term_class})			
+            .send({termClass: termClass})			
 			.end(function(err,res) {
                 data = JSON.parse(res.text);
 				if(res.status === 201) {                    
@@ -96,8 +96,8 @@ function deleteTerm_Class(term_class) {
 	return t;
 }
 module.exports = {
-	getAllTerm_Class: getAllTerm_Class,
-	createTerm_Class: createTerm_Class,
-	deleteTerm_Class: deleteTerm_Class,
-	updateTerm_Class: updateTerm_Class
+	getAllTermClass: getAllTermClass,
+	createTermClass: createTermClass,
+	deleteTermClass: deleteTermClass,
+	updateTermClass: updateTermClass
 };

@@ -9,7 +9,7 @@ var Mark = require('./components/mark');
 var Sector = require('./components/sector');
 var Student = require('./components/student');
 var Subject = require('./components/subject');
-var Term_class = require('./components/term_class');
+var Term_class = require('./components/termclass');
 var User = require('./components/user');
 
 var BeanListPage = require('./components/pages/BeanListPage');

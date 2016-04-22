@@ -6,7 +6,7 @@ var MarkActions = {
 	fetchAddMarkFromServer: function() {		
 		MarkAPI.getAllmark({}).then(function(marks) {			
 			AppDispatcher.dispatch({
-				action:Contants.GET_Mark,
+				action:Contants.GET_MARK,
 				data: marks,
 				// params: {}
 			});
@@ -18,7 +18,7 @@ var MarkActions = {
 	create: function(mark) {        
 		MarkAPI.createMark(mark).then(function(data) {            
 			AppDispatcher.dispatch({
-				action: Contants.CREATE_Mark,
+				action: Contants.CREATE_MARK,
 				data: data
 			});
 		}, function(status, text) {
@@ -27,9 +27,9 @@ var MarkActions = {
 	},
 
 	update: function(mark) {		
-		MarkAPI.updateMark(Mark).then(function(updateData){
+		MarkAPI.updateMark(mark).then(function(updateData){
 			AppDispatcher.dispatch({
-				action: Contants.UPDATE_Mark,
+				action: Contants.UPDATE_MARK,
 				data: updateData,
                 mark: mark,
 			});
@@ -46,13 +46,19 @@ var MarkActions = {
 	destroy: function(id) {       
 		MarkAPI.deleteMark(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_Mark,
+				action: Contants.DELETE_MARK,
 				data: data,
 			});
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteMark: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
 module.exports = MarkActions;

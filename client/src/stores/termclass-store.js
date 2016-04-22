@@ -106,13 +106,13 @@ var TermClassStore  = _.extend(BaseStore, {
 
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
-        case TermClassConstants.CREATE_TERMCLASS:           
-            _addTermClass(payload.data.termClass);
+        case TermClassConstants.CREATE_TERMCLASS:  
+        console.log(payload.data);         
+            _addTermClass(payload.data.Message.termClass);
             TermClassStore.emitChange();            
             break;
 
         case TermClassConstants.DELETE_TERMCLASS:
-            console.log(payload.data.Message.termClass);
             _removeTermClass(payload.data.Message.termClass);
             _getMsg(payload.data.Message);                    
             TermClassStore.emitChange();           

@@ -27,12 +27,12 @@ module.exports = {
     UPDATE_DEPARTMENT   : "UPDATE_DEPARTMENT",
     DELETE_DEPARTMENT   : "DELETE_DEPARTMENT",
 
-    //----------MASK----------------//
+    //----------MARK----------------//
 
-    GET_MASK        : "GET_MASK",
-    CREATE_MASK     : "CREATE_MASK",
-    UPDATE_MASK     : "UPDATE_MASK",
-    DELETE_MASK     : "DELETE_MASK",
+    GET_MARK        : "GET_MARK",
+    CREATE_MARK     : "CREATE_MARK",
+    UPDATE_MARK     : "UPDATE_MARK",
+    DELETE_MARK     : "DELETE_MARK",
 
     //----------SECTOR----------------//
 

@@ -23699,14 +23699,14 @@
 	var Department = __webpack_require__(542);
 	var Mark = __webpack_require__(548);
 	var Sector = __webpack_require__(558);
-	var Student = __webpack_require__(563);
-	var Subject = __webpack_require__(567);
-	var Term_class = __webpack_require__(572);
-	var User = __webpack_require__(575);
+	var Student = __webpack_require__(564);
+	var Subject = __webpack_require__(568);
+	var Term_class = __webpack_require__(607);
+	var User = __webpack_require__(574);
 
-	var BeanListPage = __webpack_require__(579);
-	var BeanItemPage = __webpack_require__(602);
-	var BeanItemEditPage = __webpack_require__(607);
+	var BeanListPage = __webpack_require__(578);
+	var BeanItemPage = __webpack_require__(601);
+	var BeanItemEditPage = __webpack_require__(606);
 
 
 	var routes = (
@@ -24304,12 +24304,12 @@
 	    UPDATE_DEPARTMENT   : "UPDATE_DEPARTMENT",
 	    DELETE_DEPARTMENT   : "DELETE_DEPARTMENT",
 
-	    //----------MASK----------------//
+	    //----------MARK----------------//
 
-	    GET_MASK        : "GET_MASK",
-	    CREATE_MASK     : "CREATE_MASK",
-	    UPDATE_MASK     : "UPDATE_MASK",
-	    DELETE_MASK     : "DELETE_MASK",
+	    GET_MARK        : "GET_MARK",
+	    CREATE_MARK     : "CREATE_MARK",
+	    UPDATE_MARK     : "UPDATE_MARK",
+	    DELETE_MARK     : "DELETE_MARK",
 
 	    //----------SECTOR----------------//
 
@@ -25961,7 +25961,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -54681,42 +54681,31 @@
 
 	var React = __webpack_require__(2),
 	    MarkActions = __webpack_require__(549),
-	    MarkStore = __webpack_require__(551),   
-	    MarkList = __webpack_require__(552),
-	    StudentAction = __webpack_require__(554),
-	    TermClassAction = __webpack_require__(556);
-	    // Message = require("./message");
+	    // CourseActions = require('../actions/course-action'),
+	    MarkStore = __webpack_require__(551), 
+	    // ComboCourse = require("./combb-course"),   
+	    MarkForm = __webpack_require__(615),
+	    MarkList = __webpack_require__(552);
+	    // Message = require("./message.js");
 
 
 
 	var Mark = React.createClass({displayName: "Mark",
-	     componentWillMount: function() {
-	        this.setState({
-	            marks: MarkStore.getMarks()
-	            
-	        }); 
-	        
-	    },
 	    _onChange: function() {
-
+	        console.log("onchane",MarkStore.getMarks());
 	        this.setState({
 	            marks: MarkStore.getMarks(),
-	            
+	           
 	        }); 
-	       
+	      
 	               
 	    },
 	    getInitialState: function() {
-	        MarkActions.fetchAddMarkFromServer();
-	        StudentAction.fetchAddStudentFromServer();
-	        TermClassAction.fetchAddTerm_classFromServer();
+	        MarkActions.fetchAddMarkFromServer();       
 	        return {
-	            marks: MarkStore.getMarks(),           
+	            marks: MarkStore.getMarks(),          
+	           
 	        }
-	         this.setState({
-	            marks: MarkStore.getMarks(),
-	            
-	        });
 	    },
 	    componentDidMount: function() {
 	        MarkStore.addChangeListener(this._onChange);             
@@ -54727,9 +54716,12 @@
 	        return (
 	            
 	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý điểm"), 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
 	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                        React.createElement(MarkList, {marks: this.state.marks})
+	                    React.createElement(MarkForm, null), 
+	                    React.createElement(MarkList, {marks: this.state.marks})
+
+
 	                )
 
 	            )
@@ -54752,7 +54744,7 @@
 		fetchAddMarkFromServer: function() {		
 			MarkAPI.getAllmark({}).then(function(marks) {			
 				AppDispatcher.dispatch({
-					action:Contants.GET_Mark,
+					action:Contants.GET_MARK,
 					data: marks,
 					// params: {}
 				});
@@ -54764,7 +54756,7 @@
 		create: function(mark) {        
 			MarkAPI.createMark(mark).then(function(data) {            
 				AppDispatcher.dispatch({
-					action: Contants.CREATE_Mark,
+					action: Contants.CREATE_MARK,
 					data: data
 				});
 			}, function(status, text) {
@@ -54773,9 +54765,9 @@
 		},
 
 		update: function(mark) {		
-			MarkAPI.updateMark(Mark).then(function(updateData){
+			MarkAPI.updateMark(mark).then(function(updateData){
 				AppDispatcher.dispatch({
-					action: Contants.UPDATE_Mark,
+					action: Contants.UPDATE_MARK,
 					data: updateData,
 	                mark: mark,
 				});
@@ -54792,13 +54784,19 @@
 		destroy: function(id) {       
 			MarkAPI.deleteMark(id).then(function(data){
 				AppDispatcher.dispatch({
-					action: Contants.DELETE_Mark,
+					action: Contants.DELETE_MARK,
 					data: data,
 				});
 			},function(status, err){
 				// Handle error
 			});
-		}
+		},
+		deleteMark: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE,
+		        data: index,
+		    })
+	    },
 
 	};
 	module.exports = MarkActions;
@@ -54812,7 +54810,7 @@
 		Contant = __webpack_require__(210);
 		promise = __webpack_require__(218).Promise;
 
-	var API_URL = 'http://localhost:3008/ma/masks';
+	var API_URL = 'http://localhost:3008/ma/marks';
 	var TIMEOUT = 10000;
 
 	var _pendingRequests = [];
@@ -54916,18 +54914,17 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
-	    StudentConstants = __webpack_require__(210),
+	    MarkConstants = __webpack_require__(210),
 	    AppDispatcher = __webpack_require__(206),    
 	    BaseStore = __webpack_require__(224);
 
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
-
+	var CHANGE_DELETE_EVENT = 'change_delete';
 	var _marks = [];
-	var _student= [];
-	var _termClass = [];
-
+	var _courses= [];
 	var _editing_id = null;
+	var _deleting_id = null;
 	var _msg;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
@@ -54940,62 +54937,47 @@
 	}
 
 
-	function _addStudent(student) {
-	    _students.push(student);
+	function _addMark(mark) {
+	    _marks.push(mark);
 	}
 	function _listMark(data){
 	    _marks= data;
 	}
-	function _listStudent(data){
-	    _student =data;
+	function _listCourse(data){
+	    _courses =data;
 	}
-	function _listTermClass(data){
-	    _termClass =data;
-	}
-	function _removeStudent(_id) {    
-	    var i = ByKeyValue(_students, "_id", _id);
-	        _students.splice(i,1);
+	function _removeMark(_id) {    
+	    var i = ByKeyValue(_marks, "_id", _id);
+	        _marks.splice(i,1);
 	}
 
-	function _editStudent(index) {
+	function _editMark(index) {
 	    _editing_id = index;
 	}
 
-	function _updateStudent(student) {
-	    var index = ByKeyValue(_students, "_id", _editing_id); 
-	    _students[index] = student;
+	function _deleteMark(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateMark(mark) {
+	    var index = ByKeyValue(_marks, "_id", _editing_id); 
+	    _marks[index] = mark;
 	    _editing_id = null;
 	}
+
 	function _getMsg(message){
 	    _msg=message;    
 	}
 	function _deleteMsg(){
 	    _msg =null;
 	}
-	function _mapTable(tb1, tb2){
-
-	}
-
 	var MarkStore  = _.extend(BaseStore, {
-	    getMarks: function() {
-	      for(var i=0; i<_marks.length; i++){
-	            for (var j = 0; j < _student.length; j++) {
-	                if(_marks[i].student===_student[j]._id){
-	                     _marks[i].student = _student[j];
-	                }
-	            };
-	            for (var j = 0; j < _termClass.length; j++) {
-	                if(_marks[i].term_class===_termClass[j]._id){
-	                     _marks[i].term_class = _termClass[j];
-	                }
-	            };
-	        };
-	      
+	    getMarks: function() {       
+	       console.log(_marks);
 	        return _marks;
+
 	    },
-	    getStudent: function(){
-	        return _student;
-	    },
+	  
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -55006,36 +54988,77 @@
 	    //     this.on(CHANGE_EVENT, callback);
 	    // },
 
-	    getEditingStudent: function() {
+	    getEditingMarks: function() {
 	        if (!_editing_id) {
+
 	            return null;
 	        }
-	        var index = ByKeyValue(_students, "_id", _editing_id);
-	        return _students[index];        
+	        var index = ByKeyValue(_marks, "_id", _editing_id);
+
+	        return _marks[index];        
 	    },
-	    emitEditStudent: function(callback) {
+	    emitEditMark: function(callback) {
 	        this.emit(CHANGE_EDIT_EVENT, callback);
 	    },
-	    addEditStudentListener: function(callback) {
+	    addEditMarkListener: function(callback) {
 	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+
+	    getDeleteMark: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_marks, "_id", _deleting_id);
+	        return _marks[index];        
+	    },
+	    emitDeleteMark: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteMarkListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
 	    },
 	});
 
 	AppDispatcher.register(function(payload) {
 	    switch (payload.action) {
-	   
-	        case StudentConstants.GET_MarkS:
+	        case MarkConstants.CREATE_MARK:           
+	            _addMark(payload.data.mark);
+	            MarkStore.emitChange();            
+	            break;
+
+	        case MarkConstants.DELETE_MARK:
+	            console.log(payload.data.Message.mark);
+	            _removeMark(payload.data.Message.mark);
+	            _getMsg(payload.data.Message);                    
+	            MarkStore.emitChange();           
+	            break;
+
+	        case MarkConstants.ACTION_EDIT:
+	            _editMark(payload.data);
+	            MarkStore.emitEditMark();
+	            break;
+
+	        case MarkConstants.ACTION_DELETE:
+	            _deleteMark(payload.data);
+	            MarkStore.emitDeleteMark();
+	            break;
+
+	        case MarkConstants.UPDATE_MARK:
+	            _updateMark(payload.data.Message.mark);
+	            _getMsg(payload.data.Message);            
+	            MarkStore.emitEditMark();
+	            MarkStore.emitChange();            
+	            break;
+
+	        case MarkConstants.GET_MARK:
 	            _listMark(payload.data);
 	            MarkStore.emitChange();
 	            break;
-	        case StudentConstants.GET_STUDENT:
-	            _listStudent(payload.data);
+	            
+	        case MarkConstants.GET_COURSE:
+	            _listCourse(payload.data);            
 	            MarkStore.emitChange();
-	            break;        
-	        case StudentConstants.GET_TERM_CLASS:
-	            _listTermClass(payload.data);
-	            MarkStore.emitChange();
-	            break;   
+	            break;
 	    }
 	});
 	module.exports = MarkStore;
@@ -55045,18 +55068,41 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    UserStore = __webpack_require__(553),
-	    StudentActions = __webpack_require__(554);
+	    MarkStore = __webpack_require__(551),
+	    MarkActions = __webpack_require__(549);
+	var Confirm = __webpack_require__(229);
 	var MarkList = React.createClass({displayName: "MarkList",
+	     _onDelete: function() {        
+	        var deletingMark = MarkStore.getDeleteMark();
+	        // console.log(editingMark);
+	        this.setState({
+	            deletingMark: deletingMark,
+	        });
 
+	        if (deletingMark) {
+	            this.setState({
+	                firstname: deletingMark.firstname,
+	                _id: deletingMark._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            firstname: "",            
+	            deletingMark: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        MarkStore.addDeleteMarkListener(this._onDelete);
+	    },
 	    render: function() {
 	        var markList = this.props.marks.map(function(mark, index) {
-	           
+	          
 	            return (
 	                React.createElement("tr", {key: index}, 
-
-	                    React.createElement("td", null, mark.student.lastname, " ", mark.student.midname, " ", mark.student.firstname), 
-	                    React.createElement("td", null, mark.term_class.name), 
+	                    React.createElement("td", null, mark.student), 
+	                    React.createElement("td", null, mark.termClass), 
 	                    React.createElement("td", null, mark.cc), 
 	                    React.createElement("td", null, mark.gk), 
 	                    React.createElement("td", null, mark.tbkt), 
@@ -55066,8 +55112,9 @@
 	                    React.createElement("td", null, mark.tkml2), 
 	                    React.createElement("td", null, mark.t3), 
 	                    React.createElement("td", null, mark.by_text), 
-	                    React.createElement("td", null, mark.by_number)
-
+	                    React.createElement("td", null, mark.by_number), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: MarkActions.editMark.bind(null,mark._id)}))
+	                    
 	                )
 	            );
 	        }.bind(this));
@@ -55076,22 +55123,6 @@
 	            React.createElement("div", null, 
 	                React.createElement("table", {className: "table"}, 
 	                    React.createElement("tbody", null, 
-	                    React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Sinh viên"), 
-	                             React.createElement("th", null, "Lớp học phần"), 
-	                             React.createElement("th", null, "Cuối kỳ"), 
-	                             React.createElement("th", null, "Giữa kỳ"), 
-	                             React.createElement("th", null, "tbkt"), 
-	                             React.createElement("th", null, "t1"), 
-	                             React.createElement("th", null, "tkml1"), 
-	                             React.createElement("th", null, "t2"), 
-	                             React.createElement("th", null, "tkml2"), 
-	                             React.createElement("th", null, "t3"), 
-	                             React.createElement("th", null, "by_text"), 
-	                             React.createElement("th", null, "by_number")
-	                          )
-	                        ), 
 	                        markList
 	                    )
 	                )
@@ -55382,70 +55413,115 @@
 	};
 
 /***/ },
-/* 556 */
+/* 556 */,
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(206),
-		Contants = __webpack_require__(210),
-		TermClassAPI = __webpack_require__(610);
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
 
-	var Term_classActions = {
-		fetchAddTerm_classFromServer: function() {		
-			TermClassAPI.getAllTerm_Class({}).then(function(term_class) {			
-				AppDispatcher.dispatch({
-					action:Contants.GET_TERMCLASS,
-					data: term_class,
-					// params: {}
-				});
-			}, function(status, text) {
-				// Handle error!
-			});
-		},
+	var API_URL = 'http://localhost:3008/te/termclass';
+	var TIMEOUT = 10000;
 
-		create: function(term_class) {        
-			TermClassAPI.createTerm_class(term_class).then(function(data) {            
-				AppDispatcher.dispatch({
-					action: Contants.CREATE_TERMCLASS,
-					data: data
-				});
-			}, function(status, text) {
-				// Handle error
-			});
-		},
+	var _pendingRequests = [];
 
-		update: function(term_class) {		
-			TermClassAPI.updateTerm_class(term_class).then(function(updateData){
-				AppDispatcher.dispatch({
-					action: Contants.UPDATE_TERMCLASS,
-					data: updateData,
-	                term_class: term_class,
-				});
-			}, function(status,text){
-				// handle err
-			});
-		},
-		editTerm_class: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_EDIT,
-		        data: index,
-		    })
-	    },
-		destroy: function(id) {       
-			TermClassAPI.deleteTerm_class(id).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.DELETE_TERMCLASS,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]) {
+			_pendingRequests[key].callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
 		}
+	}
 
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getAllTermClass() {	
+		var t = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){				
+					var data = null;
+					if(res.status === 200) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;;
+	}
+
+	function createTermClass(newClass) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({termClass: newClass})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function updateTermClass(termClass) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.set('Content-Type', 'application/json')
+				.send({termClass: termClass})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteTermClass(termClass) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .set('Content-Type', 'application/json')
+	            .send({termClass: termClass})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getAllTermClass: getAllTermClass,
+		createTermClass: createTermClass,
+		deleteTermClass: deleteTermClass,
+		updateTermClass: updateTermClass
 	};
-	module.exports = Term_classActions;
 
 /***/ },
-/* 557 */,
 /* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -55454,8 +55530,8 @@
 	    // CourseActions = require('../actions/course-action'),
 	    SectorStore = __webpack_require__(561), 
 	    // ComboCourse = require("./combb-course"),   
-	    SectorForm = __webpack_require__(608),
-	    SectorList = __webpack_require__(562);
+	    SectorForm = __webpack_require__(562),
+	    SectorList = __webpack_require__(563);
 	    // Message = require("./message.js");
 
 
@@ -55836,6 +55912,160 @@
 /* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var React = __webpack_require__(2),    
+	    SectorStore = __webpack_require__(561),
+	    SectorActions = __webpack_require__(559);
+
+	var SectorForm = React.createClass({displayName: "SectorForm",
+	    
+	    _onClickAdd: function() {
+	         var sector = {
+	            sector_id: this.state.sector_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            english_name: this.state.english_name
+	        };
+
+	        SectorActions.create(sector);
+	        this.setState({
+	           sector_id:"", name: "", short_name: "", english_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingSector = this.state.editingSector;        
+	        var user ={
+	            _id:editingSector._id,
+	            sector_id: this.state.sector_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            english_name: this.state.english_name
+	        };
+	        SectorActions.update(user);
+	        this.setState({
+	            sector_id:"", name: "", short_name: "", english_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onchangId: function(e){        
+	        this.setState({
+	            sector_id: e.target.value,
+	        });
+	    },
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangshort_name: function(e) {
+	        this.setState({
+	            short_name: e.target.value, 
+	        });
+	    },
+	    _onchangenglish_name: function(e) {
+	        this.setState({
+	            english_name: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {  
+	        var editingSector = SectorStore.getEditingSectors();
+	        this.setState({
+	            editingSector: editingSector,
+	        });
+
+	        if (editingSector) {
+	            this.setState({
+	                sector_id: editingSector.sector_id,
+	                name: editingSector.name,
+	                short_name: editingSector.short_name,
+	                english_name: editingSector.english_name,
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            sector_id: "",
+	            name: "",
+	            short_name:"",
+	            english_name: "",           
+	            editingSector: "",                  
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            sector_id: "", first: "", short_name: "", english_name: "",            
+	            editingSector: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        SectorStore.addEditSectorListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
+
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.sector_id, onChange: this._onchangId, ref: "sector_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.english_name, onChange: this._onchangenglish_name, ref: "english_name", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingSector ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
+
+	module.exports = SectorForm;
+
+/***/ },
+/* 563 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var React = __webpack_require__(2),
 	    SectorStore = __webpack_require__(561),
 	    SectorActions = __webpack_require__(559);
@@ -55913,16 +56143,16 @@
 	module.exports = SectorList;
 
 /***/ },
-/* 563 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    StudentActions = __webpack_require__(554),
 	    // CourseActions = require('../actions/course-action'),
-	    StudentStore = __webpack_require__(564), 
+	    StudentStore = __webpack_require__(565), 
 	    // ComboCourse = require("./combb-course"),   
-	    StudentForm = __webpack_require__(565),
-	    StudentList = __webpack_require__(566);
+	    StudentForm = __webpack_require__(566),
+	    StudentList = __webpack_require__(567);
 	    // Message = require("./message.js");
 
 
@@ -55969,7 +56199,7 @@
 	module.exports = Student;
 
 /***/ },
-/* 564 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
@@ -56123,11 +56353,11 @@
 	module.exports = StudentStore;
 
 /***/ },
-/* 565 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    StudentStore = __webpack_require__(564),
+	    StudentStore = __webpack_require__(565),
 	    StudentActions = __webpack_require__(554);
 
 	var StudentForm = React.createClass({displayName: "StudentForm",
@@ -56277,11 +56507,11 @@
 	module.exports = StudentForm;
 
 /***/ },
-/* 566 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    StudentStore = __webpack_require__(564),
+	    StudentStore = __webpack_require__(565),
 	    StudentActions = __webpack_require__(554);
 	var Confirm = __webpack_require__(229);
 	var StudentList = React.createClass({displayName: "StudentList",
@@ -56356,16 +56586,16 @@
 	module.exports = StudentList;
 
 /***/ },
-/* 567 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SubjectActions = __webpack_require__(568),
+	    SubjectActions = __webpack_require__(569),
 	    // CourseActions = require('../actions/course-action'),
-	    SubjectStore = __webpack_require__(570), 
+	    SubjectStore = __webpack_require__(571), 
 	    // ComboCourse = require("./combb-course"),   
-	    SubjectForm = __webpack_require__(609),
-	    SubjectList = __webpack_require__(571);
+	    SubjectForm = __webpack_require__(572),
+	    SubjectList = __webpack_require__(573);
 	    // Message = require("./message.js");
 
 
@@ -56412,12 +56642,12 @@
 	module.exports = Subject;
 
 /***/ },
-/* 568 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(206),
 		Contants = __webpack_require__(210),
-		SubjectAPI = __webpack_require__(569);
+		SubjectAPI = __webpack_require__(570);
 
 	var SubjectActions = {
 		fetchAddSubjectFromServer: function() {		
@@ -56481,7 +56711,7 @@
 	module.exports = SubjectActions;
 
 /***/ },
-/* 569 */
+/* 570 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(212),
@@ -56589,7 +56819,7 @@
 	};
 
 /***/ },
-/* 570 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(223),
@@ -56742,12 +56972,166 @@
 	module.exports = SubjectStore;
 
 /***/ },
-/* 571 */
+/* 572 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),    
+	    SubjectStore = __webpack_require__(571),
+	    SubjectActions = __webpack_require__(569);
+
+	var SubjectForm = React.createClass({displayName: "SubjectForm",
+	    
+	    _onClickAdd: function() {
+	         var subject = {
+	            subject_id: this.state.subject_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            number: this.state.number
+	        };
+
+	        SubjectActions.create(subject);
+	        this.setState({
+	           subject_id:"", name: "", short_name: "", number: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingSubject = this.state.editingSubject;        
+	        var user ={
+	            _id:editingSubject._id,
+	            subject_id: this.state.subject_id,
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            number: this.state.number
+	        };
+	        SubjectActions.update(user);
+	        this.setState({
+	            subject_id:"", name: "", short_name: "", number: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onchangId: function(e){        
+	        this.setState({
+	            subject_id: e.target.value,
+	        });
+	    },
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangshort_name: function(e) {
+	        this.setState({
+	            short_name: e.target.value, 
+	        });
+	    },
+	    _onchangnumber: function(e) {
+	        this.setState({
+	            number: e.target.value, 
+	        });
+	    },
+	    _onEdit: function() {  
+	        var editingSubject = SubjectStore.getEditingSubjects();
+	        this.setState({
+	            editingSubject: editingSubject,
+	        });
+
+	        if (editingSubject) {
+	            this.setState({
+	                subject_id: editingSubject.subject_id,
+	                name: editingSubject.name,
+	                short_name: editingSubject.short_name,
+	                number: editingSubject.number,
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            subject_id: "",
+	            name: "",
+	            short_name:"",
+	            number: "",           
+	            editingSubject: "",                  
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            subject_id: "", first: "", short_name: "", number: "",            
+	            editingSubject: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        SubjectStore.addEditSubjectListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
+
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.subject_id, onChange: this._onchangId, ref: "subject_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingSubject ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
+
+	module.exports = SubjectForm;
+
+/***/ },
+/* 573 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SubjectStore = __webpack_require__(570),
-	    SubjectActions = __webpack_require__(568);
+	    SubjectStore = __webpack_require__(571),
+	    SubjectActions = __webpack_require__(569);
 	var Confirm = __webpack_require__(229);
 	var SubjectList = React.createClass({displayName: "SubjectList",
 	     _onDelete: function() {        
@@ -56823,285 +57207,13 @@
 	module.exports = SubjectList;
 
 /***/ },
-/* 572 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    Term_ClassActions = __webpack_require__(556),    
-	    Term_ClassStore = __webpack_require__(573),     
-	    Term_ClassList = __webpack_require__(574);
-	    // Message = require("./message");
-
-
-
-	var Term_Class = React.createClass({displayName: "Term_Class",
-
-	    componentWillMount: function() {
-	          this.setState({
-	            termClasss: Term_ClassStore.getTermClass()
-	           
-	        }); 
-	        
-	    },
-	    _onChange: function() {
-
-	        this.setState({
-	            termClasss: Term_ClassStore.getTermClass(),
-	           
-	        }); 
-	       
-	               
-	    },
-	    getInitialState: function() {
-	        Term_ClassActions.fetchAddTerm_classFromServer();
-	       
-	        return {
-	            termClasss: Term_ClassStore.getTermClass(),
-	           
-	        }
-	        this.setState({
-	            termClasss: Term_ClassStore.getTermClass()
-	           
-	        });
-	    },
-	    componentDidMount: function() {
-	        Term_ClassStore.addChangeListener(this._onChange);             
-	        
-	    },
-	    render: function() { 
-	       
-	        return (
-	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý Lớp học phần"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                        React.createElement(Term_ClassList, {termClass: this.state.termClasss})
-	                )
-
-	            )
-	            
-	        );
-	    }
-	});
-
-	module.exports = Term_Class;
-
-/***/ },
-/* 573 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(223),
-	    TermClassConstants = __webpack_require__(210),
-	    AppDispatcher = __webpack_require__(206),    
-	    BaseStore = __webpack_require__(224);
-
-	var CHANGE_EVENT = 'change';
-	var CHANGE_EDIT_EVENT = 'change_edit';
-	var CHANGE_DELETE_EVENT = 'change_delete';
-	var _termClasss = [];
-	var _courses= [];
-	var _editing_id = null;
-	var _deleting_id = null;
-	var _msg;
-
-	function ByKeyValue(arraytosearch, key, valuetosearch) { 
-	    for (var i = 0; i < arraytosearch.length; i++) { 
-	        if (arraytosearch[i][key] == valuetosearch) {
-	            return i;
-	        }
-	    }
-	    return null;
-	}
-
-
-	function _addTermClass(termClass) {
-	    _termClasss.push(termClass);
-	}
-	function _listTermClass(data){
-	    _termClasss= data;
-	}
-	function _listCourse(data){
-	    _courses =data;
-	}
-	function _removeTermClass(_id) {    
-	    var i = ByKeyValue(_termClasss, "_id", _id);
-	        _termClasss.splice(i,1);
-	}
-
-	function _editTermClass(index) {
-	    _editing_id = index;
-	}
-
-	function _deleteTermClass(index) {
-	    _deleting_id = index;
-	}
-
-	function _updateTermClass(termClass) {
-	    var index = ByKeyValue(_termClasss, "_id", _editing_id); 
-	    _termClasss[index] = termClass;
-	    _editing_id = null;
-	}
-
-	function _getMsg(message){
-	    _msg=message;    
-	}
-	function _deleteMsg(){
-	    _msg =null;
-	}
-	var TermClassStore  = _.extend(BaseStore, {
-	    getTermClasss: function() {       
-	       console.log(_termClasss);
-	        return _termClasss;
-
-	    },
-	  
-	    getMessage:function(){
-	        return _msg;
-	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
-
-	    getEditingTermClasss: function() {
-	        if (!_editing_id) {
-
-	            return null;
-	        }
-	        var index = ByKeyValue(_termClasss, "_id", _editing_id);
-
-	        return _termClasss[index];        
-	    },
-	    emitEditTermClass: function(callback) {
-	        this.emit(CHANGE_EDIT_EVENT, callback);
-	    },
-	    addEditTermClassListener: function(callback) {
-	        this.on(CHANGE_EDIT_EVENT, callback);
-	    },
-
-	    getDeleteTermClass: function() {
-	        if (!_deleting_id) {
-	            return null;
-	        }
-	        var index = ByKeyValue(_termClasss, "_id", _deleting_id);
-	        return _termClasss[index];        
-	    },
-	    emitDeleteTermClass: function(callback) {
-	        this.emit(CHANGE_DELETE_EVENT, callback);
-	    },
-	    addDeleteTermClassListener: function(callback) {
-	        this.on(CHANGE_DELETE_EVENT, callback);
-	    },
-	});
-
-	AppDispatcher.register(function(payload) {
-	    switch (payload.action) {
-	        case TermClassConstants.CREATE_TERMCLASS:           
-	            _addTermClass(payload.data.termClass);
-	            TermClassStore.emitChange();            
-	            break;
-
-	        case TermClassConstants.DELETE_TERMCLASS:
-	            console.log(payload.data.Message.termClass);
-	            _removeTermClass(payload.data.Message.termClass);
-	            _getMsg(payload.data.Message);                    
-	            TermClassStore.emitChange();           
-	            break;
-
-	        case TermClassConstants.ACTION_EDIT:
-	            _editTermClass(payload.data);
-	            TermClassStore.emitEditTermClass();
-	            break;
-
-	        case TermClassConstants.ACTION_DELETE:
-	            _deleteTermClass(payload.data);
-	            TermClassStore.emitDeleteTermClass();
-	            break;
-
-	        case TermClassConstants.UPDATE_TERMCLASS:
-	            _updateTermClass(payload.data.Message.termClass);
-	            _getMsg(payload.data.Message);            
-	            TermClassStore.emitEditTermClass();
-	            TermClassStore.emitChange();            
-	            break;
-
-	        case TermClassConstants.GET_TERMCLASS:
-	            _listTermClass(payload.data);
-	            TermClassStore.emitChange();
-	            break;
-	            
-	        case TermClassConstants.GET_COURSE:
-	            _listCourse(payload.data);            
-	            TermClassStore.emitChange();
-	            break;
-	    }
-	});
-	module.exports = TermClassStore;
-
-/***/ },
 /* 574 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    TermClassStore = __webpack_require__(573),
-	    TermClassActions = __webpack_require__(556);
-	var TermClassList = React.createClass({displayName: "TermClassList",
-
-	    render: function() {
-	        var termClassList = this.props.termClass.map(function(termClass, index) {
-	           
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, termClass.term_class_id), 
-	                    React.createElement("td", null, termClass.name), 
-	                    React.createElement("td", null, termClass.number), 
-	                    React.createElement("td", null, termClass.theory), 
-	                    React.createElement("td", null, termClass.diligence), 
-	                    React.createElement("td", null, termClass.practive), 
-	                    React.createElement("td", null, termClass.self_taught), 
-	                    React.createElement("td", null, termClass.perceive), 
-	                    React.createElement("td", null, termClass.last_test)
-	                )
-	            );
-	        }.bind(this));
-
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        React.createElement("thead", null, 
-	                          React.createElement("tr", null, 
-	                             React.createElement("th", null, "Mã Lớp học phần"), 
-	                             React.createElement("th", null, "Tên lớp học phần"), 
-	                             React.createElement("th", null, "Số tín chỉ"), 
-	                             React.createElement("th", null, "Lý thuyết"), 
-	                             React.createElement("th", null, "Chuyên cần"), 
-	                             React.createElement("th", null, "Thực hành"), 
-	                             React.createElement("th", null, "Tự học"), 
-	                             React.createElement("th", null, "Nhận thức"), 
-	                             React.createElement("th", null, "Cuối kỳ")
-	                          )
-	                        ), 
-	                        termClassList
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = TermClassList;
-
-/***/ },
-/* 575 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2),
-	    UserActions = __webpack_require__(576),   
+	    UserActions = __webpack_require__(575),   
 	    UserStore = __webpack_require__(553),    
-	    UserList = __webpack_require__(578);
+	    UserList = __webpack_require__(577);
 	    // Message = require("./message");
 
 
@@ -57157,12 +57269,12 @@
 	module.exports = User;
 
 /***/ },
-/* 576 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(206),
 		Contants = __webpack_require__(210),
-		UserAPI = __webpack_require__(577);
+		UserAPI = __webpack_require__(576);
 
 	var UserActions = {
 		fetchAddUserFromServer: function() {		
@@ -57220,7 +57332,7 @@
 	module.exports = UserActions;
 
 /***/ },
-/* 577 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(212),
@@ -57328,12 +57440,12 @@
 	};
 
 /***/ },
-/* 578 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    UserStore = __webpack_require__(553),
-	 UserActions = __webpack_require__(576);
+	 UserActions = __webpack_require__(575);
 	var UserList = React.createClass({displayName: "UserList",
 
 	    render: function() {
@@ -57361,15 +57473,15 @@
 	module.exports = UserList;
 
 /***/ },
-/* 579 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanListActions = __webpack_require__(580);
-	var BeanListStore = __webpack_require__(598);
-	var ListenerMixin = __webpack_require__(599);
+	var BeanListActions = __webpack_require__(579);
+	var BeanListStore = __webpack_require__(597);
+	var ListenerMixin = __webpack_require__(598);
 
-	var BeanListItem = __webpack_require__(601);
+	var BeanListItem = __webpack_require__(600);
 
 	var BeanListPage = React.createClass({displayName: "BeanListPage",
 	    mixins: [ListenerMixin],
@@ -57426,11 +57538,11 @@
 	module.exports = BeanListPage;
 
 /***/ },
-/* 580 */
+/* 579 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(581);
-	var BeanWebAPI = __webpack_require__(596);
+	var alt = __webpack_require__(580);
+	var BeanWebAPI = __webpack_require__(595);
 
 	function BeanListActions(){"use strict";}
 
@@ -57464,17 +57576,17 @@
 
 
 /***/ },
-/* 581 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Alt = __webpack_require__(582);
+	var Alt = __webpack_require__(581);
 
 	var alt = new Alt();
 
 	module.exports = alt;
 
 /***/ },
-/* 582 */
+/* 581 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global window*/
@@ -57497,29 +57609,29 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _flux = __webpack_require__(583);
+	var _flux = __webpack_require__(582);
 
-	var _utilsStateFunctions = __webpack_require__(586);
+	var _utilsStateFunctions = __webpack_require__(585);
 
 	var StateFunctions = _interopRequireWildcard(_utilsStateFunctions);
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(589);
+	var _utilsFunctions = __webpack_require__(588);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _store = __webpack_require__(590);
+	var _store = __webpack_require__(589);
 
 	var store = _interopRequireWildcard(_store);
 
-	var _utilsAltUtils = __webpack_require__(592);
+	var _utilsAltUtils = __webpack_require__(591);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _actions = __webpack_require__(595);
+	var _actions = __webpack_require__(594);
 
 	var _actions2 = _interopRequireDefault(_actions);
 
@@ -57789,7 +57901,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 583 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57801,11 +57913,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(584)
+	module.exports.Dispatcher = __webpack_require__(583)
 
 
 /***/ },
-/* 584 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -57822,7 +57934,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(585);
+	var invariant = __webpack_require__(584);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -58061,7 +58173,7 @@
 
 
 /***/ },
-/* 585 */
+/* 584 */
 /***/ function(module, exports) {
 
 	/**
@@ -58120,7 +58232,7 @@
 
 
 /***/ },
-/* 586 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58135,11 +58247,11 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(589);
+	var _utilsFunctions = __webpack_require__(588);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -58193,7 +58305,7 @@
 	}
 
 /***/ },
-/* 587 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58204,7 +58316,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(588);
+	var _esSymbol = __webpack_require__(587);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
@@ -58257,7 +58369,7 @@
 	exports.STATE_CONTAINER = STATE_CONTAINER;
 
 /***/ },
-/* 588 */
+/* 587 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58413,7 +58525,7 @@
 
 
 /***/ },
-/* 589 */
+/* 588 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58449,7 +58561,7 @@
 	}
 
 /***/ },
-/* 590 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58474,27 +58586,27 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var _eventemitter3 = __webpack_require__(591);
+	var _eventemitter3 = __webpack_require__(590);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(592);
+	var _utilsAltUtils = __webpack_require__(591);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
-	var _utilsFunctions = __webpack_require__(589);
+	var _utilsFunctions = __webpack_require__(588);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
-	var _AltStore = __webpack_require__(593);
+	var _AltStore = __webpack_require__(592);
 
 	var _AltStore2 = _interopRequireDefault(_AltStore);
 
-	var _StoreMixin = __webpack_require__(594);
+	var _StoreMixin = __webpack_require__(593);
 
 	var _StoreMixin2 = _interopRequireDefault(_StoreMixin);
 
@@ -58629,7 +58741,7 @@
 	}
 
 /***/ },
-/* 591 */
+/* 590 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58864,7 +58976,7 @@
 
 
 /***/ },
-/* 592 */
+/* 591 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58927,7 +59039,7 @@
 	}
 
 /***/ },
-/* 593 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58944,19 +59056,19 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _eventemitter3 = __webpack_require__(591);
+	var _eventemitter3 = __webpack_require__(590);
 
 	var _eventemitter32 = _interopRequireDefault(_eventemitter3);
 
-	var _esSymbol = __webpack_require__(588);
+	var _esSymbol = __webpack_require__(587);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(589);
+	var _utilsFunctions = __webpack_require__(588);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -59066,7 +59178,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 594 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59079,15 +59191,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _esSymbol = __webpack_require__(588);
+	var _esSymbol = __webpack_require__(587);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsFunctions = __webpack_require__(589);
+	var _utilsFunctions = __webpack_require__(588);
 
 	var fn = _interopRequireWildcard(_utilsFunctions);
 
@@ -59276,7 +59388,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 595 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59295,15 +59407,15 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _esSymbol = __webpack_require__(588);
+	var _esSymbol = __webpack_require__(587);
 
 	var _esSymbol2 = _interopRequireDefault(_esSymbol);
 
-	var _symbolsSymbols = __webpack_require__(587);
+	var _symbolsSymbols = __webpack_require__(586);
 
 	var Sym = _interopRequireWildcard(_symbolsSymbols);
 
-	var _utilsAltUtils = __webpack_require__(592);
+	var _utilsAltUtils = __webpack_require__(591);
 
 	var utils = _interopRequireWildcard(_utilsAltUtils);
 
@@ -59369,10 +59481,10 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 596 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var fakeData = __webpack_require__(597);
+	var fakeData = __webpack_require__(596);
 
 	// Emulate API requests
 
@@ -59414,7 +59526,7 @@
 	module.exports = BeanWebApi;
 
 /***/ },
-/* 597 */
+/* 596 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -59523,11 +59635,11 @@
 	};
 
 /***/ },
-/* 598 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var BeanListActions = __webpack_require__(580);
-	var alt = __webpack_require__(581);
+	var BeanListActions = __webpack_require__(579);
+	var alt = __webpack_require__(580);
 
 
 	    function BeanListStore() {"use strict";
@@ -59554,11 +59666,11 @@
 	module.exports = alt.createStore(BeanListStore);
 
 /***/ },
-/* 599 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Subscribe = __webpack_require__(600)
+	var Subscribe = __webpack_require__(599)
 
 	var ListenerMixin = {
 	  componentWillMount: function () {
@@ -59588,11 +59700,11 @@
 
 
 /***/ },
-/* 600 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
-	var Symbol = __webpack_require__(588)
+	var Symbol = __webpack_require__(587)
 	var MIXIN_REGISTRY = Symbol('alt store listeners')
 
 	var Subscribe = {
@@ -59621,7 +59733,7 @@
 
 
 /***/ },
-/* 601 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -59647,16 +59759,16 @@
 	module.exports = BeanListItem;
 
 /***/ },
-/* 602 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanItemStore = __webpack_require__(603);
-	var BeanItemActions = __webpack_require__(604);
-	var ListenerMixin = __webpack_require__(599);
+	var BeanItemStore = __webpack_require__(602);
+	var BeanItemActions = __webpack_require__(603);
+	var ListenerMixin = __webpack_require__(598);
 
-	var BeanPowerListItem = __webpack_require__(605);
-	var BeanProfile = __webpack_require__(606);
+	var BeanPowerListItem = __webpack_require__(604);
+	var BeanProfile = __webpack_require__(605);
 
 	var BeanItemPage = React.createClass({displayName: "BeanItemPage",
 	    mixins: [ListenerMixin],
@@ -59718,11 +59830,11 @@
 	module.exports = BeanItemPage;
 
 /***/ },
-/* 603 */
+/* 602 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(581);
-	var BeanItemActions = __webpack_require__(604);
+	var alt = __webpack_require__(580);
+	var BeanItemActions = __webpack_require__(603);
 
 
 	    function BeanItemStore() {"use strict";
@@ -59756,11 +59868,11 @@
 	module.exports = alt.createStore(BeanItemStore);
 
 /***/ },
-/* 604 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var alt = __webpack_require__(581);
-	var BeanWebAPI = __webpack_require__(596);
+	var alt = __webpack_require__(580);
+	var BeanWebAPI = __webpack_require__(595);
 
 	function BeanItemActions(){"use strict";}
 
@@ -59796,7 +59908,7 @@
 	module.exports = alt.createActions(BeanItemActions);
 
 /***/ },
-/* 605 */
+/* 604 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -59816,11 +59928,11 @@
 	module.exports = BeanPowerListItem;
 
 /***/ },
-/* 606 */
+/* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
-	var BeanPowerListItem = __webpack_require__(605);
+	var BeanPowerListItem = __webpack_require__(604);
 
 	var BeanProfile = React.createClass({displayName: "BeanProfile",
 
@@ -59860,7 +59972,7 @@
 	module.exports = BeanProfile;
 
 /***/ },
-/* 607 */
+/* 606 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -59881,213 +59993,346 @@
 	module.exports = BeanItemEditPage;
 
 /***/ },
-/* 608 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),    
-	    SectorStore = __webpack_require__(561),
-	    SectorActions = __webpack_require__(559);
+	var React = __webpack_require__(2),
+	    TermClassActions = __webpack_require__(612),
+	    // CourseActions = require('../actions/course-action'),
+	    TermClassStore = __webpack_require__(611), 
+	    // ComboCourse = require("./combb-course"),   
+	    TermClassForm = __webpack_require__(613),
+	    TermClassList = __webpack_require__(614);
+	    // Message = require("./message.js");
 
-	var SectorForm = React.createClass({displayName: "SectorForm",
-	    
-	    _onClickAdd: function() {
-	         var sector = {
-	            sector_id: this.state.sector_id,
-	            name: this.state.name,
-	            short_name: this.state.short_name,
-	            english_name: this.state.english_name
-	        };
 
-	        SectorActions.create(sector);
-	        this.setState({
-	           sector_id:"", name: "", short_name: "", english_name: ""
-	        });
-	         $("#close").click();
-	         this._onclickClose;
-	    },
-	    _onClickUpdate: function() {
-	        var editingSector = this.state.editingSector;        
-	        var user ={
-	            _id:editingSector._id,
-	            sector_id: this.state.sector_id,
-	            name: this.state.name,
-	            short_name: this.state.short_name,
-	            english_name: this.state.english_name
-	        };
-	        SectorActions.update(user);
-	        this.setState({
-	            sector_id:"", name: "", short_name: "", english_name: ""
-	        });
-	         $("#close").click();
-	         this._onclickClose;
-	    },
-	    _onchangId: function(e){        
-	        this.setState({
-	            sector_id: e.target.value,
-	        });
-	    },
-	    _onchangname: function(e) {
-	        this.setState({
-	            name: e.target.value, 
-	        });
-	    },
-	    _onchangshort_name: function(e) {
-	        this.setState({
-	            short_name: e.target.value, 
-	        });
-	    },
-	    _onchangenglish_name: function(e) {
-	        this.setState({
-	            english_name: e.target.value, 
-	        });
-	    },
-	    _onEdit: function() {  
-	        var editingSector = SectorStore.getEditingSectors();
-	        this.setState({
-	            editingSector: editingSector,
-	        });
 
-	        if (editingSector) {
-	            this.setState({
-	                sector_id: editingSector.sector_id,
-	                name: editingSector.name,
-	                short_name: editingSector.short_name,
-	                english_name: editingSector.english_name,
-	            });
-	        }
-	    },
-	    _onclickClose: function(){       
-	        this.setState({                        
-	            sector_id: "",
-	            name: "",
-	            short_name:"",
-	            english_name: "",           
-	            editingSector: "",                  
-	        });
+	var TermClass = React.createClass({displayName: "TermClass",
+	    _onChange: function() {
+	        console.log("onchane",TermClassStore.getTermClasss());
+	        this.setState({
+	            termClasss: TermClassStore.getTermClasss(),
+	           
+	        }); 
+	      
+	               
 	    },
 	    getInitialState: function() {
-	            return {
-	            sector_id: "", first: "", short_name: "", english_name: "",            
-	            editingSector: null,            
+	        TermClassActions.fetchAddTermClassFromServer();       
+	        return {
+	            termClasss: TermClassStore.getTermClasss(),          
+	           
 	        }
 	    },
 	    componentDidMount: function() {
-	        SectorStore.addEditSectorListener(this._onEdit);
+	        TermClassStore.addChangeListener(this._onChange);             
+	        
 	    },
-	    render: function() {
-	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
-	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
-
+	    render: function() { 
+	       console.log('view',this.state.termClasss);
 	        return (
+	            
 	            React.createElement("div", null, 
-	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
-	              "Thêm mới"
-	            ), 
-	           React.createElement("p", null, " "), 
-	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	              React.createElement("div", {className: "modal-dialog"}, 
-	                React.createElement("div", {className: "modal-content"}, 
-	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
-	                  ), 
-	                  React.createElement("div", {className: "modal-body"}, 
-	                    React.createElement("form", {className: "form-horizontal"}, 
-	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.sector_id, onChange: this._onchangId, ref: "sector_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
-	                            )
-	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
-	                            )
-	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
-	                            )
-	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.english_name, onChange: this._onchangenglish_name, ref: "english_name", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
-	                            )
-	                        )
-	                    )
-	                  ), 
-	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                     this.state.editingSector ? btnUpdate : btnAdd
-	                  )
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(TermClassForm, null), 
+	                     React.createElement(TermClassList, {termClasss: this.state.termClasss})
 	                )
-	              )
+
 	            )
 	            
-	        )
 	        );
 	    }
 	});
 
-	module.exports = SectorForm;
+	module.exports = TermClass;
 
 /***/ },
-/* 609 */
+/* 608 */,
+/* 609 */,
+/* 610 */,
+/* 611 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    TermClassConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+	var CHANGE_DELETE_EVENT = 'change_delete';
+	var _termClasss = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _deleting_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addTermClass(termClass) {
+	    _termClasss.push(termClass);
+	}
+	function _listTermClass(data){
+	    _termClasss= data;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeTermClass(_id) {    
+	    var i = ByKeyValue(_termClasss, "_id", _id);
+	        _termClasss.splice(i,1);
+	}
+
+	function _editTermClass(index) {
+	    _editing_id = index;
+	}
+
+	function _deleteTermClass(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateTermClass(termClass) {
+	    var index = ByKeyValue(_termClasss, "_id", _editing_id); 
+	    _termClasss[index] = termClass;
+	    _editing_id = null;
+	}
+
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var TermClassStore  = _.extend(BaseStore, {
+	    getTermClasss: function() {       
+	       console.log(_termClasss);
+	        return _termClasss;
+
+	    },
+	  
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingTermClasss: function() {
+	        if (!_editing_id) {
+
+	            return null;
+	        }
+	        var index = ByKeyValue(_termClasss, "_id", _editing_id);
+
+	        return _termClasss[index];        
+	    },
+	    emitEditTermClass: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditTermClassListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+
+	    getDeleteTermClass: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_termClasss, "_id", _deleting_id);
+	        return _termClasss[index];        
+	    },
+	    emitDeleteTermClass: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteTermClassListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        case TermClassConstants.CREATE_TERMCLASS:  
+	        console.log(payload.data);         
+	            _addTermClass(payload.data.Message.termClass);
+	            TermClassStore.emitChange();            
+	            break;
+
+	        case TermClassConstants.DELETE_TERMCLASS:
+	            _removeTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);                    
+	            TermClassStore.emitChange();           
+	            break;
+
+	        case TermClassConstants.ACTION_EDIT:
+	            _editTermClass(payload.data);
+	            TermClassStore.emitEditTermClass();
+	            break;
+
+	        case TermClassConstants.ACTION_DELETE:
+	            _deleteTermClass(payload.data);
+	            TermClassStore.emitDeleteTermClass();
+	            break;
+
+	        case TermClassConstants.UPDATE_TERMCLASS:
+	            _updateTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);            
+	            TermClassStore.emitEditTermClass();
+	            TermClassStore.emitChange();            
+	            break;
+
+	        case TermClassConstants.GET_TERMCLASS:
+	            _listTermClass(payload.data);
+	            TermClassStore.emitChange();
+	            break;
+	            
+	        case TermClassConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            TermClassStore.emitChange();
+	            break;
+	    }
+	});
+	module.exports = TermClassStore;
+
+/***/ },
+/* 612 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		TermClassAPI = __webpack_require__(557);
+
+	var TermClassActions = {
+		fetchAddTermClassFromServer: function() {		
+			TermClassAPI.getAllTermClass({}).then(function(termClass) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_TERMCLASS,
+					data: termClass,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(termClass) { 
+			console.log(termClass);       
+			TermClassAPI.createTermClass(termClass).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_TERMCLASS,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(termClass) {		
+			TermClassAPI.updateTermClass(termClass).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_TERMCLASS,
+					data: updateData,
+	                termClass: termClass,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editTermClass: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			TermClassAPI.deleteTermClass(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_TERMCLASS,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		},
+		deleteTermClass: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE,
+		        data: index,
+		    })
+	    },
+
+	};
+	module.exports = TermClassActions;
+
+/***/ },
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    SubjectStore = __webpack_require__(570),
-	    SubjectActions = __webpack_require__(568);
+	    TermClassStore = __webpack_require__(611),
+	    TermClassActions = __webpack_require__(612);
 
-	var SubjectForm = React.createClass({displayName: "SubjectForm",
+	var TermClassForm = React.createClass({displayName: "TermClassForm",
 	    
 	    _onClickAdd: function() {
-	         var subject = {
-	            subject_id: this.state.subject_id,
+	         var termClass = {
+	            termClass_id: this.state.termClass_id,
 	            name: this.state.name,
-	            short_name: this.state.short_name,
-	            number: this.state.number
+	            number: this.state.number,
+	            theory: this.state.theory,
+	            diligence: this.state.diligence,
+	            practive: this.state.practive,
+	            self_taught: this.state.self_taught,
+	            perceive: this.state.perceive,
+	            last_test: this.state.last_test
 	        };
-
-	        SubjectActions.create(subject);
+	        console.log(termClass);
+	        TermClassActions.create(termClass);
 	        this.setState({
-	           subject_id:"", name: "", short_name: "", number: ""
+	           termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:""
 	        });
 	         $("#close").click();
 	         this._onclickClose;
 	    },
 	    _onClickUpdate: function() {
-	        var editingSubject = this.state.editingSubject;        
+	        var editingTermClass = this.state.editingTermClass;        
 	        var user ={
-	            _id:editingSubject._id,
-	            subject_id: this.state.subject_id,
+	            _id:editingTermClass._id,
+	            termClass_id: this.state.termClass_id,
 	            name: this.state.name,
-	            short_name: this.state.short_name,
-	            number: this.state.number
+	            number: this.state.number,
+	            theory: this.state.theory,
+	            diligence: this.state.diligence,
+	            practive: this.state.practive,
+	            self_taught: this.state.self_taught,
+	            perceive: this.state.perceive,
+	            last_test: this.state.last_test
 	        };
-	        SubjectActions.update(user);
+	        TermClassActions.update(user);
 	        this.setState({
-	            subject_id:"", name: "", short_name: "", number: ""
+	            termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:""
 	        });
 	         $("#close").click();
 	         this._onclickClose;
 	    },
 	    _onchangId: function(e){        
 	        this.setState({
-	            subject_id: e.target.value,
+	            termClass_id: e.target.value,
 	        });
 	    },
 	    _onchangname: function(e) {
 	        this.setState({
 	            name: e.target.value, 
-	        });
-	    },
-	    _onchangshort_name: function(e) {
-	        this.setState({
-	            short_name: e.target.value, 
 	        });
 	    },
 	    _onchangnumber: function(e) {
@@ -60095,38 +60340,71 @@
 	            number: e.target.value, 
 	        });
 	    },
-	    _onEdit: function() {  
-	        var editingSubject = SubjectStore.getEditingSubjects();
+	    _onchangtheory: function(e) {
 	        this.setState({
-	            editingSubject: editingSubject,
+	            theory: e.target.value, 
 	        });
-
-	        if (editingSubject) {
+	    },
+	     _onchangdiligence: function(e) {
+	        this.setState({
+	            diligence: e.target.value, 
+	        });
+	    },
+	     _onchangpractive: function(e) {
+	        this.setState({
+	            practive: e.target.value, 
+	        });
+	    },
+	     _onchangself_taught: function(e) {
+	        this.setState({
+	            self_taught: e.target.value, 
+	        });
+	    },
+	     _onchangperceive: function(e) {
+	        this.setState({
+	            perceive: e.target.value, 
+	        });
+	    },
+	     _onchanglast_test: function(e) {
+	        this.setState({
+	            last_test: e.target.value, 
+	        });
+	    },
+	    
+	    _onEdit: function() {  
+	        var editingTermClass = TermClassStore.getEditingTermClasss();
+	        this.setState({
+	            editingTermClass: editingTermClass,
+	        });
+	        console.log(editingTermClass);
+	        if (editingTermClass) {
 	            this.setState({
-	                subject_id: editingSubject.subject_id,
-	                name: editingSubject.name,
-	                short_name: editingSubject.short_name,
-	                number: editingSubject.number,
+	                termClass_id: editingTermClass.termClass_id,
+	                name: editingTermClass.name,
+	                number: editingTermClass.number,
+	                theory: editingTermClass.theory,
+	                diligence: editingTermClass.diligence,
+	                practive: editingTermClass.practive,
+	                self_taught: editingTermClass.self_taught,
+	                perceive: editingTermClass.perceive,
+	                last_test: editingTermClass.last_test,
 	            });
 	        }
 	    },
 	    _onclickClose: function(){       
 	        this.setState({                        
-	            subject_id: "",
-	            name: "",
-	            short_name:"",
-	            number: "",           
-	            editingSubject: "",                  
+	            termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:"",           
+	            editingTermClass: "",                  
 	        });
 	    },
 	    getInitialState: function() {
 	            return {
-	            subject_id: "", first: "", short_name: "", number: "",            
-	            editingSubject: null,            
+	            termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:"",            
+	            editingTermClass: null,            
 	        }
 	    },
 	    componentDidMount: function() {
-	        SubjectStore.addEditSubjectListener(this._onEdit);
+	        TermClassStore.addEditTermClassListener(this._onEdit);
 	    },
 	    render: function() {
 	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
@@ -60150,7 +60428,7 @@
 	                        React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.subject_id, onChange: this._onchangId, ref: "subject_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.termClass_id, onChange: this._onchangId, ref: "termClass_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
@@ -60162,20 +60440,51 @@
 	                         React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangshort_name, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.theory, onChange: this._onchangtheory, ref: "theory", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.diligence, onChange: this._onchangdiligence, ref: "diligence", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.practive, onChange: this._onchangpractive, ref: "practive", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.self_taught, onChange: this._onchangself_taught, ref: "self_taught", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.perceive, onChange: this._onchangperceive, ref: "perceive", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.last_test, onChange: this._onchanglast_test, ref: "last_test", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
 	                            )
 	                        )
+	                                                
 	                    )
 	                  ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
 	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                     this.state.editingSubject ? btnUpdate : btnAdd
+	                     this.state.editingtermClass ? btnUpdate : btnAdd
 	                  )
 	                )
 	              )
@@ -60186,115 +60495,359 @@
 	    }
 	});
 
-	module.exports = SubjectForm;
+	module.exports = TermClassForm;
 
 /***/ },
-/* 610 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var request = __webpack_require__(212),
-		AppDispatcher = __webpack_require__(206),
-		Contant = __webpack_require__(210);
-		promise = __webpack_require__(218).Promise;
+	var React = __webpack_require__(2),
+	    TermClassStore = __webpack_require__(611),
+	    TermClassActions = __webpack_require__(612);
+	var Confirm = __webpack_require__(229);
+	var TermClassList = React.createClass({displayName: "TermClassList",
+	     _onDelete: function() {        
+	        var deletingTermClass = TermClassStore.getDeleteTermClass();
+	        // console.log(editingTermClass);
+	        this.setState({
+	            deletingTermClass: deletingTermClass,
+	        });
 
-	var API_URL = 'http://localhost:3008/te/termclass';
-	var TIMEOUT = 10000;
+	        if (deletingTermClass) {
+	            this.setState({
+	                name: deletingTermClass.name,
+	                _id: deletingTermClass._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            deletingTermClass: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        TermClassStore.addDeleteTermClassListener(this._onDelete);
+	    },
+	    render: function() {
+	        console.log(this.props.termClasss);
+	        var termClassList = this.props.termClasss.map(function(termClass, index) {
+	          
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, termClass.termClass_id), 
+	                    React.createElement("td", null, termClass.name), 
+	                    React.createElement("td", null, termClass.number), 
+	                    React.createElement("td", null, termClass.theory), 
+	                    React.createElement("td", null, termClass.diligence), 
+	                    React.createElement("td", null, termClass.practive), 
+	                    React.createElement("td", null, termClass.self_taught), 
+	                    React.createElement("td", null, termClass.perceive), 
+	                    React.createElement("td", null, termClass.last_test), 
+	                                      
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: TermClassActions.editTermClass.bind(null,termClass._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: TermClassActions.deleteTermClass.bind(null,termClass._id)}))
+	                )
+	            );
+	        }.bind(this));
 
-	var _pendingRequests = [];
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        termClassList
+	                    )
+	                ), 
+	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                   this.state.name
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: TermClassActions.destroy.bind(null,this.state._id)}, "DELETE")
 
-	function abortPendingRequests(key){
-		if(_pendingRequests[key]) {
-			_pendingRequests[key].callback = function(){};
-			_pendingRequests[key].abort();
-			_pendingRequests[key] = null;
-		}
-	}
+	                  )
+	                )
+	              )
+	            )
+	            )
+	        );
+	    }
+	});
 
-	function makeUrl(part) {
-		return API_URL + part;
-	}
+	module.exports = TermClassList;
 
-	function getAllTerm_Class() {	
-		var t = new promise(function(resolve, reject){
-			request.get(API_URL)		
-				.timeout(TIMEOUT)
-				.end(function(err,res){				
-					var data = null;
-					if(res.status === 200) {
-						data = JSON.parse(res.text);
-						resolve(data);
-					}else{
-						reject(res.status, res.text);
-					}
-				});
-		});
+/***/ },
+/* 615 */
+/***/ function(module, exports, __webpack_require__) {
 
-		return t;;
-	}
+	var React = __webpack_require__(2),    
+	    MarkStore = __webpack_require__(551),
+	    MarkActions = __webpack_require__(549);
 
-	function createTerm_Class(newClass) {   
-		var t = new promise(function(resolve, reject){
-			request.post(API_URL)
-				.timeout(TIMEOUT)
-				.send({term_class: newClass})
-				.end(function(err,res) {
-					data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-	                    resolve(data);
-					}else {
-						reject(res.status, res);                    
-					}
-				});
-		});
+	var MarkForm = React.createClass({displayName: "MarkForm",
+	    
+	    _onClickAdd: function() {
+	         var mark = {
+	            student: this.state.student,
+	            termClass: this.state.termClass,
+	            cc: this.state.cc,
+	            gk: this.state.gk,
+	            tbkt: this.state.tbkt,
+	            t1: this.state.t1,
+	            tkml1: this.state.tkml1,
+	            t2: this.state.t2,
+	            tkml2: this.state.tkml2,
+	            t3: this.state.t3,
+	            by_text: this.state.by_text,
+	            by_cc: this.state.by_cc
+	        };
+	        console.log(mark);
+	        MarkActions.create(mark);
+	        this.setState({
+	           student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingMark = this.state.editingMark;        
+	        var user ={
+	            _id: editingMark._id,
+	            student: this.state.student,
+	            termClass: this.state.termClass,
+	            cc: this.state.cc,
+	            gk: this.state.gk,
+	            tbkt: this.state.tbkt,
+	            t1: this.state.t1,
+	            tkml1: this.state.tkml1,
+	            t2: this.state.t2,
+	            tkml2: this.state.tkml2,
+	            t3: this.state.t3,
+	            by_text: this.state.by_text,
+	            by_cc: this.state.by_cc
+	        };
+	        MarkActions.update(user);
+	        this.setState({
+	            student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onchangId: function(e){        
+	        this.setState({
+	            student: e.target.value,
+	        });
+	    },
+	    _onchangtermClass: function(e) {
+	        this.setState({
+	            termClass: e.target.value, 
+	        });
+	    },
+	    _onchangcc: function(e) {
+	        this.setState({
+	            cc: e.target.value, 
+	        });
+	    },
+	    _onchanggk: function(e) {
+	        this.setState({
+	            gk: e.target.value, 
+	        });
+	    },
+	     _onchangtbkt: function(e) {
+	        this.setState({
+	            tbkt: e.target.value, 
+	        });
+	    },
+	     _onchangt1: function(e) {
+	        this.setState({
+	            t1: e.target.value, 
+	        });
+	    },
+	     _onchangtkml1: function(e) {
+	        this.setState({
+	            tkml1: e.target.value, 
+	        });
+	    },
+	     _onchangt2: function(e) {
+	        this.setState({
+	            t2: e.target.value, 
+	        });
+	    },
+	     _onchangtkml2: function(e) {
+	        this.setState({
+	            tkml2: e.target.value, 
+	        });
+	    },
+	     _onchangt3: function(e) {
+	        this.setState({
+	            t3: e.target.value, 
+	        });
+	    },
+	     _onchangby_text: function(e) {
+	        this.setState({
+	            by_text: e.target.value, 
+	        });
+	    },
+	     _onchangby_number: function(e) {
+	        this.setState({
+	            by_number: e.target.value, 
+	        });
+	    },
 
-		return t;
-	}
+	    
+	    _onEdit: function() {  
+	        var editingMark = MarkStore.getEditingMarks();
+	        this.setState({
+	            editingMark: editingMark,
+	        });
+	        console.log(editingMark);
+	        if (editingMark) {
+	            this.setState({
+	                student: editingMark.student,
+	                termClass: editingMark.termClass,
+	                cc: editingMark.cc,
+	                gk: editingMark.gk,
+	                tbkt: editingMark.tbkt,
+	                t1: editingMark.t1,
+	                tkml1: editingMark.tkml1,
+	                t2: editingMark.t2,
+	                tkml2: editingMark.tkml2,
+	                t3: editingMark.t3,
+	                by_text: editingMark.by_text,
+	                by_number: editingMark.by_number
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({                        
+	            student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:"",           
+	            editingMark: "",                  
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:"",         
+	            editingMark: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        MarkStore.addEditMarkListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
 
-	function updateTerm_Class(term_class) {	
-		var t = new promise(function(resolve, reject){
-			request.put(API_URL)
-				.timeout(TIMEOUT)
-				.set('Content-Type', 'application/json')
-				.send({term_class: term_class})
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);				
-					if(res.status === 201){
-						resolve(data);                    
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.student, onChange: this._onchangId, ref: "student", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.termClass, onChange: this._onchangtermClass, ref: "termClass", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.cc, onChange: this._onchangcc, ref: "cc", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.gk, onChange: this._onchanggk, ref: "gk", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.tbkt, onChange: this._onchangtbkt, ref: "tbkt", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.t1, onChange: this._onchangt1, ref: "t1", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.tkml1, onChange: this._onchangtkml1, ref: "tkml1", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.t2, onChange: this._onchangt2, ref: "t2", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.tkml2, onChange: this._onchangtkml2, ref: "tkml2", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.t3, onChange: this._onchangt3, ref: "t3", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.by_text, onChange: this._onchangby_text, ref: "by_text", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.by_number, onChange: this._onchangby_number, ref: "by_number", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", termClass: "title"})
+	                            )
+	                        )
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingMark ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
 
-		return t;
-	}
-
-	function deleteTerm_Class(term_class) {    
-		var t = new promise(function(resolve, reject){
-			request.delete(API_URL)
-	            .timeout(TIMEOUT)
-	            .set('Content-Type', 'application/json')
-	            .send({term_class: term_class})			
-				.end(function(err,res) {
-	                data = JSON.parse(res.text);
-					if(res.status === 201) {                    
-						resolve(data);
-					}
-					else{
-						reject(res.status, res.text);
-					}
-				});
-		});
-
-		return t;
-	}
-	module.exports = {
-		getAllTerm_Class: getAllTerm_Class,
-		createTerm_Class: createTerm_Class,
-		deleteTerm_Class: deleteTerm_Class,
-		updateTerm_Class: updateTerm_Class
-	};
+	module.exports = MarkForm;
 
 /***/ }
 /******/ ]);

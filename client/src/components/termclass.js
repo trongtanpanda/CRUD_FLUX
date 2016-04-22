@@ -1,53 +1,44 @@
 var React = require("react"),
-    Term_ClassActions = require("../actions/term-class"),    
-    Term_ClassStore = require("../stores/termclass-store"),     
-    Term_ClassList = require("./term_class/term-class-list");
-    // Message = require("./message");
+    TermClassActions = require("../actions/termClass-action.js"),
+    // CourseActions = require('../actions/course-action'),
+    TermClassStore = require("../stores/termClass-store"), 
+    // ComboCourse = require("./combb-course"),   
+    TermClassForm = require("./termClass/termClass-form"),
+    TermClassList = require("./termClass/termClass-list");
+    // Message = require("./message.js");
 
 
 
-var Term_Class = React.createClass({
-
-    componentWillMount: function() {
-          this.setState({
-            termClasss: Term_ClassStore.getTermClass()
-           
-        }); 
-        
-    },
+var TermClass = React.createClass({
     _onChange: function() {
-
+        console.log("onchane",TermClassStore.getTermClasss());
         this.setState({
-            termClasss: Term_ClassStore.getTermClass(),
+            termClasss: TermClassStore.getTermClasss(),
            
         }); 
-       
+      
                
     },
     getInitialState: function() {
-        Term_ClassActions.fetchAddTerm_classFromServer();
-       
+        TermClassActions.fetchAddTermClassFromServer();       
         return {
-            termClasss: Term_ClassStore.getTermClass(),
+            termClasss: TermClassStore.getTermClasss(),          
            
         }
-        this.setState({
-            termClasss: Term_ClassStore.getTermClass()
-           
-        });
     },
     componentDidMount: function() {
-        Term_ClassStore.addChangeListener(this._onChange);             
+        TermClassStore.addChangeListener(this._onChange);             
         
     },
     render: function() { 
-       
+       console.log('view',this.state.termClasss);
         return (
             
             <div>
-                <h1 className="text-center">Quản lý Lớp học phần</h1>
-                    <div className="col-md-10 col-md-offset-1">                                 
-                        <Term_ClassList termClass={this.state.termClasss} />
+                <h1 className="text-center">Quản lý sinh viên</h1>
+                    <div className="col-md-10 col-md-offset-1">                     
+                    <TermClassForm />
+                     <TermClassList termClasss={this.state.termClasss} />
                 </div>
 
             </div>
@@ -56,4 +47,4 @@ var Term_Class = React.createClass({
     }
 });
 
-module.exports = Term_Class;
+module.exports = TermClass;

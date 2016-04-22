@@ -2,12 +2,12 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 	Contants = require('../constants/student-constants.js'),
 	TermClassAPI = require('../API/termclass-api');
 
-var Term_classActions = {
-	fetchAddTerm_classFromServer: function() {		
-		TermClassAPI.getAllTerm_Class({}).then(function(term_class) {			
+var TermClassActions = {
+	fetchAddTermClassFromServer: function() {		
+		TermClassAPI.getAllTermClass({}).then(function(termClass) {			
 			AppDispatcher.dispatch({
 				action:Contants.GET_TERMCLASS,
-				data: term_class,
+				data: termClass,
 				// params: {}
 			});
 		}, function(status, text) {
@@ -15,8 +15,9 @@ var Term_classActions = {
 		});
 	},
 
-	create: function(term_class) {        
-		TermClassAPI.createTerm_class(term_class).then(function(data) {            
+	create: function(termClass) { 
+		console.log(termClass);       
+		TermClassAPI.createTermClass(termClass).then(function(data) {            
 			AppDispatcher.dispatch({
 				action: Contants.CREATE_TERMCLASS,
 				data: data
@@ -26,25 +27,25 @@ var Term_classActions = {
 		});
 	},
 
-	update: function(term_class) {		
-		TermClassAPI.updateTerm_class(term_class).then(function(updateData){
+	update: function(termClass) {		
+		TermClassAPI.updateTermClass(termClass).then(function(updateData){
 			AppDispatcher.dispatch({
 				action: Contants.UPDATE_TERMCLASS,
 				data: updateData,
-                term_class: term_class,
+                termClass: termClass,
 			});
 		}, function(status,text){
 			// handle err
 		});
 	},
-	editTerm_class: function(index) {
+	editTermClass: function(index) {
 	    AppDispatcher.dispatch({
 	        action: Contants.ACTION_EDIT,
 	        data: index,
 	    })
     },
 	destroy: function(id) {       
-		TermClassAPI.deleteTerm_class(id).then(function(data){
+		TermClassAPI.deleteTermClass(id).then(function(data){
 			AppDispatcher.dispatch({
 				action: Contants.DELETE_TERMCLASS,
 				data: data,
@@ -52,7 +53,13 @@ var Term_classActions = {
 		},function(status, err){
 			// Handle error
 		});
-	}
+	},
+	deleteTermClass: function(index) {
+	    AppDispatcher.dispatch({
+	        action: Contants.ACTION_DELETE,
+	        data: index,
+	    })
+    },
 
 };
-module.exports = Term_classActions;
+module.exports = TermClassActions;
