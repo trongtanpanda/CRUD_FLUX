@@ -58,7 +58,7 @@ function _deleteMsg(){
 }
 var SectorStore  = _.extend(BaseStore, {
     getSectors: function() {       
-       console.log(_sectors);
+       // console.log(_sectors);
         return _sectors;
 
     },
@@ -105,10 +105,10 @@ var SectorStore  = _.extend(BaseStore, {
 });
 
 AppDispatcher.register(function(payload) {
-    console.log(payload.action);
+    // console.log(payload.action);
     switch (payload.action) {        
         case SectorConstants.CREATE_SECTOR: 
-            console.log(payload.data);
+            // console.log(payload.data);
             _addSector(payload.data.sector);
             SectorStore.emitChange();            
             break;

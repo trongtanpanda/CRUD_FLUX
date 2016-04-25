@@ -15,5 +15,13 @@ module.exports = {
         loaders: [
             { test: /\.js$/, loaders: ['jsx?harmony'], exclude: /node_modules/ }
         ]
-    }
+    },
+    node: {
+            fs: 'empty'
+    },
+    externals: [
+        {
+            './cptable': 'var cptable'
+        }
+    ]
 };

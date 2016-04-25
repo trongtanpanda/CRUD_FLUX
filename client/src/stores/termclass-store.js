@@ -58,7 +58,7 @@ function _deleteMsg(){
 }
 var TermClassStore  = _.extend(BaseStore, {
     getTermClasss: function() {       
-       console.log(_termClasss);
+       // console.log(_termClasss);
         return _termClasss;
 
     },
@@ -107,7 +107,7 @@ var TermClassStore  = _.extend(BaseStore, {
 AppDispatcher.register(function(payload) {
     switch (payload.action) {
         case TermClassConstants.CREATE_TERMCLASS:  
-        console.log(payload.data);         
+        // console.log(payload.data);         
             _addTermClass(payload.data.Message.termClass);
             TermClassStore.emitChange();            
             break;
