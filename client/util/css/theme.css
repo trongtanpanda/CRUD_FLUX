@@ -39,3 +39,9 @@ table tr:nth-child(odd) td,
 table tr:nth-child(odd) th {
     background-color: #F0F0F0;
 }
+.button {
+	margin-bottom: 20px;
+}
+.btn-kind-one{
+	margin-left: 20px;
+}

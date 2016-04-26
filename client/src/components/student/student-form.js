@@ -93,10 +93,16 @@ var StudentForm = React.createClass({
         var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
-            <div>
-            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+        <div>
+            <div className="button" >
+            <button type="button" onClick={StudentForm._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one" data-toggle="modal" data-target="#myModal">
               Thêm mới
-            </button>  
+            </button> 
+            &nbsp;
+            <button type="button"  className="btn btn-success btn-lg pull-right btn-kind-one" data-toggle="modal" data-target="#ecelModal">
+              Import from Excel
+            </button>   
+            </div>   
            <p>&nbsp;</p>              
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
