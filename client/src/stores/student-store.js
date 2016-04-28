@@ -6,12 +6,13 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 var CHANGE_DELETE_EVENT = 'change_delete';
+var CHANGE_IMPORT_EXCEL = 'change_import_excel';
 var _students = [];
 var _courses= [];
 var _editing_id = null;
 var _deleting_id = null;
 var _msg;
-
+var _importExcel= [];
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
     for (var i = 0; i < arraytosearch.length; i++) { 
         if (arraytosearch[i][key] == valuetosearch) {
@@ -39,7 +40,9 @@ function _removeStudent(_id) {
 function _editStudent(index) {
     _editing_id = index;
 }
-
+function _inportExcel(data) {
+    _importExcel = data;
+}
 function _deleteStudent(index) {
     _deleting_id = index;
 }
@@ -102,6 +105,16 @@ var StudentStore  = _.extend(BaseStore, {
     addDeleteStudentListener: function(callback) {
         this.on(CHANGE_DELETE_EVENT, callback);
     },
+    getImportExcel: function(){
+        console.log('here',_importExcel);
+        return _importExcel;
+    },
+    emitImportExcel: function(callback) {
+        this.emit(CHANGE_IMPORT_EXCEL, callback);
+    },
+    addImportExcelListener: function(callback) {
+        this.on(CHANGE_IMPORT_EXCEL, callback);
+    },
 });
 
 AppDispatcher.register(function(payload) {
@@ -140,10 +153,12 @@ AppDispatcher.register(function(payload) {
             StudentStore.emitChange();
             break;
             
-        case StudentConstants.GET_COURSE:
-            _listCourse(payload.data);            
+        case StudentConstants.IMPORT_EXCEL:        
+            _inportExcel(payload.data);            
+            StudentStore.emitImportExcel();
             StudentStore.emitChange();
             break;
+
     }
 });
 module.exports = StudentStore;

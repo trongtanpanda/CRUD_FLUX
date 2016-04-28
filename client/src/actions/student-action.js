@@ -58,6 +58,12 @@ var StudentActions = {
 	        action: Contants.ACTION_DELETE,
 	        data: index,
 	    })
+    },    
+    importExcel: function(data){
+    	 AppDispatcher.dispatch({
+	        action: Contants.IMPORT_EXCEL,
+	        data: data,
+	    })
     },
 
 };

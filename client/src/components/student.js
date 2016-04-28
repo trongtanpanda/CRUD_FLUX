@@ -6,7 +6,6 @@ var React = require("react"),
     StudentForm = require("./student/student-form"),
     ImportForm = require("./student/import-excel"),
     StudentList = require("./student/student-list");
-
     // Message = require("./message.js");
 var X = require('xlsx');
 
@@ -60,8 +59,7 @@ var Student = React.createClass({
                    
                     <ImportForm />
                     <StudentForm />                   
-                    <StudentList students={this.state.students} />
-
+                    <StudentList students={this.state.students} />                    
                 </div>
 
             </div>

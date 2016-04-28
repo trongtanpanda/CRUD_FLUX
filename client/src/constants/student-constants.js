@@ -4,6 +4,7 @@ module.exports = {
     ACTION_EDIT     : "ACTION_EDIT",
     ACTION_UPDATE   : "ACTION_UPDATE",
     ACTION_DELETE   : "ACTION_DELETE",
+    IMPORT_EXCEL    : "IMPORT_EXCEL",
     //----------STUDENT----------------//
 
     GET_STUDENT     : "GET_STUDENT",

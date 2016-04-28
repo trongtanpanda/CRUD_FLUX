@@ -2,91 +2,28 @@ var React = require("react"),
     StudentStore = require("../../stores/student-store"),
     StudentForm = require("./student-form"),
     StudentActions = require("../../actions/student-action.js");
+var URL = 'http://developer.echonest.com/api/v4/song/search?api_key=JE2S42FJUGYGJFVSE';
+var Paginator = require("./Paginator.js");
+var PER_PAGE = 10;
 
-
-var ImportExcel = React.createClass({
-    
-    // _onClickAdd: function() {
-    //      var student = {
-    //         student_id: this.state.student_id,
-    //         firstname: this.state.firstname,
-    //         midname: this.state.midname,
-    //         lastname: this.state.lastname
-    //     };
-
-    //     StudentActions.create(student);
-    //     this.setState({
-    //        student_id:"", firstname: "", midname: "", lastname: ""
-    //     });
-    //      $("#close").click();
-    //      this._onclickClose;
+var ImportExcel = React.createClass({    
+    // componentDidMount: function() {
+    //     this.onChangePage(1);
     // },
-    // _onClickUpdate: function() {
-    //     var editingStudent = this.state.editingStudent;        
-    //     var user ={
-    //         _id:editingStudent._id,
-    //         student_id: this.state.student_id,
-    //         firstname: this.state.firstname,
-    //         midname: this.state.midname,
-    //         lastname: this.state.lastname
-    //     };
-    //     StudentActions.update(user);
-    //     this.setState({
-    //         student_id:"", firstname: "", midname: "", lastname: ""
-    //     });
-    //      $("#close").click();
-    //      this._onclickClose;
-    // },
-    // _onchangId: function(e){        
-    //     this.setState({
-    //         student_id: e.target.value,
-    //     });
-    // },
-    // _onchangFirstname: function(e) {
-    //     this.setState({
-    //         firstname: e.target.value, 
-    //     });
-    // },
-    // _onchangMidname: function(e) {
-    //     this.setState({
-    //         midname: e.target.value, 
-    //     });
-    // },
-    // _onchangLastname: function(e) {
-    //     this.setState({
-    //         lastname: e.target.value, 
-    //     });
-    // },
-    // _onEdit: function() {  
-    //     var editingStudent = StudentStore.getEditingStudents();
-    //     this.setState({
-    //         editingStudent: editingStudent,
-    //     });
-
-    //     if (editingStudent) {
-    //         this.setState({
-    //             student_id: editingStudent.student_id,
-    //             firstname: editingStudent.firstname,
-    //             midname: editingStudent.midname,
-    //             lastname: editingStudent.lastname,
-    //         });
-    //     }
-    // },
-    // _onclickClose: function(){       
-    //     this.setState({                        
-    //         student_id: "",
-    //         firstname: "",
-    //         midname:"",
-    //         lastname: "",           
-    //         editingStudent: "",                  
-    //     });
-    // },
+   
     getInitialState: function() {
-            return {
+        return {
+            items: [],
             student_id: "", first: "", midname: "", lastname: "",            
-            editingStudent: null,            
-        }
+            editingStudent: null,
+            loading: true
+        };
     },
+   
+    renderItem: function(item) {
+        return <li key={item.id}>{item.title}</li>;
+    },
+  
     _upload: function(e){
         var files = e.target.files;
         var f = files[0];
@@ -107,39 +44,86 @@ var ImportExcel = React.createClass({
             };
             reader.readAsBinaryString(f);
     },
+
     _onchangeSheet: function(e) {
+       
+        var ex =this.state.data[e.target.value];
         this.setState({
-            sheetName: e.target.value, 
+            sheetName: e.target.value,
+            dataEx: ex,
         });
+        this.onChangePage(1,ex);
     },
-    // componentDidMount: function() {
-    //     StudentStore.addEditStudentListener(this._onEdit);
-    // },
+     onChangePage: function(page,dataEx) {
+        if(this.state.dataEx){
+            this.setState({
+                loading: true,
+                items: this.getData(page,this.state.dataEx),
+            });
+        }else{
+            this.setState({
+                loading: true,
+                items: this.getData(page,dataEx),
+            });
+        }       
+        
+    },
+     getData: function(page,dataEx) {
+        var list= [];
+        var start =PER_PAGE *(page-1);
+        console.log(dataEx.length);
+        var end = start + PER_PAGE;
+        if(end >dataEx.length){
+            end= dataEx.length;
+        }
+        for(var i= start; i< end; i++){           
+                list.push(dataEx[i]);            
+        }        
+        return list;
+    },
+    renderItem: function(item) {
+        var id = item['Mã sv'];
+        var firstname = item['Họ '];
+        var lastname = item['Tên'];
+        var gender;
+
+        if(item['Giới tính']=="1" || item['Giới tính']==1){
+            gender ="Nam";
+        }else{
+            gender = "Nữ";
+        }
+        var native = item['Quê Quán'];
+        var classed = item['Lớp SH'];
+        var day = item['Ngày'];
+        var month = item['Tháng'];
+        var year = item['Năm'];
+        return <tr><td>{id}</td><td>{firstname}</td><td>{lastname}</td><td>{gender}</td><td>{native}</td><td>{classed}</td> </tr>;
+    },
     render: function() {
         var listStudent =[];
         var sheetList = [<option>Chọn sheet</option>];
         if(this.state.sheetName){
-            var field = "Mã sv";          
-            var list = this.state.data[this.state.sheetName];            
-            for(var i=0; i<list.length; i++){
-               var object_student = list[i];
-                var id = (object_student['Mã sv']);
-                var firstname = (object_student['Họ']);
-                var lastname = (object_student['Tên']);
-                var gender;
-
-                if(object_student['Giới tính']=="1" || object_student['Giới tính']==1){
-                    gender ="Nam";
-                }else{
-                    gender = "Nữ";
-                }
-                var native = (object_student['Quê Quán']);
-                var classed = (object_student['Lớp SH']);
-                var day = (object_student['Ngày']);
-                var month = (object_student['Tháng']);
-                var year = (object_student['Năm']);
-                listStudent.push(<tr><td>{id}</td><td>{firstname}</td><td>{lastname}</td><td>{gender}</td><td>{native}</td><td>{classed}</td> </tr>);
-            }
+            var total=Math.ceil(this.state.dataEx.length/PER_PAGE);
+            console.log(total);
+            listStudent.push(<div>
+                 <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Mã SV</th>
+                            <th>Họ</th>
+                            <th>Tên</th>
+                            <th>Giới tính</th>
+                            <th>Quê quán</th>
+                            <th>Lớp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.items.map(this.renderItem)}
+                    </tbody>
+                </table>                 
+                <Paginator max={total} onChange={this.onChangePage} />
+                
+            </div>);
         };
         if(this.state.sheets){
             for(var i =0; i< this.state.sheets.length; i++){
@@ -169,21 +153,7 @@ var ImportExcel = React.createClass({
                             </select>
                             </p>
                         </div>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Mã SV</th>
-                                    <th>Họ</th>
-                                    <th>Tên</th>
-                                    <th>Giới tính</th>
-                                    <th>Quê quán</th>
-                                    <th>Lớp</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {listStudent}
-                            </tbody>
-                        </table>   
+                       {listStudent}
                     </div>
                   <div className="modal-footer">
                     <button type="button" id="close" className="btn btn-default" data-dismiss="modal">Đóng</button>
