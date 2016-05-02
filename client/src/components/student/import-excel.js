@@ -44,6 +44,10 @@ var ImportExcel = React.createClass({
             };
             reader.readAsBinaryString(f);
     },
+    save: function(){
+        StudentActions.saveExcel(this.state.dataEx);
+        
+    },
 
     _onchangeSheet: function(e) {
        
@@ -130,9 +134,7 @@ var ImportExcel = React.createClass({
                 sheetList.push(<option value={this.state.sheets[i]}>{this.state.sheets[i]}</option>);
             }
        };
-        var btnAdd = ( <button type="button"  className="btn btn-primary">Lưu</button>);
-        var btnUpdate = (<button type="button"  className="btn btn-primary">Update</button>);
-
+        
         return (
         <div>
                     
@@ -157,7 +159,7 @@ var ImportExcel = React.createClass({
                     </div>
                   <div className="modal-footer">
                     <button type="button" id="close" className="btn btn-default" data-dismiss="modal">Đóng</button>
-                     {this.state.editingStudent ? btnUpdate : btnAdd}
+                    <button type="button" onClick={this.save}  className="btn btn-primary">Lưu</button>
                   </div>
                 </div>
               </div>

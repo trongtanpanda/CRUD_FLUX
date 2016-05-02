@@ -13,11 +13,7 @@ var App = React.createClass({
         return (
             
             <div>
-                <Menu />
-                <h1>Beans of War</h1>
-                <ul className="navigation">
-                    <Link to='home'><li className="navigation-item">HOME</li></Link>
-                </ul>
+                <Menu />               
                 <RouteHandler {...this.props} />
             </div>
         );

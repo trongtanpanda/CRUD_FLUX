@@ -26,7 +26,7 @@ var StudentActions = {
 		});
 	},
 
-	update: function(student) {		
+	update: function(student) {	
 		StudentAPI.updateStudent(student).then(function(updateData){
 			AppDispatcher.dispatch({
 				action: Contants.UPDATE_STUDENT,
@@ -60,11 +60,20 @@ var StudentActions = {
 	    })
     },    
     importExcel: function(data){
-    	 AppDispatcher.dispatch({
+    	AppDispatcher.dispatch({
 	        action: Contants.IMPORT_EXCEL,
 	        data: data,
 	    })
     },
-
+    saveExcel: function(list){    	
+    	StudentAPI.saveExcel(list).then(function(data){
+			AppDispatcher.dispatch({
+				action: Contants.SAVE_EXCEL,
+				data: data,
+			});
+		},function(status, err){
+			// Handle error
+		});
+    },
 };
 module.exports = StudentActions;

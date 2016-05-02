@@ -112,38 +112,38 @@ var StudentForm = React.createClass({
                 <div className="modal-content" >
                   <div className="modal-header">
                     <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
                   </div>
                   <div className="modal-body">
                     <form className="form-horizontal">
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã khoa</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.department_id} onChange={this._onchangId} ref="department_id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.department_id} onChange={this._onchangId} ref="department_id" className="form-control" type="text" placeholder="Mã khoa" name="title"/>
                             </div>                       
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên khoa</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa"  name="title"/>
                             </div>
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Trưởng khoa</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.dean} onChange={this._onchangdean} ref="dean" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.dean} onChange={this._onchangdean} ref="dean" className="form-control" type="text" placeholder="Trưởng khoa" name="title"/>
                             </div>
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Giáo vụ</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.ministry} onChange={this._onchangministry} ref="ministry" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.ministry} onChange={this._onchangministry} ref="ministry" className="form-control" type="text" placeholder="Giáo vụ"  name="title"/>
                             </div>
                         </div>   
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Điện thoại</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.phone} onChange={this._onchangphone} ref="phone" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.phone} onChange={this._onchangphone} ref="phone" className="form-control" type="text" placeholder="Điện thoại" name="title"/>
                             </div>
                         </div>                        
                     </form>                    

@@ -146,57 +146,57 @@ var TermClassForm = React.createClass({
                   <div className="modal-body">
                     <form className="form-horizontal">
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Mã lớp học phần</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.termClass_id} onChange={this._onchangId} ref="termClass_id" className="form-control" type="text" placeholder="Mã khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.termClass_id} onChange={this._onchangId} ref="termClass_id" className="form-control" type="text" placeholder="Mã lớp học phần" ref="title" name="title"/>
                             </div>                       
-                        </div>
+                        </div>                        
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Tên Lớp học phần</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
-                            </div>
-                        </div>
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.number} onChange={this._onchangnumber} ref="number" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên lớp học phần"  name="name"/>
                             </div>
                         </div>
                          <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Số tín chỉ</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.theory} onChange={this._onchangtheory} ref="theory" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.number} onChange={this._onchangnumber} ref="number" className="form-control" type="text" placeholder="Số tín chỉ"  name="number"/>
+                            </div>
+                        </div>
+                         <div className="form-group">
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số lý thuyết</label>
+                            <div className="col-sm-10">
+                                <input id="title" value={this.state.theory} onChange={this._onchangtheory} ref="theory" className="form-control" type="text" placeholder="Hệ số lý thuyết"  name="theory"/>
                             </div>
                         </div>  
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số chuyên cần</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.diligence} onChange={this._onchangdiligence} ref="diligence" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.diligence} onChange={this._onchangdiligence} ref="diligence" className="form-control" type="text" placeholder="Hệ số chuyên cần"  name="diligence"/>
                             </div>
                         </div>  
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số thực hành</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.practive} onChange={this._onchangpractive} ref="practive" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.practive} onChange={this._onchangpractive} ref="practive" className="form-control" type="text" placeholder="Hệ số thực hành"  name="practive"/>
                             </div>
                         </div>  
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số kiểm tra</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.self_taught} onChange={this._onchangself_taught} ref="self_taught" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.self_taught} onChange={this._onchangself_taught} ref="self_taught" className="form-control" type="text" placeholder="Hệ số kiểm tra"  name="self_taught"/>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số nhận thức</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.perceive} onChange={this._onchangperceive} ref="perceive" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.perceive} onChange={this._onchangperceive} ref="perceive" className="form-control" type="text" placeholder="Hệ số nhận thức" name="perceive"/>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
+                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số thi</label>
                             <div className="col-sm-10">
-                                <input id="title" value={this.state.last_test} onChange={this._onchanglast_test} ref="last_test" className="form-control" type="text" placeholder="Giáo vụ" ref="title" name="title"/>
+                                <input id="title" value={this.state.last_test} onChange={this._onchanglast_test} ref="last_test" className="form-control" type="text" placeholder="Hệ số thi"  name="last_test"/>
                             </div>
                         </div>    
                                                 

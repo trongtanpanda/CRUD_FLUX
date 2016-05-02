@@ -23711,7 +23711,6 @@
 
 	var routes = (
 	    React.createElement(Route, {name: "home", path: "/", handler: App}, 
-	        React.createElement(DefaultRoute, {name: "beanList", handler: BeanListPage}), 
 
 	        React.createElement(Route, {name: "course", path: "/course", handler: Course}), 
 	        React.createElement(Route, {name: "department", path: "/department", handler: Department}), 
@@ -23720,10 +23719,7 @@
 	        React.createElement(Route, {name: "student", path: "/student", handler: Student}), 
 	        React.createElement(Route, {name: "subject", path: "/subject", handler: Subject}), 
 	        React.createElement(Route, {name: "term_class", path: "/term_class", handler: Term_class}), 
-	        React.createElement(Route, {name: "user", path: "/user", handler: User}), 
-
-	        React.createElement(Route, {name: "beanItemPage", path: "/bean/:beanID", handler: BeanItemPage}), 
-	        React.createElement(Route, {name: "beanItemEditPage", path: "/bean/:beanID/edit", handler: BeanItemEditPage})
+	        React.createElement(Route, {name: "user", path: "/user", handler: User})
 	    )
 	);
 
@@ -23749,10 +23745,6 @@
 	            
 	            React.createElement("div", null, 
 	                React.createElement(Menu, null), 
-	                React.createElement("h1", null, "Beans of War"), 
-	                React.createElement("ul", {className: "navigation"}, 
-	                    React.createElement(Link, {to: "home"}, React.createElement("li", {className: "navigation-item"}, "HOME"))
-	                ), 
 	                React.createElement(RouteHandler, React.__spread({},  this.props))
 	            )
 	        );
@@ -25535,14 +25527,16 @@
 
 /***/ },
 /* 213 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	
 	/**
 	 * Expose `Emitter`.
 	 */
 
-	module.exports = Emitter;
+	if (true) {
+	  module.exports = Emitter;
+	}
 
 	/**
 	 * Initialize a new `Emitter`.
@@ -61077,11 +61071,11 @@
 
 	exports.__esModule = true;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 	var _createUncontrollable = __webpack_require__(579);
 
 	var _createUncontrollable2 = _interopRequireDefault(_createUncontrollable);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var mixin = {
 	  shouldComponentUpdate: function shouldComponentUpdate() {
@@ -61102,7 +61096,7 @@
 	  if (component.isMounted()) component.forceUpdate();
 	}
 
-	exports['default'] = _createUncontrollable2['default']([mixin], set);
+	exports.default = (0, _createUncontrollable2.default)([mixin], set);
 	module.exports = exports['default'];
 
 /***/ },
@@ -61115,21 +61109,25 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	exports['default'] = createUncontrollable;
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+	exports.default = createUncontrollable;
 
 	var _react = __webpack_require__(263);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _invariant = __webpack_require__(319);
+
+	var _invariant2 = _interopRequireDefault(_invariant);
+
 	var _utils = __webpack_require__(580);
 
 	var utils = _interopRequireWildcard(_utils);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function createUncontrollable(mixins, set) {
 
@@ -61140,10 +61138,12 @@
 
 	    var displayName = Component.displayName || Component.name || 'Component',
 	        basePropTypes = utils.getType(Component).propTypes,
+	        isCompositeComponent = utils.isReactComponent(Component),
 	        propTypes;
 
 	    propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName);
 
+	    (0, _invariant2.default)(isCompositeComponent || !methods.length, '[uncontrollable] stateless function components cannot pass through methods ' + 'becasue they have no associated instances. Check component: ' + displayName + ', ' + 'attempting to pass through methods: ' + methods.join(', '));
 	    methods = utils.transform(methods, function (obj, method) {
 	      obj[method] = function () {
 	        var _refs$inner;
@@ -61152,7 +61152,7 @@
 	      };
 	    }, {});
 
-	    var component = _react2['default'].createClass(_extends({
+	    var component = _react2.default.createClass(_extends({
 
 	      displayName: 'Uncontrolled(' + displayName + ')',
 
@@ -61161,7 +61161,6 @@
 	      propTypes: propTypes
 
 	    }, methods, {
-
 	      componentWillMount: function componentWillMount() {
 	        var props = this.props,
 	            keys = Object.keys(controlledValues);
@@ -61170,6 +61169,7 @@
 	          values[key] = props[utils.defaultKey(key)];
 	        }, {});
 	      },
+
 
 	      /**
 	       * If a prop switches from controlled to Uncontrolled
@@ -61187,7 +61187,6 @@
 	          }
 	        });
 	      },
-
 	      render: function render() {
 	        var _this2 = this;
 
@@ -61211,11 +61210,12 @@
 	          newProps[handle] = setAndNotify.bind(_this2, propName);
 	        });
 
-	        newProps = _extends({}, props, newProps, { ref: 'inner' });
+	        newProps = _extends({}, props, newProps, {
+	          ref: isCompositeComponent ? 'inner' : null
+	        });
 
-	        return _react2['default'].createElement(Component, newProps);
+	        return _react2.default.createElement(Component, newProps);
 	      }
-
 	    }));
 
 	    component.ControlledComponent = Component;
@@ -61224,8 +61224,9 @@
 	     * useful when wrapping a Component and you want to control
 	     * everything
 	     */
-	    component.deferControlTo = function (newComponent, additions, nextMethods) {
-	      if (additions === undefined) additions = {};
+	    component.deferControlTo = function (newComponent) {
+	      var additions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	      var nextMethods = arguments[2];
 
 	      return uncontrollable(newComponent, _extends({}, controlledValues, additions), nextMethods);
 	    };
@@ -61252,7 +61253,6 @@
 	    }
 	  }
 	}
-
 	module.exports = exports['default'];
 
 /***/ },
@@ -61262,6 +61262,7 @@
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
 	exports.__esModule = true;
+	exports.version = undefined;
 	exports.customPropType = customPropType;
 	exports.uncontrolledPropTypes = uncontrolledPropTypes;
 	exports.getType = getType;
@@ -61271,9 +61272,8 @@
 	exports.chain = chain;
 	exports.transform = transform;
 	exports.each = each;
+	exports.isReactComponent = isReactComponent;
 	exports.has = has;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var _react = __webpack_require__(263);
 
@@ -61282,6 +61282,8 @@
 	var _invariant = __webpack_require__(319);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function customPropType(handler, propType, name) {
 
@@ -61304,7 +61306,7 @@
 	    transform(controlledValues, function (obj, handler, prop) {
 	      var type = basePropTypes[prop];
 
-	      _invariant2['default'](typeof handler === 'string' && handler.trim().length, 'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable', displayName, prop);
+	      (0, _invariant2.default)(typeof handler === 'string' && handler.trim().length, 'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable', displayName, prop);
 
 	      obj[prop] = customPropType(handler, type, displayName);
 
@@ -61315,9 +61317,7 @@
 	  return propTypes;
 	}
 
-	var version = _react2['default'].version.split('.').map(parseFloat);
-
-	exports.version = version;
+	var version = exports.version = _react2.default.version.split('.').map(parseFloat);
 
 	function getType(component) {
 	  if (version[0] >= 15 || version[0] === 0 && version[1] >= 13) return component;
@@ -61364,7 +61364,21 @@
 	function each(obj, cb, thisArg) {
 	  if (Array.isArray(obj)) return obj.forEach(cb, thisArg);
 
-	  for (var key in obj) if (has(obj, key)) cb.call(thisArg, obj[key], key, obj);
+	  for (var key in obj) {
+	    if (has(obj, key)) cb.call(thisArg, obj[key], key, obj);
+	  }
+	}
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+	function isReactComponent(component) {
+	  return !!(component && component.prototype && component.prototype.isReactComponent);
 	}
 
 	function has(o, k) {
@@ -70935,38 +70949,38 @@
 	                React.createElement("div", {className: "modal-content"}, 
 	                  React.createElement("div", {className: "modal-header"}, 
 	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("form", {className: "form-horizontal"}, 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã khoa"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.department_id, onChange: this._onchangId, ref: "department_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.department_id, onChange: this._onchangId, ref: "department_id", className: "form-control", type: "text", placeholder: "Mã khoa", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên khoa"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Trưởng khoa"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.dean, onChange: this._onchangdean, ref: "dean", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.dean, onChange: this._onchangdean, ref: "dean", className: "form-control", type: "text", placeholder: "Trưởng khoa", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Giáo vụ"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.ministry, onChange: this._onchangministry, ref: "ministry", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.ministry, onChange: this._onchangministry, ref: "ministry", className: "form-control", type: "text", placeholder: "Giáo vụ", name: "title"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Điện thoại"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.phone, onChange: this._onchangphone, ref: "phone", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.phone, onChange: this._onchangphone, ref: "phone", className: "form-control", type: "text", placeholder: "Điện thoại", name: "title"})
 	                            )
 	                        )
 	                    )
@@ -72422,65 +72436,176 @@
 	    StudentStore = __webpack_require__(696), 
 	    // ComboCourse = require("./combb-course"),   
 	    StudentForm = __webpack_require__(697),
-	    ImportForm = __webpack_require__(698),
-	    StudentList = __webpack_require__(699);
-	    // Message = require("./message.js");
+	    ImportForm = __webpack_require__(698);
+	var Paginator = __webpack_require__(699);
+	var PER_PAGE = 10;
 	var X = __webpack_require__(700);
 
 
 	var Student = React.createClass({displayName: "Student",
 	    _onChange: function() {
-	        // console.log("onchane",StudentStore.getStudents());
+	        var students =  StudentStore.getStudents(); 
+	        if(students.length > 0){
+	            this.onChangePage(1, students);
+	        }
 	        this.setState({
-	            students: StudentStore.getStudents(),
-	           
-	        }); 
-	      
-	               
+	            students: StudentStore.getStudents(),           
+	        });   
 	    },
 	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();       
+	        StudentActions.fetchAddStudentFromServer();        
 	        return {
-	            students: StudentStore.getStudents(),          
+	            students: StudentStore.getStudents(),  
+	            firstname: "",
+	            midname: "",
+	            lastname: "",            
+	            deletingStudent: null, 
+	            id: null,        
 	           
 	        }
 	    },
 	    componentDidMount: function() {
-	        StudentStore.addChangeListener(this._onChange);             
+	        StudentStore.addChangeListener(this._onChange);  
+	        StudentStore.addDeleteStudentListener(this._onDelete);           
 	        
 	    },
-	   
-	    // _upload: function(e){
-	    //     var files = e.target.files;
-	    //     var f = files[0];        
-	    //     {
-	    //         var reader = new FileReader();
-	    //         var name = f.name;
-	    //         reader.onload = function(e) {
-	    //             var data = e.target.result;  
-	    //             var wb = X.read(data, {type: 'binary'}); 
-	    //             var a = process_wb(wb);
-	    //             console.log(Object.keys(a).length);
-	    //         };
-	    //         reader.readAsBinaryString(f);       
-	    //     };
-	    // },
+	    _onDelete: function() {        
+	        var deletingStudent = StudentStore.getDeleteStudent();
+	        // console.log(editingStudent);
+	        this.setState({
+	            deletingStudent: deletingStudent,
+	        });
+
+	        if (deletingStudent) {
+	            this.setState({
+	                firstname: deletingStudent.firstname,
+	                midname: deletingStudent.midname,
+	                lastname: deletingStudent.lastname,
+	                _id: deletingStudent._id,
+	            });
+	        }
+	    },
+	    onChangePage: function(page,dataEx) {
+	        
+	            console.log(StudentStore.getStudents());
+	           
+	            this.setState({
+	                loading: true,
+	                items: this.getData(page,StudentStore.getStudents()),
+	            });
+	    },          
+	        
+	    
+	    getData: function(page,dataEx) {
+	        var list= [];
+	        var start =PER_PAGE *(page-1);
+	        var end = start + PER_PAGE;
+	        if(end >dataEx.length){
+	            end= dataEx.length;
+	        }
+	        for(var i= start; i< end; i++){           
+	                list.push(dataEx[i]);            
+	        }        
+	        return list;
+	    },
+	    renderItem: function(item) {
+	        var id = item.student_id;
+	        var firstname = item.firstname;
+	        var lastname = item.lastname;
+	        var gender;
+
+	        if(item.gender=="1" || item.gender==1){
+	            gender ="Nam";
+	        }else{
+	            gender = "Nữ";
+	        }
+	        var native = item.native;
+	       
+	        return React.createElement("tr", null, 
+	                    React.createElement("td", null, id), 
+	                    React.createElement("td", null, firstname), 
+	                    React.createElement("td", null, lastname), 
+	                    React.createElement("td", null, gender), 
+	                    React.createElement("td", null, native), 
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,item._id)})), 
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: StudentActions.deleteStudent.bind(null,item._id)}))
+	                );
+	    },
 	    
 	    render: function() { 
+	        var total;
+	        var page;
+	        if(this.state.students){
+	            total =Math.ceil(this.state.students.length/PER_PAGE);
+	            console.log(total);
+	        }
+	        if(this.state.items){
+	            page = this.state.items.map(this.renderItem);
+	            console.log(page);
+	        }
+	        var studentsData=(
+	            React.createElement("div", null, 
+	                 React.createElement("table", {className: "table"}, 
+	                    React.createElement("thead", null, 
+	                        React.createElement("tr", null, 
+	                            React.createElement("th", null, "Mã SV"), 
+	                            React.createElement("th", null, "Họ"), 
+	                            React.createElement("th", null, "Tên"), 
+	                            React.createElement("th", null, "Giới tính"), 
+	                            React.createElement("th", null, "Quê quán"), 
+	                            React.createElement("th", null, "Edit"), 
+	                            React.createElement("th", null, "Delete")
+	                        )
+	                    ), 
+	                    React.createElement("tbody", null, 
+	                        page
+	                    )
+	                ), 
+	                React.createElement(Paginator, {className: "pull-right", max: total, onChange: this.onChangePage})
+	            ));
+	         var studentList = this.state.students.map(function(student, index) {
+	          
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, student.student_id), 
+	                    React.createElement("td", null, student.firstname, "  ", student.lastname), 
+	                                      
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: StudentActions.deleteStudent.bind(null,student._id)}))
+	                )
+	            );
+	        }.bind(this));
 
 	        return (
 	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    
-	                   
-	                    React.createElement(ImportForm, null), 
-	                    React.createElement(StudentForm, null), 
-	                    React.createElement(StudentList, {students: this.state.students})
-	                )
+	        React.createElement("div", null, 
+	            React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	            React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	            React.createElement(ImportForm, null), 
+	            React.createElement(StudentForm, null), 
+	                React.createElement("div", null, 
+	                    studentsData, 
+	                    React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	                      React.createElement("div", {className: "modal-dialog"}, 
+	                        React.createElement("div", {className: "modal-content"}, 
+	                          React.createElement("div", {className: "modal-header"}, 
+	                            React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Xóa sinh viên")
+	                          ), 
+	                          React.createElement("div", {className: "modal-body"}, 
+	                          "Bạn có muốn xóa sinh viên ", this.state.firstname, " ", this.state.midname, " ", this.state.lastname, "?"
+	                          ), 
+	                          React.createElement("div", {className: "modal-footer"}, 
+	                            React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                            React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: StudentActions.destroy.bind(null,this.state._id)}, "DELETE")
 
+	                          )
+	                        )
+	                      )
+	                    )
+	                )
 	            )
+	        )
 	            
 	        );
 	    }
@@ -72520,7 +72645,7 @@
 			});
 		},
 
-		update: function(student) {		
+		update: function(student) {	
 			StudentAPI.updateStudent(student).then(function(updateData){
 				AppDispatcher.dispatch({
 					action: Contants.UPDATE_STUDENT,
@@ -72554,12 +72679,21 @@
 		    })
 	    },    
 	    importExcel: function(data){
-	    	 AppDispatcher.dispatch({
+	    	AppDispatcher.dispatch({
 		        action: Contants.IMPORT_EXCEL,
 		        data: data,
 		    })
 	    },
-
+	    saveExcel: function(list){    	
+	    	StudentAPI.saveExcel(list).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.SAVE_EXCEL,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+	    },
 	};
 	module.exports = StudentActions;
 
@@ -72664,11 +72798,29 @@
 
 		return t;
 	}
+	function saveExcel(list){
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL+"/excel")
+				.timeout(TIMEOUT)
+				.send({list: list})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
 	module.exports = {
 		getStudent: getStudentData,
 		createStudent: createStudent,
 		deleteStudent: deleteStudent,
-		updateStudent: updateStudent
+		updateStudent: updateStudent,
+		saveExcel: saveExcel
 	};
 
 /***/ },
@@ -72853,14 +73005,16 @@
 	    _onClickAdd: function() {
 	         var student = {
 	            student_id: this.state.student_id,
-	            firstname: this.state.firstname,
-	            midname: this.state.midname,
-	            lastname: this.state.lastname
+	            firstname: this.state.firstname,            
+	            lastname: this.state.lastname,
+	            gender: this.state.gender,
+	            native: this.state.native,
+	            birthday: this.state.birthday
 	        };
 
 	        StudentActions.create(student);
 	        this.setState({
-	           student_id:"", firstname: "", midname: "", lastname: ""
+	           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
 	        });
 	         $("#close").click();
 	         this._onclickClose;
@@ -72869,14 +73023,16 @@
 	        var editingStudent = this.state.editingStudent;        
 	        var user ={
 	            _id:editingStudent._id,
-	            student_id: this.state.student_id,
-	            firstname: this.state.firstname,
-	            midname: this.state.midname,
-	            lastname: this.state.lastname
+	             student_id: this.state.student_id,
+	            firstname: this.state.firstname,            
+	            lastname: this.state.lastname,
+	            gender: this.state.gender,
+	            native: this.state.native,
+	            birthday: this.state.birthday
 	        };
 	        StudentActions.update(user);
 	        this.setState({
-	            student_id:"", firstname: "", midname: "", lastname: ""
+	            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
 	        });
 	         $("#close").click();
 	         this._onclickClose;
@@ -72901,6 +73057,21 @@
 	            lastname: e.target.value, 
 	        });
 	    },
+	     _onchangGender: function(e) {
+	        this.setState({
+	            gender: e.target.value, 
+	        });
+	    },
+	     _onchangNative: function(e) {
+	        this.setState({
+	            native: e.target.value, 
+	        });
+	    },
+	     _onchangBirthday: function(e) {
+	        this.setState({
+	            birthday: e.target.value, 
+	        });
+	    },
 	    _onEdit: function() {  
 	        var editingStudent = StudentStore.getEditingStudents();
 	        this.setState({
@@ -72911,23 +73082,23 @@
 	            this.setState({
 	                student_id: editingStudent.student_id,
 	                firstname: editingStudent.firstname,
-	                midname: editingStudent.midname,
 	                lastname: editingStudent.lastname,
+	                gender: editingStudent.gender,
+	                native: editingStudent.native,
+	                birthday: editingStudent.birthday
+
 	            });
 	        }
 	    },
 	    _onclickClose: function(){       
 	        this.setState({                        
-	            student_id: "",
-	            firstname: "",
-	            midname:"",
-	            lastname: "",           
-	            editingStudent: "",                  
+	           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
+	           editingStudent: "",                  
 	        });
 	    },
 	    getInitialState: function() {
 	            return {
-	            student_id: "", first: "", midname: "", lastname: "",            
+	            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
 	            editingStudent: null,            
 	        }
 	    },
@@ -72962,25 +73133,37 @@
 	                        React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.student_id, onChange: this._onchangId, ref: "student_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.student_id, onChange: this._onchangId, ref: "student_id", className: "form-control", type: "text", placeholder: "Mã Sinh viên", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.firstname, onChange: this._onchangFirstname, ref: "firstname", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
-	                            )
-	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.midname, onChange: this._onchangMidname, ref: "midname", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.firstname, onChange: this._onchangFirstname, ref: "firstname", className: "form-control", type: "text", placeholder: "Họ", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
 	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.lastname, onChange: this._onchangLastname, ref: "lastname", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.lastname, onChange: this._onchangLastname, ref: "lastname", className: "form-control", type: "text", placeholder: "Tên", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Giới tính"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.gender, onChange: this._onchangGender, ref: "gender", className: "form-control", type: "text", placeholder: "Giới tính", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Quê quán"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.native, onChange: this._onchangNative, ref: "native", className: "form-control", type: "text", placeholder: "Quê quán", name: "title"})
+	                            )
+	                        ), 
+	                        React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Ngày sinh"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.birthday, onChange: this._onchangBirthday, ref: "birthday", className: "form-control", type: "text", placeholder: "Ngày sinh", name: "title"})
 	                            )
 	                        )
 	                    )
@@ -73009,7 +73192,7 @@
 	    StudentForm = __webpack_require__(697),
 	    StudentActions = __webpack_require__(694);
 	var URL = 'http://developer.echonest.com/api/v4/song/search?api_key=JE2S42FJUGYGJFVSE';
-	var Paginator = __webpack_require__(814);
+	var Paginator = __webpack_require__(699);
 	var PER_PAGE = 10;
 
 	var ImportExcel = React.createClass({displayName: "ImportExcel",    
@@ -73049,6 +73232,10 @@
 	                });                                       
 	            };
 	            reader.readAsBinaryString(f);
+	    },
+	    save: function(){
+	        StudentActions.saveExcel(this.state.dataEx);
+	        
 	    },
 
 	    _onchangeSheet: function(e) {
@@ -73136,9 +73323,7 @@
 	                sheetList.push(React.createElement("option", {value: this.state.sheets[i]}, this.state.sheets[i]));
 	            }
 	       };
-	        var btnAdd = ( React.createElement("button", {type: "button", className: "btn btn-primary"}, "Lưu"));
-	        var btnUpdate = (React.createElement("button", {type: "button", className: "btn btn-primary"}, "Update"));
-
+	        
 	        return (
 	        React.createElement("div", null, 
 	                    
@@ -73163,7 +73348,7 @@
 	                    ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
 	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                     this.state.editingStudent ? btnUpdate : btnAdd
+	                    React.createElement("button", {type: "button", onClick: this.save, className: "btn btn-primary"}, "Lưu")
 	                  )
 	                )
 	              )
@@ -73180,80 +73365,109 @@
 /* 699 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),
-	    StudentStore = __webpack_require__(696),
-	    StudentActions = __webpack_require__(694);
-	var Confirm = __webpack_require__(229);
-	var StudentList = React.createClass({displayName: "StudentList",
-	     _onDelete: function() {        
-	        var deletingStudent = StudentStore.getDeleteStudent();
-	        // console.log(editingStudent);
-	        this.setState({
-	            deletingStudent: deletingStudent,
-	        });
-
-	        if (deletingStudent) {
-	            this.setState({
-	                firstname: deletingStudent.firstname,
-	                _id: deletingStudent._id,
-	            });
+	var React = __webpack_require__(2);
+	var Paginator = React.createClass({displayName: "Paginator",
+	    propTypes: {
+	        max: React.PropTypes.number.isRequired,
+	        maxVisible: React.PropTypes.number,
+	        onChange: React.PropTypes.func.isRequired
+	    },
+	    componentDidUpdate: function(prevProps, prevState) {
+	        if (prevState.currentPage !== this.state.currentPage) {
+	            this.props.onChange(this.state.currentPage);
 	        }
+	    },
+	    getDefaultProps: function() {
+	        return {
+	            maxVisible: 5
+	        };
 	    },
 	    getInitialState: function() {
-	            return {
-	            firstname: "",            
-	            deletingStudent: null, 
-	            id: null,           
+	        return {
+	            currentPage: 1,
+	            items: []
+	        };
+	    },
+	    goTo: function(page) {
+	        this.setState({currentPage: page});
+	    },
+
+	    onClickNext: function() {
+	        var page = this.state.currentPage;
+
+	        if (page < this.props.max) {
+	            this.goTo(page + 1);
 	        }
 	    },
-	    componentDidMount: function() {
-	        StudentStore.addDeleteStudentListener(this._onDelete);
+	    onClickPrev: function() {
+	        if (this.state.currentPage > 1) {
+	            this.goTo(this.state.currentPage - 1);
+	        }
+	    },
+	    onClickFirst: function() {        
+	            this.goTo(1);        
+	    },
+	    onClickLast: function() {        
+	            this.goTo(this.props.max);        
 	    },
 	    render: function() {
-	        var studentList = this.props.students.map(function(student, index) {
-	          
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, student.student_id), 
-	                    React.createElement("td", null, student.firstname, " ", student.midname, " ", student.lastname), 
-	                                      
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,student._id)})), 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: StudentActions.deleteStudent.bind(null,student._id)}))
-	                )
-	            );
-	        }.bind(this));
+	        var className = this.props.className || '',
+	            p = this.props,
+	            s = this.state,
+	            skip = 0;
+
+	        if (s.currentPage > p.maxVisible - 1 && s.currentPage < p.max) {
+	            skip = s.currentPage - p.maxVisible + 1;
+	        } else if (s.currentPage === p.max) {
+	            skip = s.currentPage - p.maxVisible;
+	        }
+
+	        var iterator = Array.apply(null, Array(p.maxVisible)).map(function(v, i) {
+	            return skip + i + 1;
+	        });
 
 	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        studentList
+	            React.createElement("nav", null, 
+	                React.createElement("ul", {className: 'pagination ' + className}, 
+	                	React.createElement("li", {className: s.currentPage === 1 ? 'hidden' : ''}, 
+	                        React.createElement("a", {href: "#/student", onClick: this.onClickFirst}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "First"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
+	                    ), 
+	                    React.createElement("li", {className: s.currentPage === 1 ? 'disabled' : ''}, 
+	                        React.createElement("a", {href: "#/student", onClick: this.onClickPrev}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "«"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
+	                    ), 
+	                    iterator.map(function(page) {
+	                        return (
+	                            React.createElement("li", {key: page, 
+	                                onClick: this.goTo.bind(this, page), 
+	                                className: s.currentPage === page ? 'active' : ''}, 
+	                                React.createElement("a", {href: "#/student"}, page)
+	                            )
+	                        );
+	                    }, this), 
+	                    React.createElement("li", {className: s.currentPage === p.max ? 'disabled' : ''}, 
+	                        React.createElement("a", {href: "#/student", onClick: this.onClickNext}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "»"), 
+	                            React.createElement("span", {className: "sr-only"}, "Next")
+	                        )
+	                    ), 
+	                    React.createElement("li", {className: s.currentPage === p.max ? 'hidden' : ''}, 
+	                        React.createElement("a", {href: "#/student", onClick: this.onClickLast}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "Last"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
 	                    )
-	                ), 
-	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	              React.createElement("div", {className: "modal-dialog"}, 
-	                React.createElement("div", {className: "modal-content"}, 
-	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
-	                  ), 
-	                  React.createElement("div", {className: "modal-body"}, 
-	                   this.state.firstname
-	                  ), 
-	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: StudentActions.destroy.bind(null,this.state._id)}, "DELETE")
-
-	                  )
 	                )
-	              )
-	            )
 	            )
 	        );
 	    }
 	});
-
-	module.exports = StudentList;
+	module.exports = Paginator;
 
 /***/ },
 /* 700 */
@@ -88043,8 +88257,7 @@
 /* 707 */
 /***/ function(module, exports) {
 
-	console.log("I'm `fs` modules");
-
+	
 
 /***/ },
 /* 708 */
@@ -109794,57 +110007,57 @@
 	                  React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("form", {className: "form-horizontal"}, 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã lớp học phần"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.termClass_id, onChange: this._onchangId, ref: "termClass_id", className: "form-control", type: "text", placeholder: "Mã khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.termClass_id, onChange: this._onchangId, ref: "termClass_id", className: "form-control", type: "text", placeholder: "Mã lớp học phần", ref: "title", name: "title"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Lớp học phần"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên lớp học phần", name: "name"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Số tín chỉ"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.number, onChange: this._onchangnumber, ref: "number", className: "form-control", type: "text", placeholder: "Số tín chỉ", name: "number"})
 	                            )
 	                        ), 
 	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số lý thuyết"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.theory, onChange: this._onchangtheory, ref: "theory", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.theory, onChange: this._onchangtheory, ref: "theory", className: "form-control", type: "text", placeholder: "Hệ số lý thuyết", name: "theory"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số chuyên cần"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.diligence, onChange: this._onchangdiligence, ref: "diligence", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.diligence, onChange: this._onchangdiligence, ref: "diligence", className: "form-control", type: "text", placeholder: "Hệ số chuyên cần", name: "diligence"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số thực hành"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.practive, onChange: this._onchangpractive, ref: "practive", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.practive, onChange: this._onchangpractive, ref: "practive", className: "form-control", type: "text", placeholder: "Hệ số thực hành", name: "practive"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số kiểm tra"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.self_taught, onChange: this._onchangself_taught, ref: "self_taught", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.self_taught, onChange: this._onchangself_taught, ref: "self_taught", className: "form-control", type: "text", placeholder: "Hệ số kiểm tra", name: "self_taught"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số nhận thức"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.perceive, onChange: this._onchangperceive, ref: "perceive", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.perceive, onChange: this._onchangperceive, ref: "perceive", className: "form-control", type: "text", placeholder: "Hệ số nhận thức", name: "perceive"})
 	                            )
 	                        ), 
 	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Hệ số thi"), 
 	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.last_test, onChange: this._onchanglast_test, ref: "last_test", className: "form-control", type: "text", placeholder: "Giáo vụ", ref: "title", name: "title"})
+	                                React.createElement("input", {id: "title", value: this.state.last_test, onChange: this._onchanglast_test, ref: "last_test", className: "form-control", type: "text", placeholder: "Hệ số thi", name: "last_test"})
 	                            )
 	                        )
 	                                                
@@ -112839,115 +113052,6 @@
 	});
 
 	module.exports = BeanItemEditPage;
-
-/***/ },
-/* 813 */,
-/* 814 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(2);
-	var Paginator = React.createClass({displayName: "Paginator",
-	    propTypes: {
-	        max: React.PropTypes.number.isRequired,
-	        maxVisible: React.PropTypes.number,
-	        onChange: React.PropTypes.func.isRequired
-	    },
-	    componentDidUpdate: function(prevProps, prevState) {
-	        if (prevState.currentPage !== this.state.currentPage) {
-	            this.props.onChange(this.state.currentPage);
-	        }
-	    },
-	    getDefaultProps: function() {
-	        return {
-	            maxVisible: 5
-	        };
-	    },
-	    getInitialState: function() {
-	        return {
-	            currentPage: 1,
-	            items: []
-	        };
-	    },
-	    goTo: function(page) {
-	        this.setState({currentPage: page});
-	    },
-
-	    onClickNext: function() {
-	        var page = this.state.currentPage;
-
-	        if (page < this.props.max) {
-	            this.goTo(page + 1);
-	        }
-	    },
-	    onClickPrev: function() {
-	        if (this.state.currentPage > 1) {
-	            this.goTo(this.state.currentPage - 1);
-	        }
-	    },
-	    onClickFirst: function() {        
-	            this.goTo(1);        
-	    },
-	    onClickLast: function() {        
-	            this.goTo(this.props.max);        
-	    },
-	    render: function() {
-	        var className = this.props.className || '',
-	            p = this.props,
-	            s = this.state,
-	            skip = 0;
-
-	        if (s.currentPage > p.maxVisible - 1 && s.currentPage < p.max) {
-	            skip = s.currentPage - p.maxVisible + 1;
-	        } else if (s.currentPage === p.max) {
-	            skip = s.currentPage - p.maxVisible;
-	        }
-
-	        var iterator = Array.apply(null, Array(p.maxVisible)).map(function(v, i) {
-	            return skip + i + 1;
-	        });
-
-	        return (
-	            React.createElement("nav", null, 
-	                React.createElement("ul", {className: 'pagination ' + className}, 
-	                	React.createElement("li", {className: s.currentPage === 1 ? 'hidden' : ''}, 
-	                        React.createElement("a", {href: "#/student", onClick: this.onClickFirst}, 
-	                            React.createElement("span", {"aria-hidden": "true"}, "First"), 
-	                            React.createElement("span", {className: "sr-only"}, "Prev")
-	                        )
-	                    ), 
-	                    React.createElement("li", {className: s.currentPage === 1 ? 'disabled' : ''}, 
-	                        React.createElement("a", {href: "#/student", onClick: this.onClickPrev}, 
-	                            React.createElement("span", {"aria-hidden": "true"}, "«"), 
-	                            React.createElement("span", {className: "sr-only"}, "Prev")
-	                        )
-	                    ), 
-	                    iterator.map(function(page) {
-	                        return (
-	                            React.createElement("li", {key: page, 
-	                                onClick: this.goTo.bind(this, page), 
-	                                className: s.currentPage === page ? 'active' : ''}, 
-	                                React.createElement("a", {href: "#/student"}, page)
-	                            )
-	                        );
-	                    }, this), 
-	                    React.createElement("li", {className: s.currentPage === p.max ? 'disabled' : ''}, 
-	                        React.createElement("a", {href: "#/student", onClick: this.onClickNext}, 
-	                            React.createElement("span", {"aria-hidden": "true"}, "»"), 
-	                            React.createElement("span", {className: "sr-only"}, "Next")
-	                        )
-	                    ), 
-	                    React.createElement("li", {className: s.currentPage === p.max ? 'hidden' : ''}, 
-	                        React.createElement("a", {href: "#/student", onClick: this.onClickLast}, 
-	                            React.createElement("span", {"aria-hidden": "true"}, "Last"), 
-	                            React.createElement("span", {className: "sr-only"}, "Prev")
-	                        )
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-	module.exports = Paginator;
 
 /***/ }
 /******/ ]);

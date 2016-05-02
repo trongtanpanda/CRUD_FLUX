@@ -1,74 +1,163 @@
-var React = require("react"),
+var React = require("react"),    
     StudentStore = require("../../stores/student-store"),
     StudentActions = require("../../actions/student-action.js");
-var Confirm = require('react-confirm-bootstrap');
-var StudentList = React.createClass({
-     _onDelete: function() {        
-        var deletingStudent = StudentStore.getDeleteStudent();
-        // console.log(editingStudent);
+
+var StudentForm = React.createClass({
+    
+    _onClickAdd: function() {
+         var student = {
+            student_id: this.state.student_id,
+            firstname: this.state.firstname,            
+            lastname: this.state.lastname,
+            gender: this.state.gender,
+            native: this.state.native,
+            birthday: this.state.birthday
+        };
+
+        StudentActions.create(student);
         this.setState({
-            deletingStudent: deletingStudent,
+           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
+        });
+         $("#close").click();
+         this._onclickClose;
+    },
+    _onClickUpdate: function() {
+        var editingStudent = this.state.editingStudent;        
+        var user ={
+            _id:editingStudent._id,
+             student_id: this.state.student_id,
+            firstname: this.state.firstname,            
+            lastname: this.state.lastname,
+            gender: this.state.gender,
+            native: this.state.native,
+            birthday: this.state.birthday
+        };
+        StudentActions.update(user);
+        this.setState({
+            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
+        });
+         $("#close").click();
+         this._onclickClose;
+    },
+    _onchangId: function(e){        
+        this.setState({
+            student_id: e.target.value,
+        });
+    },
+    _onchangFirstname: function(e) {
+        this.setState({
+            firstname: e.target.value, 
+        });
+    },
+    _onchangMidname: function(e) {
+        this.setState({
+            midname: e.target.value, 
+        });
+    },
+    _onchangLastname: function(e) {
+        this.setState({
+            lastname: e.target.value, 
+        });
+    },
+     _onchangGender: function(e) {
+        this.setState({
+            gender: e.target.value, 
+        });
+    },
+     _onchangNative: function(e) {
+        this.setState({
+            native: e.target.value, 
+        });
+    },
+     _onchangBirthday: function(e) {
+        this.setState({
+            birthday: e.target.value, 
+        });
+    },
+    _onEdit: function() {  
+        var editingStudent = StudentStore.getEditingStudents();
+        this.setState({
+            editingStudent: editingStudent,
         });
 
-        if (deletingStudent) {
+        if (editingStudent) {
             this.setState({
-                firstname: deletingStudent.firstname,
-                _id: deletingStudent._id,
+                student_id: editingStudent.student_id,
+                firstname: editingStudent.firstname,
+                lastname: editingStudent.lastname,
+                gender: editingStudent.gender,
+                native: editingStudent.native,
+                birthday: editingStudent.birthday
+
             });
         }
     },
+    _onclickClose: function(){       
+        this.setState({                        
+           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
+           editingStudent: "",                  
+        });
+    },
     getInitialState: function() {
             return {
-            firstname: "",            
-            deletingStudent: null, 
-            id: null,           
+            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
+            editingStudent: null,            
         }
     },
+    _openModal: function(){
+        $('#modal1').openModal();
+    },
     componentDidMount: function() {
-        StudentStore.addDeleteStudentListener(this._onDelete);
+        StudentStore.addEditStudentListener(this._onEdit);
     },
     render: function() {
-        var studentList = this.props.students.map(function(student, index) {
-          
-            return (
-                <tr key={index}>
-                    <td>{student.student_id}</td> 
-                    <td>{student.firstname} {student.midname} {student.lastname}</td>                                       
-                                      
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={StudentActions.editStudent.bind(null,student._id)} /></td>
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger" onClick={StudentActions.deleteStudent.bind(null,student._id)} /></td>
-                </tr>
-            );
-        }.bind(this));
+        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
-        return (
-            <div>
-                <table className="table">
-                    <tbody>                        
-                        {studentList}
-                    </tbody>
-                </table>
-                   <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-              <div className="modal-dialog" >
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
-                  </div>
-                  <div className="modal-body">
-                   {this.state.firstname}
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" id="close"  className="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={StudentActions.destroy.bind(null,this.state._id)}>DELETE</button>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>
+        return ( <div><button type="button" onClick={this._openModal} className="btn btn-primary">OPEN</button> 
+  <div id="modal1" className="modal">
+    <div className="modal-content">
+      <div className="row">
+    <form className="col s12">
+      <div className="row">
+        <div className="input-field col s6">
+          <input placeholder="Placeholder" id="first_name" type="text" className="validate"/>
+          <label for="first_name">First Name</label>
+        </div>
+        <div className="input-field col s6">
+          <input id="last_name" type="text" className="validate"/>
+          <label for="last_name">Last Name</label>
+        </div>
+      </div>
+      <div className="row">
+        <div className="input-field col s12">
+          <input disabled value="I am not editable" id="disabled" type="text" className="validate"/>
+          <label for="disabled">Disabled</label>
+        </div>
+      </div>
+      <div className="row">
+        <div className="input-field col s12">
+          <input id="password" type="password" className="validate"/>
+          <label for="password">Password</label>
+        </div>
+      </div>
+      <div className="row">
+        <div className="input-field col s12">
+          <input id="email" type="email" className="validate"/>
+          <label for="email">Email</label>
+        </div>
+      </div>
+    </form>
+  </div>
+    </div>
+    <div className="modal-footer">
+      <a href="#!" className=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+         </div> 
         );
     }
 });
 
-module.exports = StudentList;
+module.exports = StudentForm;
+http://materializecss.com/dialogs.html

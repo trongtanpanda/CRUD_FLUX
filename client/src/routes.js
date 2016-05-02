@@ -19,7 +19,6 @@ var BeanItemEditPage = require('./components/pages/BeanItemEditPage');
 
 var routes = (
     <Route name="home" path='/' handler={App}>
-        <DefaultRoute name='beanList' handler={BeanListPage} />
 
         <Route name="course"        path="/course"      handler={Course} />
         <Route name="department"    path="/department"  handler={Department} />
@@ -29,9 +28,6 @@ var routes = (
         <Route name="subject"       path="/subject"     handler={Subject} />
         <Route name="term_class"    path="/term_class"  handler={Term_class} />
         <Route name="user"          path="/user"        handler={User} />
-
-        <Route name="beanItemPage" path="/bean/:beanID" handler={BeanItemPage} />       
-        <Route name="beanItemEditPage" path="/bean/:beanID/edit" handler={BeanItemEditPage} />
     </Route>
 );
 

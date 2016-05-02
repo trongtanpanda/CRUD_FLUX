@@ -7,9 +7,12 @@ router.route('/students')
     .post(function(req, res) {
 		Students.create({
 			student_id:req.body.student.student_id, 
-			firstname: req.body.student.firstname,
+			firstname: req.body.student.firstname,			
 			lastname: req.body.student.lastname,
-			midname: req.body.student.midname
+			native: req.body.student.native,
+			gender: req.body.student.gender,
+			birthday: req.body.student.birthday
+
 
 			}, function(err,student){
 			// console.log(user);
@@ -33,9 +36,11 @@ router.route('/students')
 			Students.update({_id:req.body.student._id},{$set:
 			{
 				student_id:req.body.student.student_id, 
-				firstname: req.body.student.firstname,
+				firstname: req.body.student.firstname,			
 				lastname: req.body.student.lastname,
-				midname: req.body.student.midname
+				native: req.body.student.native,
+				gender: req.body.student.gender,
+				birthday: req.body.student.birthday
 			}
 
 			},function(err) {
@@ -61,6 +66,31 @@ router.route('/students')
 	                res.send();
 	            }
 			});
+		})
+	router.route('/students/excel')
+		.post(function(req, res) {
+			var data = req.body.list;
+			var result=[];
+			for(var i=0; i<data.length; i++){
+				Students.create({
+					student_id:data[i]["Mã sv"], 
+					firstname: data[i]["Họ "],		
+					lastname: data[i]["Tên"],
+					native: data[i]["Quê Quán"],
+					gender: data[i]["Giới tính"],
+				 	birthday: data[i]["Lớp SH"]
+
+				}, function(err,student){
+					if(err) console.log(err);
+					result.push(student);
+					console.log(student);					
+				});
+			}
+			res.status(201);
+            res.json({Message:{ message: 'Delete student had success!', type: 'success',student:  result}});
+            res.send();
+
+			
 		})
 
 	
