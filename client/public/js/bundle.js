@@ -72527,8 +72527,8 @@
 	                    React.createElement("td", null, lastname), 
 	                    React.createElement("td", null, gender), 
 	                    React.createElement("td", null, native), 
-	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: StudentActions.editStudent.bind(null,item._id)})), 
-	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: StudentActions.deleteStudent.bind(null,item._id)}))
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success light-blue accent-4", onClick: StudentActions.editStudent.bind(null,item._id)})), 
+	                    React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger red accent-2", onClick: StudentActions.deleteStudent.bind(null,item._id)}))
 	                );
 	    },
 	    
@@ -72579,8 +72579,9 @@
 	        return (
 	            
 	        React.createElement("div", null, 
-	            React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	            
 	            React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	            React.createElement("h3", {className: "text-left"}, "Quản lý sinh viên"), 
 	            React.createElement(ImportForm, null), 
 	            React.createElement(StudentForm, null), 
 	                React.createElement("div", null, 
@@ -73016,7 +73017,7 @@
 	        this.setState({
 	           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
 	        });
-	         $("#close").click();
+	         $('#myModal').modal('hide');
 	         this._onclickClose;
 	    },
 	    _onClickUpdate: function() {
@@ -73034,7 +73035,7 @@
 	        this.setState({
 	            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
 	        });
-	         $("#close").click();
+	        $('#myModal').modal('hide');
 	         this._onclickClose;
 	    },
 	    _onchangId: function(e){        
@@ -73097,7 +73098,7 @@
 	        });
 	    },
 	    getInitialState: function() {
-	            return {
+	        return {
 	            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
 	            editingStudent: null,            
 	        }
@@ -73106,17 +73107,20 @@
 	        StudentStore.addEditStudentListener(this._onEdit);
 	    },
 	    render: function() {
+	        if(this.state.editingStudent){
+	            $(".input-field label").addClass("active");
+	        }
 	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
 	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
 
 	        return (
 	        React.createElement("div", null, 
 	            React.createElement("div", {className: "button"}, 
-	            React.createElement("button", {type: "button", onClick: StudentForm._onclickClose, className: "btn btn-primary btn-lg pull-right btn-kind-one", "data-toggle": "modal", "data-target": "#myModal"}, 
+	            React.createElement("button", {type: "button", onClick: StudentForm._onclickClose, className: "btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4", "data-toggle": "modal", "data-target": "#myModal"}, 
 	              "Thêm mới"
 	            ), 
 	            " ", 
-	            React.createElement("button", {type: "button", className: "btn btn-success btn-lg pull-right btn-kind-one", "data-toggle": "modal", "data-target": "#ecelModal"}, 
+	            React.createElement("button", {type: "button", className: "btn btn-success btn-lg pull-right btn-kind-one light-blue accent-4", "data-toggle": "modal", "data-target": "#ecelModal"}, 
 	              "Import from Excel"
 	            )
 	            ), 
@@ -73130,47 +73134,45 @@
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("form", {className: "form-horizontal"}, 
-	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Mã Sinh viên"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.student_id, onChange: this._onchangId, ref: "student_id", className: "form-control", type: "text", placeholder: "Mã Sinh viên", name: "title"})
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "student_id", value: this.state.student_id, onChange: this._onchangId, ref: "student_id", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "student_id"}, "Mã sinh viên")
 	                            )
 	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.firstname, onChange: this._onchangFirstname, ref: "firstname", className: "form-control", type: "text", placeholder: "Họ", name: "title"})
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "firstname", value: this.state.firstname, onChange: this._onchangFirstname, ref: "firstname", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "firstname"}, "Họ")
+	                            ), 
+	                        
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "lastname", value: this.state.lastname, onChange: this._onchangLastname, ref: "lastname", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "lastname"}, "Tên")
 	                            )
 	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.lastname, onChange: this._onchangLastname, ref: "lastname", className: "form-control", type: "text", placeholder: "Tên", name: "title"})
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "gender", value: this.state.gender, onChange: this._onchangGender, ref: "gender", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "gender"}, "Giới tính")
+	                            ), 
+	                             React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "birthday", value: this.state.birthday, onChange: this._onchangBirthday, ref: "birthday", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "birthday"}, "Ngày sinh")
 	                            )
 	                        ), 
-	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Giới tính"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.gender, onChange: this._onchangGender, ref: "gender", className: "form-control", type: "text", placeholder: "Giới tính", name: "title"})
-	                            )
-	                        ), 
-	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Quê quán"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.native, onChange: this._onchangNative, ref: "native", className: "form-control", type: "text", placeholder: "Quê quán", name: "title"})
-	                            )
-	                        ), 
-	                        React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Ngày sinh"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.birthday, onChange: this._onchangBirthday, ref: "birthday", className: "form-control", type: "text", placeholder: "Ngày sinh", name: "title"})
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "input-field col s12"}, 
+	                              React.createElement("input", {id: "native", value: this.state.native, onChange: this._onchangNative, ref: "native", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "native"}, "Quê quán")
 	                            )
 	                        )
+	                                    
 	                    )
 	                  ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                     this.state.editingStudent ? btnUpdate : btnAdd
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-kind-one grey", "data-dismiss": "modal"}, "Đóng"), 
+	                    this.state.editingStudent ? btnUpdate : btnAdd
 	                  )
 	                )
 	              )
@@ -73338,11 +73340,10 @@
 	                    React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("div", {className: "row"}, 
 	                        React.createElement("p", null, React.createElement("input", {type: "file", name: "xlfile", onChange: this._upload, id: "xlf"})), 
-	                        React.createElement("p", {className: "col-md-5"}, 
-	                            React.createElement("select", {onChange: this._onchangeSheet, className: "form-control"}, 
-	                              sheetList
-	                            )
-	                            )
+	                        React.createElement("select", {onChange: this._onchangeSheet, className: "form-control col s3"}, 
+	                          sheetList
+	                        )
+	                            
 	                        ), 
 	                       listStudent
 	                    ), 

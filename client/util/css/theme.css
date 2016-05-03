@@ -43,5 +43,5 @@ table tr:nth-child(odd) th {
 	margin-bottom: 20px;
 }
 .btn-kind-one{
-	margin-left: 20px;
+	margin-left: 20px !important;
 }

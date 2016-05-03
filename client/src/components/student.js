@@ -95,8 +95,8 @@ var Student = React.createClass({
                     <td>{lastname}</td>
                     <td>{gender}</td>
                     <td>{native}</td>
-                    <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={StudentActions.editStudent.bind(null,item._id)} /></td>
-                    <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger" onClick={StudentActions.deleteStudent.bind(null,item._id)} /></td>
+                    <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success light-blue accent-4" onClick={StudentActions.editStudent.bind(null,item._id)} /></td>
+                    <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger red accent-2" onClick={StudentActions.deleteStudent.bind(null,item._id)} /></td>
                 </tr>;
     },
     
@@ -147,8 +147,9 @@ var Student = React.createClass({
         return (
             
         <div>
-            <h1 className="text-center">Quản lý sinh viên</h1>
-            <div className="col-md-10 col-md-offset-1">
+            
+            <div className="col-md-10 col-md-offset-1">            
+            <h3 className="text-left">Quản lý sinh viên</h3>            
             <ImportForm />
             <StudentForm />                   
                 <div>

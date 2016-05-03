@@ -148,12 +148,11 @@ var ImportExcel = React.createClass({
                   </div>
                     <div className="modal-body">
                     <div className="row">
-                        <p><input type="file" name="xlfile" onChange={this._upload} id="xlf" /></p>
-                        <p className="col-md-5">
-                            <select onChange={this._onchangeSheet} className="form-control">                        
-                              {sheetList}
-                            </select>
-                            </p>
+                        <p><input type="file" name="xlfile" onChange={this._upload} id="xlf" /></p>                        
+                        <select onChange={this._onchangeSheet} className="form-control col s3">                        
+                          {sheetList}
+                        </select>
+                            
                         </div>
                        {listStudent}
                     </div>

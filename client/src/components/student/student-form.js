@@ -18,7 +18,7 @@ var StudentForm = React.createClass({
         this.setState({
            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
         });
-         $("#close").click();
+         $('#myModal').modal('hide');
          this._onclickClose;
     },
     _onClickUpdate: function() {
@@ -36,7 +36,7 @@ var StudentForm = React.createClass({
         this.setState({
             student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
         });
-         $("#close").click();
+        $('#myModal').modal('hide');
          this._onclickClose;
     },
     _onchangId: function(e){        
@@ -99,7 +99,7 @@ var StudentForm = React.createClass({
         });
     },
     getInitialState: function() {
-            return {
+        return {
             student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
             editingStudent: null,            
         }
@@ -108,17 +108,20 @@ var StudentForm = React.createClass({
         StudentStore.addEditStudentListener(this._onEdit);
     },
     render: function() {
+        if(this.state.editingStudent){
+            $(".input-field label").addClass("active");
+        }
         var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
         var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
         <div>
             <div className="button" >
-            <button type="button" onClick={StudentForm._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one" data-toggle="modal" data-target="#myModal">
+            <button type="button" onClick={StudentForm._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#myModal">
               Thêm mới
             </button> 
             &nbsp;
-            <button type="button"  className="btn btn-success btn-lg pull-right btn-kind-one" data-toggle="modal" data-target="#ecelModal">
+            <button type="button"  className="btn btn-success btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#ecelModal">
               Import from Excel
             </button>   
             </div>   
@@ -132,47 +135,45 @@ var StudentForm = React.createClass({
                   </div>
                   <div className="modal-body">
                     <form className="form-horizontal">
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Mã Sinh viên</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.student_id} onChange={this._onchangId} ref="student_id" className="form-control" type="text" placeholder="Mã Sinh viên" name="title"/>
-                            </div>                       
+                        <div className="row">
+                            <div className="input-field col s6">
+                              <input id="student_id" value={this.state.student_id} onChange={this._onchangId} ref="student_id" type="text" className="validate"/>
+                              <label for="student_id">Mã sinh viên</label>
+                            </div>
                         </div>
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.firstname} onChange={this._onchangFirstname} ref="firstname" className="form-control" type="text" placeholder="Họ"  name="title"/>
+                        <div className="row">
+                            <div className="input-field col s6">
+                              <input id="firstname" value={this.state.firstname} onChange={this._onchangFirstname} ref="firstname" type="text" className="validate"/>
+                              <label for="firstname">Họ</label>
                             </div>
-                        </div>                        
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.lastname} onChange={this._onchangLastname} ref="lastname" className="form-control" type="text" placeholder="Tên"  name="title"/>
+                        
+                            <div className="input-field col s6">
+                              <input id="lastname" value={this.state.lastname} onChange={this._onchangLastname} ref="lastname" type="text" className="validate"/>
+                              <label for="lastname">Tên</label>
                             </div>
-                        </div>   
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Giới tính</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.gender} onChange={this._onchangGender} ref="gender" className="form-control" type="text" placeholder="Giới tính"  name="title"/>
+                        </div>                  
+                        <div className="row">
+                            <div className="input-field col s6">
+                              <input id="gender" value={this.state.gender} onChange={this._onchangGender} ref="gender" type="text" className="validate"/>
+                              <label for="gender">Giới tính</label>
                             </div>
-                        </div>   
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Quê quán</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.native} onChange={this._onchangNative} ref="native" className="form-control" type="text" placeholder="Quê quán" name="title"/>
+                             <div className="input-field col s6">
+                              <input id="birthday" value={this.state.birthday} onChange={this._onchangBirthday} ref="birthday" type="text" className="validate"/>
+                              <label for="birthday">Ngày sinh</label>
                             </div>
                         </div>   
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Ngày sinh</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.birthday} onChange={this._onchangBirthday} ref="birthday" className="form-control" type="text" placeholder="Ngày sinh" name="title"/>
+                        <div className="row">
+                            <div className="input-field col s12">
+                              <input id="native" value={this.state.native} onChange={this._onchangNative} ref="native" type="text" className="validate"/>
+                              <label for="native">Quê quán</label>
                             </div>
-                        </div>                      
+                        </div>     
+                                    
                     </form>                    
                   </div>
-                  <div className="modal-footer">
-                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                     {this.state.editingStudent ? btnUpdate : btnAdd}
+                  <div className="modal-footer">                      
+                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-kind-one grey" data-dismiss="modal">Đóng</button>
+                    {this.state.editingStudent ? btnUpdate : btnAdd}                     
                   </div>
                 </div>
               </div>
