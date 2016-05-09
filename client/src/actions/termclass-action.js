@@ -27,7 +27,7 @@ var TermClassActions = {
 		});
 	},
 
-	update: function(termClass) {		
+	update: function(termClass) {
 		TermClassAPI.updateTermClass(termClass).then(function(updateData){
 			AppDispatcher.dispatch({
 				action: Contants.UPDATE_TERMCLASS,

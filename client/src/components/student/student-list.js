@@ -1,163 +1,228 @@
-var React = require("react"),    
-    StudentStore = require("../../stores/student-store"),
-    StudentActions = require("../../actions/student-action.js");
+var React = require("react"),
+    StudentActions = require("../actions/student-action.js"),
+    // CourseActions = require('../actions/course-action'),
+    StudentStore = require("../stores/student-store"), 
+    // ComboCourse = require("./combb-course"),   
+    StudentForm = require("./student/student-form"),
+    ImportForm = require("./student/import-excel");
+var Paginator = require("./student/Paginator.js");
+var PER_PAGE = 10;
+var X = require('xlsx');
 
-var StudentForm = React.createClass({
-    
-    _onClickAdd: function() {
-         var student = {
-            student_id: this.state.student_id,
-            firstname: this.state.firstname,            
-            lastname: this.state.lastname,
-            gender: this.state.gender,
-            native: this.state.native,
-            birthday: this.state.birthday
-        };
 
-        StudentActions.create(student);
+var Student = React.createClass({
+    getDefaultProps: function () {
+            return {
+                onChange: function (event) { void event; } // optional hook to propagate event upwards
+            };
+        },
+    _onChange: function() {
+        var students =  StudentStore.getStudents(); 
+        if(students.length > 0){
+            this.onChangePage(1, students);
+        }
         this.setState({
-           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
-        });
-         $("#close").click();
-         this._onclickClose;
+            students: StudentStore.getStudents(),           
+        });   
     },
-    _onClickUpdate: function() {
-        var editingStudent = this.state.editingStudent;        
-        var user ={
-            _id:editingStudent._id,
-             student_id: this.state.student_id,
-            firstname: this.state.firstname,            
-            lastname: this.state.lastname,
-            gender: this.state.gender,
-            native: this.state.native,
-            birthday: this.state.birthday
-        };
-        StudentActions.update(user);
-        this.setState({
-            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:""
-        });
-         $("#close").click();
-         this._onclickClose;
+    getInitialState: function() {
+        StudentActions.fetchAddStudentFromServer();        
+        return {
+            students: StudentStore.getStudents(),  
+            firstname: "",
+            midname: "",
+            lastname: "",            
+            deletingStudent: null, 
+            id: null, 
+            listCheck: [],    
+            checkAll: false,
+           
+        }
+      
     },
-    _onchangId: function(e){        
-        this.setState({
-            student_id: e.target.value,
-        });
+    componentDidMount: function() {
+        StudentStore.addChangeListener(this._onChange);  
+        StudentStore.addDeleteStudentListener(this._onDelete);           
+        
     },
-    _onchangFirstname: function(e) {
+    _onDelete: function() {        
+        var deletingStudent = StudentStore.getDeleteStudent();
+        // console.log(editingStudent);
         this.setState({
-            firstname: e.target.value, 
-        });
-    },
-    _onchangMidname: function(e) {
-        this.setState({
-            midname: e.target.value, 
-        });
-    },
-    _onchangLastname: function(e) {
-        this.setState({
-            lastname: e.target.value, 
-        });
-    },
-     _onchangGender: function(e) {
-        this.setState({
-            gender: e.target.value, 
-        });
-    },
-     _onchangNative: function(e) {
-        this.setState({
-            native: e.target.value, 
-        });
-    },
-     _onchangBirthday: function(e) {
-        this.setState({
-            birthday: e.target.value, 
-        });
-    },
-    _onEdit: function() {  
-        var editingStudent = StudentStore.getEditingStudents();
-        this.setState({
-            editingStudent: editingStudent,
+            deletingStudent: deletingStudent,
         });
 
-        if (editingStudent) {
+        if (deletingStudent) {
             this.setState({
-                student_id: editingStudent.student_id,
-                firstname: editingStudent.firstname,
-                lastname: editingStudent.lastname,
-                gender: editingStudent.gender,
-                native: editingStudent.native,
-                birthday: editingStudent.birthday
-
+                firstname: deletingStudent.firstname,
+                midname: deletingStudent.midname,
+                lastname: deletingStudent.lastname,
+                _id: deletingStudent._id,
             });
         }
     },
-    _onclickClose: function(){       
-        this.setState({                        
-           student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
-           editingStudent: "",                  
-        });
-    },
-    getInitialState: function() {
-            return {
-            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
-            editingStudent: null,            
+    onChangePage: function(page,dataEx) { 
+            this.setState({
+                loading: true,
+                items: this.getData(page,StudentStore.getStudents()),
+            });
+    },          
+    _onCheck: function(){
+        console.log("on checkbox");
+    }, 
+    
+    getData: function(page,dataEx) {
+        var list= [];
+        var start =PER_PAGE *(page-1);
+        var end = start + PER_PAGE;
+        if(end >dataEx.length){
+            end= dataEx.length;
         }
+        for(var i= start; i< end; i++){           
+                list.push(dataEx[i]);            
+        }        
+        return list;
     },
-    _openModal: function(){
-        $('#modal1').openModal();
-    },
-    componentDidMount: function() {
-        StudentStore.addEditStudentListener(this._onEdit);
-    },
-    render: function() {
-        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
-        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
+    renderItem: function(item) {
+        var id = item.student_id;
+        var firstname = item.firstname;
+        var lastname = item.lastname;
+        var gender;
 
-        return ( <div><button type="button" onClick={this._openModal} className="btn btn-primary">OPEN</button> 
-  <div id="modal1" className="modal">
-    <div className="modal-content">
-      <div className="row">
-    <form className="col s12">
-      <div className="row">
-        <div className="input-field col s6">
-          <input placeholder="Placeholder" id="first_name" type="text" className="validate"/>
-          <label for="first_name">First Name</label>
+        if(item.gender=="1" || item.gender==1){
+            gender ="Nam";
+        }else{
+            gender = "Nữ";
+        }
+        var native = item.native;
+       
+        return <tr>
+                    <td>
+                     <input type="checkbox" id={id} class="switchBox"                                                   
+                        onChange={this.onChange.bind(null, id)} />
+                    <label htmlFor={id} ></label>   
+                    </td>
+                    <td>{id}</td>
+                    <td>{firstname}</td>
+                    <td>{lastname}</td>
+                    <td>{gender}</td>
+                    <td>{native}</td>
+                    <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success light-blue accent-4" onClick={StudentActions.editStudent.bind(null,item._id)} /></td>
+                    <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger red accent-2" onClick={StudentActions.deleteStudent.bind(null,item._id)} /></td>
+                </tr>;
+    },
+    onChange: function (id) {
+        var list= this.state.listCheck;
+        var exist = false;
+        for(var i=0; i< list.length; i++){            
+            if(list[i]==id){
+                exist= true;
+            }            
+        }
+        if(!exist){
+            list.push(id);
+        }else{
+             list.splice(list.indexOf(id),1);
+        }
+        this.setState({
+            listCheck: list,
+        });
+        console.log(list);
+    },
+    checkAll: function(){
+        if(this.state.checkAll){
+            this.setState({
+                checkAll: false
+            });
+        }else{           
+            this.setState({
+                checkAll: true
+            });  
+        }
+        
+    },
+    render: function() { 
+        console.log(this.state.checkAll);
+        var total;
+        var page;
+        if(this.state.students){
+            total =Math.ceil(this.state.students.length/PER_PAGE);            
+        }
+        if(this.state.items){
+            page = this.state.items.map(this.renderItem);
+        }
+        var studentsData=(
+            <div>
+                 <table className="table">
+                    <thead>
+                        <tr>    
+                            <th> 
+                                <input type="checkbox" id="all" class="switchBox"                                                   
+                                    onChange={this.checkAll} />
+                                <label htmlFor="all" ></label>
+                            </th>
+                            <th>Mã SV</th>
+                            <th>Họ</th>
+                            <th>Tên</th>
+                            <th>Giới tính</th>
+                            <th>Quê quán</th> 
+                            <th>Edit</th>
+                            <th>Delete</th>                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {page}
+                    </tbody>
+                </table>                 
+                <Paginator className="pull-right" max={total} onChange={this.onChangePage} />                
+            </div>);
+         var studentList = this.state.students.map(function(student, index) {
+          
+            return (
+                <tr key={index}>
+                    <td>{student.student_id}</td> 
+                    <td>{student.firstname}  {student.lastname}</td>                                       
+                                      
+                    <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={StudentActions.editStudent.bind(null,student._id)} /></td>
+                    <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger" onClick={StudentActions.deleteStudent.bind(null,student._id)} /></td>
+                </tr>
+            );
+        }.bind(this));
+
+        return (
+            
+        <div>
+            
+            <div className="col-md-10 col-md-offset-1">                        
+            <h3 className="text-left">Quản lý sinh viên</h3>
+            <ImportForm />
+            <StudentForm />                   
+                <div>
+                    {studentsData}
+                    <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div className="modal-dialog" >
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                            <h4 className="modal-title" id="myModalLabel">Xóa sinh viên</h4>
+                          </div>
+                          <div className="modal-body">
+                          Bạn có muốn xóa sinh viên {this.state.firstname} {this.state.midname} {this.state.lastname}?
+                          </div>
+                          <div className="modal-footer">
+                            <button type="button" id="close"  className="btn btn-default" data-dismiss="modal">Đóng</button>
+                            <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={StudentActions.destroy.bind(null,this.state._id)}>DELETE</button>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>                   
+            </div>
         </div>
-        <div className="input-field col s6">
-          <input id="last_name" type="text" className="validate"/>
-          <label for="last_name">Last Name</label>
-        </div>
-      </div>
-      <div className="row">
-        <div className="input-field col s12">
-          <input disabled value="I am not editable" id="disabled" type="text" className="validate"/>
-          <label for="disabled">Disabled</label>
-        </div>
-      </div>
-      <div className="row">
-        <div className="input-field col s12">
-          <input id="password" type="password" className="validate"/>
-          <label for="password">Password</label>
-        </div>
-      </div>
-      <div className="row">
-        <div className="input-field col s12">
-          <input id="email" type="email" className="validate"/>
-          <label for="email">Email</label>
-        </div>
-      </div>
-    </form>
-  </div>
-    </div>
-    <div className="modal-footer">
-      <a href="#!" className=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div>
-         </div> 
+            
         );
     }
 });
 
-module.exports = StudentForm;
-http://materializecss.com/dialogs.html
+module.exports = Student;

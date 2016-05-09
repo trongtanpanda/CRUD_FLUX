@@ -16,7 +16,6 @@ var TermClassForm = React.createClass({
             perceive: this.state.perceive,
             last_test: this.state.last_test
         };
-        console.log(termClass);
         TermClassActions.create(termClass);
         this.setState({
            termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:""
@@ -96,7 +95,6 @@ var TermClassForm = React.createClass({
         this.setState({
             editingTermClass: editingTermClass,
         });
-        console.log(editingTermClass);
         if (editingTermClass) {
             this.setState({
                 termClass_id: editingTermClass.termClass_id,
@@ -111,11 +109,13 @@ var TermClassForm = React.createClass({
             });
         }
     },
-    _onclickClose: function(){       
+    _onclickClose: function(){ 
+
         this.setState({                        
             termClass_id:"", name: "", number: "", theory: "",diligence:"",practive:"",self_taught:"",perceive:"",last_test:"",           
-            editingTermClass: "",                  
+            editingTermClass: null,                  
         });
+        $(".input-field label").removeClass("active");
     },
     getInitialState: function() {
             return {
@@ -127,90 +127,90 @@ var TermClassForm = React.createClass({
         TermClassStore.addEditTermClassListener(this._onEdit);
     },
     render: function() {
+         if(this.state.editingTermClass){
+            $(".input-field label").addClass("active");
+        }
         var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
         var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
             <div>
-            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
-              Thêm mới
-            </button>  
-           <p>&nbsp;</p>              
-            <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-              <div className="modal-dialog" >
-                <div className="modal-content" >
-                  <div className="modal-header">
-                    <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                <div className="button-main" >
+                    <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#myModal">
+                      Thêm mới
+                    </button>  
+                </div>             
+                <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div className="modal-dialog" >
+                    <div className="modal-content" >
+                      <div className="modal-header">
+                        <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
+                        <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                      </div>
+                      <div className="modal-body">
+                        <form className="form-horizontal">
+                            <div className="row">
+                                <div className="input-field col s6">
+                                        <input id="termClass_id" value={this.state.termClass_id} onChange={this._onchangId} ref="termClass_id" className="form-control" type="text"  ref="title" name="title"/>
+                                    <label for="termClass_id">Mã lớp học phần</label>
+                                </div>
+                            
+                                <div className="input-field col s6">
+                                    <input id="name" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text"   name="name"/>
+                                    <label for="name">Tên lớp học phần</label>
+                                </div>
+                            </div>  
+                            <div className="row">
+                                <div className="input-field col s6">
+                                    <input id="number" value={this.state.number} onChange={this._onchangnumber} ref="number" className="form-control" type="text"   name="number"/>
+                                    <label for="number">Số tín chỉ</label>
+                                </div>
+                           
+                                <div className="input-field col s6">
+                                    <input id="theory" value={this.state.theory} onChange={this._onchangtheory} ref="theory" className="form-control" type="text"   name="theory"/>
+                                   <label for="theory">Hệ số lý thuyết</label>
+                                </div>
+                            </div>  
+                            <div className="row">
+                                <div className="input-field col s6">
+                                    <input id="diligence" value={this.state.diligence} onChange={this._onchangdiligence} ref="diligence" className="form-control" type="text"   name="diligence"/>
+                                   <label for="diligence">Hệ số chuên cần</label>
+                                </div>
+                           
+                                <div className="input-field col s6">
+                                    <input id="practive" value={this.state.practive} onChange={this._onchangpractive} ref="practive" className="form-control" type="text"   name="practive"/>
+                                    <label for="practive">Hệ số thực hành</label>
+                                </div>
+                            </div>   
+                            <div className="row">
+                                <div className="input-field col s6">
+                                    <input id="self_taught" value={this.state.self_taught} onChange={this._onchangself_taught} ref="self_taught" className="form-control" type="text" name="self_taught"/>
+                                    <label for="self_taught">Hệ số kiểm tra</label>
+                                </div>
+                           
+                                <div className="input-field col s6">
+                                    <input id="perceive" value={this.state.perceive} onChange={this._onchangperceive} ref="perceive" className="form-control" type="text"  name="perceive"/>
+                                    <label for="perceive">Hệ số nhận thức</label>
+                                </div>
+                            </div>  
+                            <div className="row">
+                                <div className="input-field col s6">
+                                    <input id="last_test" value={this.state.last_test} onChange={this._onchanglast_test} ref="last_test" className="form-control" type="text"  name="last_test"/>
+                                    <label for="last_test">Hệ số cuối kỳ</label>
+                                </div>
+                            </div>      
+                                                    
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" id="close" onClick={this._onclickClose} className="btn btn-kind-one grey" data-dismiss="modal">Đóng</button>
+                         {this.state.editingTermClass ? btnUpdate : btnAdd}
+                      </div>
+                    </div>
                   </div>
-                  <div className="modal-body">
-                    <form className="form-horizontal">
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Mã lớp học phần</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.termClass_id} onChange={this._onchangId} ref="termClass_id" className="form-control" type="text" placeholder="Mã lớp học phần" ref="title" name="title"/>
-                            </div>                       
-                        </div>                        
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên Lớp học phần</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên lớp học phần"  name="name"/>
-                            </div>
-                        </div>
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Số tín chỉ</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.number} onChange={this._onchangnumber} ref="number" className="form-control" type="text" placeholder="Số tín chỉ"  name="number"/>
-                            </div>
-                        </div>
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số lý thuyết</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.theory} onChange={this._onchangtheory} ref="theory" className="form-control" type="text" placeholder="Hệ số lý thuyết"  name="theory"/>
-                            </div>
-                        </div>  
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số chuyên cần</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.diligence} onChange={this._onchangdiligence} ref="diligence" className="form-control" type="text" placeholder="Hệ số chuyên cần"  name="diligence"/>
-                            </div>
-                        </div>  
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số thực hành</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.practive} onChange={this._onchangpractive} ref="practive" className="form-control" type="text" placeholder="Hệ số thực hành"  name="practive"/>
-                            </div>
-                        </div>  
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số kiểm tra</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.self_taught} onChange={this._onchangself_taught} ref="self_taught" className="form-control" type="text" placeholder="Hệ số kiểm tra"  name="self_taught"/>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số nhận thức</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.perceive} onChange={this._onchangperceive} ref="perceive" className="form-control" type="text" placeholder="Hệ số nhận thức" name="perceive"/>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Hệ số thi</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.last_test} onChange={this._onchanglast_test} ref="last_test" className="form-control" type="text" placeholder="Hệ số thi"  name="last_test"/>
-                            </div>
-                        </div>    
-                                                
-                    </form>                    
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                     {this.state.editingtermClass ? btnUpdate : btnAdd}
-                  </div>
-                </div>
-              </div>
-            </div>             
+                </div>             
             
-        </div>
+            </div>
         );
     }
 });

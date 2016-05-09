@@ -97,6 +97,7 @@ var StudentForm = React.createClass({
            student_id:"", firstname: "", midname: "", lastname: "", gender: "", native: "", birthday:"",           
            editingStudent: "",                  
         });
+         $(".input-field label").removeClass("active");
     },
     getInitialState: function() {
         return {
@@ -116,7 +117,7 @@ var StudentForm = React.createClass({
 
         return (
         <div>
-            <div className="button" >
+            <div className="button-main" >
             <button type="button" onClick={StudentForm._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#myModal">
               Thêm mới
             </button> 
@@ -125,7 +126,7 @@ var StudentForm = React.createClass({
               Import from Excel
             </button>   
             </div>   
-           <p>&nbsp;</p>              
+                         
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
                 <div className="modal-content" >

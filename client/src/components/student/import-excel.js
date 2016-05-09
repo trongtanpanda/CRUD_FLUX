@@ -3,7 +3,7 @@ var React = require("react"),
     StudentForm = require("./student-form"),
     StudentActions = require("../../actions/student-action.js");
 var URL = 'http://developer.echonest.com/api/v4/song/search?api_key=JE2S42FJUGYGJFVSE';
-var Paginator = require("./Paginator.js");
+var Paginator = require("../Paginator.js");
 var PER_PAGE = 10;
 
 var ImportExcel = React.createClass({    

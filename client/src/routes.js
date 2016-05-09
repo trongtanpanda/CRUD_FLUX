@@ -9,7 +9,7 @@ var Mark = require('./components/mark');
 var Sector = require('./components/sector');
 var Student = require('./components/student');
 var Subject = require('./components/subject');
-var Term_class = require('./components/termclass');
+var Termclass = require('./components/termclass');
 var User = require('./components/user');
 
 var BeanListPage = require('./components/pages/BeanListPage');
@@ -26,7 +26,7 @@ var routes = (
         <Route name="sector"        path="/sector"      handler={Sector} />
         <Route name="student"       path="/student"     handler={Student} />
         <Route name="subject"       path="/subject"     handler={Subject} />
-        <Route name="term_class"    path="/term_class"  handler={Term_class} />
+        <Route name="termclass"    path="/termclass"  handler={Termclass} />
         <Route name="user"          path="/user"        handler={User} />
     </Route>
 );
