@@ -34,7 +34,7 @@ module.exports = {
     CREATE_MARK     : "CREATE_MARK",
     UPDATE_MARK     : "UPDATE_MARK",
     DELETE_MARK     : "DELETE_MARK",
-
+    GET_LISTBYTERM  : "GET_LISTBYTERM",
     //----------SECTOR----------------//
 
     GET_SECTOR      : "GET_SECTOR",
@@ -62,5 +62,6 @@ module.exports = {
     CREATE_TERMCLASS     : "CREATE_TERMCLASS",
     UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
     DELETE_TERMCLASS     : "DELETE_TERMCLASS",
+
 
 }

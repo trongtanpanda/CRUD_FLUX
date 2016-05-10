@@ -59,6 +59,17 @@ var MarkActions = {
 	        data: index,
 	    })
     },
+    getStudentByTermClass: function(index){    	
+    	MarkAPI.getStudentByTermClass(index).then(function(data) {	    		
+			AppDispatcher.dispatch({
+				action:Contants.GET_LISTBYTERM,
+				data: data,
+				// params: {}
+			});
+		}, function(status, text) {
+			// Handle error!
+		});
+    },
 
 };
 module.exports = MarkActions;

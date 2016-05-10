@@ -2,17 +2,17 @@ var React = require("react"),
     TermClassActions = require("../actions/termClass-action.js"),
     // CourseActions = require('../actions/course-action'),
     TermClassStore = require("../stores/termClass-store"), 
-    // ComboCourse = require("./combb-course"),   
+    MarkStore = require("../stores/mark-store"), 
     TermClassForm = require("./termClass/termClass-form"),
-    TermClassList = require("./termClass/termClass-list");
-    // Message = require("./message.js");
+    TermClassList = require("./termClass/termClass-list"),
+    MarkActions = require("../actions/mark-action.js"),
+    StudentActions = require("../actions/student-action.js");
 var Paginator = require("./termClass/Paginator.js");
 var PER_PAGE = 10;
 
 
 var TermClass = React.createClass({
     _onChange: function() {
-
         var termClasss = TermClassStore.getTermClasss();       
         if(termClasss.length > 0){
             this.onChangePage(1, termClasss);
@@ -21,6 +21,7 @@ var TermClass = React.createClass({
             termClasss: termClasss           
         });   
     },
+
     getInitialState: function() {
         TermClassActions.fetchAddTermClassFromServer();  
         return {
@@ -31,9 +32,15 @@ var TermClass = React.createClass({
             name: null,
         }
     },
+    _getListByTerm: function(){
+        this.setState({
+            listByTerm: MarkStore.getMarks(),
+        });        
+    },
     componentDidMount: function() {
         TermClassStore.addChangeListener(this._onChange);             
-        TermClassStore.addDeleteTermClassListener(this._onDelete);     
+        TermClassStore.addDeleteTermClassListener(this._onDelete);  
+        MarkStore.getListChangeListener(this._getListByTerm);     
     },
     _onDelete: function() {        
         var deletingTermClass = TermClassStore.getDeleteTermClass();
@@ -67,7 +74,19 @@ var TermClass = React.createClass({
         }        
         return list;
     },
-    render: function() { 
+    render: function() {
+        var listByTerm;
+        if(this.state.listByTerm){
+            listByTerm = this.state.listByTerm.map(function(item, index){
+                var student = item.student;
+                var termClass =item.termClass;
+                 return <tr>                           
+                            <td>{student}</td>
+                            <td>{termClass}</td>
+                        </tr>
+
+            });
+        }52
         var total;
         var page;
         if(this.state.termClasss){
@@ -94,7 +113,7 @@ var TermClass = React.createClass({
                             <td>{theory}</td>
                             <td>{diligence}</td>
                             <td>
-                                <button type="button" data-toggle="modal" data-target="#detailClass"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-list-alt" ></button>
+                                <button type="button" data-toggle="modal" data-target="#detailClass"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-list-alt" onClick={MarkActions.getStudentByTermClass.bind(null,item._id)} ></button>
                             </td>
                             <td>
                                 <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={TermClassActions.editTermClass.bind(null,item._id)} ></button>
@@ -126,9 +145,21 @@ var TermClass = React.createClass({
                 </table>                 
                 <Paginator className="pull-right" max={total} onChange={this.onChangePage} />                
             </div>);        
-
+        var listByTermData =(<div>
+                 <table className="table">
+                    <thead>
+                        <tr> 
+                            <th>Mã Lớp học phân</th>
+                            <th>Tên</th>              
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listByTerm}
+                    </tbody>
+                </table>       
+            </div>) 
         return (
-            
+           
         <div>
             
             <div className="col-md-10 col-md-offset-1">                        
@@ -155,14 +186,27 @@ var TermClass = React.createClass({
                       </div>
                     </div>
                     <div className="modal fade" id="detailClass" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-                      <div className="modal-dialog" >
+                      <div className="modal-dialog modal-liststudentbyterm" >
                         <div className="modal-content">
                           <div className="modal-header">
                             <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                            <h4 className="modal-title" id="myModalLabel">Chi tiết</h4>
+                            <h4 className="modal-title" id="myModalLabel">Danh sách sinh viên</h4>
                           </div>
                           <div className="modal-body">
-                         
+                            <div className="row">
+                                <div className="col-lg-6">
+                                    <div className="input-field col s4">
+                                      <input id="inputname" value="" ref="inputname" type="text" className="validate"/>
+                                      <label for="inputname">Enter value</label>
+                                    </div>
+                                     <select className="form-control col s3">                        
+                                        <option value="">Choose items</option>
+                                        <option value="">Choose items</option>
+                                        <option value="">Choose items</option>
+                                    </select>
+                                </div>
+                                <div className="col-lg-6 right-content">{listByTermData}</div>
+                            </div>
                           </div>
                           <div className="modal-footer">
                             <button type="button" id="close"  className="btn btn btn-kind-one grey" data-dismiss="modal">Đóng</button>&nbsp;

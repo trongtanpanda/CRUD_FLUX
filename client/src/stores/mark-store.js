@@ -6,6 +6,7 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 var CHANGE_DELETE_EVENT = 'change_delete';
+var CHANGE_LIST_EVENT = 'change_list_event';
 var _marks = [];
 var _courses= [];
 var _editing_id = null;
@@ -57,21 +58,19 @@ function _deleteMsg(){
     _msg =null;
 }
 var MarkStore  = _.extend(BaseStore, {
-    getMarks: function() {       
-       console.log(_marks);
+    getMarks: function() { 
         return _marks;
-
     },
   
     getMessage:function(){
         return _msg;
     },
-    // emitChange: function() {
-    //     this.emit(CHANGE_EVENT);
-    // },
-    // addChangeListener: function(callback) {
-    //     this.on(CHANGE_EVENT, callback);
-    // },
+    emitListChange: function() {
+        this.emit(CHANGE_LIST_EVENT);
+    },
+    getListChangeListener: function(callback) {
+        this.on(CHANGE_LIST_EVENT, callback);
+    },
 
     getEditingMarks: function() {
         if (!_editing_id) {
@@ -112,7 +111,6 @@ AppDispatcher.register(function(payload) {
             break;
 
         case MarkConstants.DELETE_MARK:
-            console.log(payload.data.Message.mark);
             _removeMark(payload.data.Message.mark);
             _getMsg(payload.data.Message);                    
             MarkStore.emitChange();           
@@ -140,9 +138,9 @@ AppDispatcher.register(function(payload) {
             MarkStore.emitChange();
             break;
             
-        case MarkConstants.GET_COURSE:
-            _listCourse(payload.data);            
-            MarkStore.emitChange();
+        case MarkConstants.GET_LISTBYTERM:
+            _listMark(payload.data.Message.marks);            
+            MarkStore.emitListChange();
             break;
     }
 });

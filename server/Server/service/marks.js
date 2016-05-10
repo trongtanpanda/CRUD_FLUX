@@ -32,8 +32,7 @@ router.route('/marks')
 				res.json(mark);			
 	 		});
 	 	})
- 	.put(function(req, res) {
- 		console.log(req.body);
+ 	.put(function(req, res) { 		
 		Marks.update({_id:req.body.mark._id},{$set:
 		{
 			student:req.body.mark.student, 
@@ -75,5 +74,18 @@ router.route('/marks')
             }
 		});
 	})
+
+router.route('/marks/getbyterm')
+	.get(function(req, res){
+		Marks.find({termClass : '56dffa0c8c87a1140e83b9d0'}, function(err, marks){
+			if (err){
+                res.send(err);
+            }else{ 
+                res.status(201);
+                res.json({Message:{ message: 'Delete mark had success!', type: 'success',marks: marks }});
+                res.send();
+            }
+		});
+	});
 	
 export default router;

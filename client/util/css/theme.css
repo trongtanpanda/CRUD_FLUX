@@ -45,3 +45,9 @@ table tr:nth-child(odd) th {
 .btn-kind-one{
 	margin-left: 20px !important;
 }
+.modal-liststudentbyterm{
+	width: 80% !important;
+}
+.right-content {
+	border-left: 1px solid green;
+}
