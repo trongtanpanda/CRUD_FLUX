@@ -51,3 +51,15 @@ table tr:nth-child(odd) th {
 .right-content {
 	border-left: 1px solid green;
 }
+.form-search {
+	border-bottom: 1px solid green;
+}
+.select-dropdown {
+	margin-top: 28px;
+}
+.buttom-search {
+	margin-top: 25px;
+}
+.row {
+	padding: 0px !important;
+}

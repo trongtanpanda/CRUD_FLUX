@@ -21,7 +21,9 @@ var TermClass = React.createClass({
             termClasss: termClasss           
         });   
     },
-
+    _onSearch: function(){
+        console.log("on form-search", this.state.text, " and ", this.state.select);
+    },
     getInitialState: function() {
         TermClassActions.fetchAddTermClassFromServer();  
         return {
@@ -30,6 +32,8 @@ var TermClass = React.createClass({
             id: null,        
             pages: 1,  
             name: null,
+            text: "",
+            select: null,
         }
     },
     _getListByTerm: function(){
@@ -54,6 +58,16 @@ var TermClass = React.createClass({
                 name: deletingTermClass.name,
             });
         }
+    },
+    _onChangeText: function(e){
+        this.setState({
+            text: e.target.value
+        });
+    },
+    _onChangeSelect: function(e){
+        this.setState({
+            select: e.target.value
+        });
     },
     onChangePage: function(page,dataEx) { 
             this.setState({
@@ -195,15 +209,18 @@ var TermClass = React.createClass({
                           <div className="modal-body">
                             <div className="row">
                                 <div className="col-lg-6">
-                                    <div className="input-field col s4">
-                                      <input id="inputname" value="" ref="inputname" type="text" className="validate"/>
-                                      <label for="inputname">Enter value</label>
+                                    <div className="col-lg-12 form-search">
+                                        <div className="input-field col s5">
+                                          <input id="inputname" onChange={this._onChangeText} value={this.state.text} ref="inputname" type="text" className="validate"/>
+                                          <label for="inputname">Enter value</label>
+                                        </div>
+                                         <select className="form-control col s4 select-dropdown" onChange={this._onChangeSelect}>                        
+                                            <option value="">Chọn lớp</option>
+                                            <option value="0">10T1</option>
+                                            <option value="1">10T2</option>
+                                        </select>
+                                        <button type="button"  className="col s2 buttom-search btn btn btn-kind-one grey glyphicon glyphicon-search" onClick={this._onSearch}></button>
                                     </div>
-                                     <select className="form-control col s3">                        
-                                        <option value="">Choose items</option>
-                                        <option value="">Choose items</option>
-                                        <option value="">Choose items</option>
-                                    </select>
                                 </div>
                                 <div className="col-lg-6 right-content">{listByTermData}</div>
                             </div>

@@ -12,11 +12,6 @@ var Subject = require('./components/subject');
 var Termclass = require('./components/termclass');
 var User = require('./components/user');
 
-var BeanListPage = require('./components/pages/BeanListPage');
-var BeanItemPage = require('./components/pages/BeanItemPage');
-var BeanItemEditPage = require('./components/pages/BeanItemEditPage');
-
-
 var routes = (
     <Route name="home" path='/' handler={App}>
 
