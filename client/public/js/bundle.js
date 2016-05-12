@@ -24275,7 +24275,7 @@
 	    CREATE_STUDENT  : "CREATE_STUDENT",
 	    UPDATE_STUDENT  : "UPDATE_STUDENT",
 	    DELETE_STUDENT  : "DELETE_STUDENT",
-
+	    FIND_FOR_MARK   : "FIND_FOR_MARK",
 	    //----------COURSE----------------//
 
 	    GET_COURSE      : "GET_COURSE",
@@ -25950,7 +25950,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -56505,6 +56505,16 @@
 				// Handle error
 			});
 	    },
+	    findForMArk: function(text, clss){
+	    	StudentAPI.findForMArk(text,clss).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.FIND_FOR_MARK,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+	    },
 	};
 	module.exports = StudentActions;
 
@@ -56626,12 +56636,30 @@
 
 		return t;
 	}
+	function findForMArk(text, clss){
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL+"/find")
+				.timeout(TIMEOUT)
+				.send({text: text, clss: clss})
+				.end(function(err,res) {
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+	}
 	module.exports = {
 		getStudent: getStudentData,
 		createStudent: createStudent,
 		deleteStudent: deleteStudent,
 		updateStudent: updateStudent,
-		saveExcel: saveExcel
+		saveExcel: saveExcel,
+		findForMArk: findForMArk
 	};
 
 /***/ },
@@ -93309,6 +93337,7 @@
 	    },
 	    _onSearch: function(){
 	        console.log("on form-search", this.state.text, " and ", this.state.select);
+	        StudentActions.findForMArk(this.state.text,this.state.select);
 	    },
 	    getInitialState: function() {
 	        TermClassActions.fetchAddTermClassFromServer();  

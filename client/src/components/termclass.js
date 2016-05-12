@@ -23,6 +23,7 @@ var TermClass = React.createClass({
     },
     _onSearch: function(){
         console.log("on form-search", this.state.text, " and ", this.state.select);
+        StudentActions.findForMArk(this.state.text,this.state.select);
     },
     getInitialState: function() {
         TermClassActions.fetchAddTermClassFromServer();  

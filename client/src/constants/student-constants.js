@@ -11,7 +11,7 @@ module.exports = {
     CREATE_STUDENT  : "CREATE_STUDENT",
     UPDATE_STUDENT  : "UPDATE_STUDENT",
     DELETE_STUDENT  : "DELETE_STUDENT",
-
+    FIND_FOR_MARK   : "FIND_FOR_MARK",
     //----------COURSE----------------//
 
     GET_COURSE      : "GET_COURSE",

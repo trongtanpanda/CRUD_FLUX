@@ -10,5 +10,5 @@ const StudentsSchema = new Schema({
 	birthday: String,
 
 });
-
+StudentsSchema.index({'$**': 'text'});
 export default module.exports = mongoose.model('Students', StudentsSchema);

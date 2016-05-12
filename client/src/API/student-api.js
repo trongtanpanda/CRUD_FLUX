@@ -112,10 +112,28 @@ function saveExcel(list){
 
 	return t;
 }
+function findForMArk(text, clss){
+	var t = new promise(function(resolve, reject){
+		request.put(API_URL+"/find")
+			.timeout(TIMEOUT)
+			.send({text: text, clss: clss})
+			.end(function(err,res) {
+				data = JSON.parse(res.text);
+				if(res.status === 201) {                    
+                    resolve(data);
+				}else {
+					reject(res.status, res);                    
+				}
+			});
+	});
+
+	return t;
+}
 module.exports = {
 	getStudent: getStudentData,
 	createStudent: createStudent,
 	deleteStudent: deleteStudent,
 	updateStudent: updateStudent,
-	saveExcel: saveExcel
+	saveExcel: saveExcel,
+	findForMArk: findForMArk
 };

@@ -89,7 +89,17 @@ router.route('/students')
 			res.status(201);
             res.json({Message:{ message: 'Delete student had success!', type: 'success',student:  result}});
             res.send();
+		})
 
+	router.route('/students/find')
+		.put(function(req, res) {
+			var text = req.body.text;
+			var clss= req.body.clss;
+			console.log(text);
+			Students.find({ 'lastname' :new RegExp('^'+text+'$', "i") }, function(err, doc){
+				if(err) console.log(err);
+				console.log(doc);
+			});
 			
 		})
 
