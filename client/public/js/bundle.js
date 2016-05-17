@@ -25950,7 +25950,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -56506,7 +56506,7 @@
 			});
 	    },
 	    findForMArk: function(text, clss){
-	    	StudentAPI.findForMArk(text,clss).then(function(data){
+	    	StudentAPI.findForMArk(text,clss).then(function(data){    		
 				AppDispatcher.dispatch({
 					action: Contants.FIND_FOR_MARK,
 					data: data,
@@ -56826,7 +56826,10 @@
 	            StudentStore.emitImportExcel();
 	            StudentStore.emitChange();
 	            break;
-
+	         case StudentConstants.FIND_FOR_MARK:        
+	            _listStudent(payload.data.student);
+	            StudentStore.emitChange();
+	            break;
 	    }
 	});
 	module.exports = StudentStore;
@@ -93320,7 +93323,8 @@
 	    TermClassForm = __webpack_require__(645),
 	    TermClassList = __webpack_require__(646),
 	    MarkActions = __webpack_require__(549),
-	    StudentActions = __webpack_require__(562);
+	    StudentActions = __webpack_require__(562),
+	    StudentStore = __webpack_require__(644);
 	var Paginator = __webpack_require__(647);
 	var PER_PAGE = 10;
 
@@ -93335,8 +93339,12 @@
 	            termClasss: termClasss           
 	        });   
 	    },
+	    _onGetStudent: function(){
+	         this.setState({
+	            student: StudentStore.getStudents(),
+	        });      
+	    },
 	    _onSearch: function(){
-	        console.log("on form-search", this.state.text, " and ", this.state.select);
 	        StudentActions.findForMArk(this.state.text,this.state.select);
 	    },
 	    getInitialState: function() {
@@ -93349,6 +93357,7 @@
 	            name: null,
 	            text: "",
 	            select: null,
+	            student: "",
 	        }
 	    },
 	    _getListByTerm: function(){
@@ -93359,7 +93368,9 @@
 	    componentDidMount: function() {
 	        TermClassStore.addChangeListener(this._onChange);             
 	        TermClassStore.addDeleteTermClassListener(this._onDelete);  
-	        MarkStore.getListChangeListener(this._getListByTerm);     
+	        MarkStore.getListChangeListener(this._getListByTerm);
+	        StudentStore.addChangeListener(this._onGetStudent);
+
 	    },
 	    _onDelete: function() {        
 	        var deletingTermClass = TermClassStore.getDeleteTermClass();
@@ -93415,7 +93426,23 @@
 	                        )
 
 	            });
-	        }52
+	        }
+	        var listStudent;
+	        if(this.state.student){
+	            listStudent = this.state.student.map(function(item, index){
+	                var id = item.student_id;
+	                var firstname =item.firstname;
+	                var lastname =item.lastname;
+	                 return React.createElement("tr", null, 
+	                            React.createElement("td", null
+	                            ), 
+	                            React.createElement("td", null, id), 
+	                            React.createElement("td", null, firstname), 
+	                            React.createElement("td", null, lastname)
+	                        )
+
+	            });
+	        }
 	        var total;
 	        var page;
 	        if(this.state.termClasss){
@@ -93531,10 +93558,30 @@
 	                                        ), 
 	                                         React.createElement("select", {className: "form-control col s4 select-dropdown", onChange: this._onChangeSelect}, 
 	                                            React.createElement("option", {value: ""}, "Chọn lớp"), 
-	                                            React.createElement("option", {value: "0"}, "10T1"), 
+	                                            React.createElement("option", {value: "CĐ14B1"}, "CĐ14B1"), 
 	                                            React.createElement("option", {value: "1"}, "10T2")
 	                                        ), 
 	                                        React.createElement("button", {type: "button", className: "col s2 buttom-search btn btn btn-kind-one grey glyphicon glyphicon-search", onClick: this._onSearch})
+	                                    ), 
+	                                    React.createElement("input", {
+	        type: "checkbox", 
+	        value: "123"}
+	        
+	      ), " 123123",                              
+	                                    React.createElement("table", {className: "table"}, 
+	                                        React.createElement("thead", null, 
+	                                            React.createElement("tr", null, 
+	                                                React.createElement("th", null), 
+	                                                React.createElement("th", null, "Mã sinh viên"), 
+	                                                React.createElement("th", null, "Họ"), 
+	                                                React.createElement("th", null, "Tên")
+	                                            )
+	                                        ), 
+	                                        React.createElement("tbody", null, 
+	                                        
+	                                            listStudent
+
+	                                        )
 	                                    )
 	                                ), 
 	                                React.createElement("div", {className: "col-lg-6 right-content"}, listByTermData)

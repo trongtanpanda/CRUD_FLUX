@@ -158,7 +158,10 @@ AppDispatcher.register(function(payload) {
             StudentStore.emitImportExcel();
             StudentStore.emitChange();
             break;
-
+         case StudentConstants.FIND_FOR_MARK:        
+            _listStudent(payload.data.student);
+            StudentStore.emitChange();
+            break;
     }
 });
 module.exports = StudentStore;

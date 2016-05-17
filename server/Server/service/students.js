@@ -96,10 +96,15 @@ router.route('/students')
 			var text = req.body.text;
 			var clss= req.body.clss;
 			console.log(text);			
-			var re = new RegExp('^'+text+'$', "i")
-			Students.find({'lastname': {'$regex': re}}).exec(function(err, doc){
-				if(err) console.log(err);
-				console.log(doc);
+			var re = new RegExp('^'+clss+'$', "i")
+			Students.find({'birthday': {'$regex': re}}).exec(function(err, student){
+				if(err){
+					console.log(err);
+				}else{
+					res.status(201);
+	                res.json({Message:{ message: 'Delete student had success!'}, student : student });
+	                res.send();	
+				} 				
 			});
 			
 		})

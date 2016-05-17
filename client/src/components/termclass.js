@@ -6,7 +6,8 @@ var React = require("react"),
     TermClassForm = require("./termClass/termClass-form"),
     TermClassList = require("./termClass/termClass-list"),
     MarkActions = require("../actions/mark-action.js"),
-    StudentActions = require("../actions/student-action.js");
+    StudentActions = require("../actions/student-action.js"),
+    StudentStore = require("../stores/termClass-store");
 var Paginator = require("./termClass/Paginator.js");
 var PER_PAGE = 10;
 
@@ -21,8 +22,12 @@ var TermClass = React.createClass({
             termClasss: termClasss           
         });   
     },
+    _onGetStudent: function(){
+         this.setState({
+            student: StudentStore.getStudents(),
+        });      
+    },
     _onSearch: function(){
-        console.log("on form-search", this.state.text, " and ", this.state.select);
         StudentActions.findForMArk(this.state.text,this.state.select);
     },
     getInitialState: function() {
@@ -35,6 +40,7 @@ var TermClass = React.createClass({
             name: null,
             text: "",
             select: null,
+            student: "",
         }
     },
     _getListByTerm: function(){
@@ -45,7 +51,9 @@ var TermClass = React.createClass({
     componentDidMount: function() {
         TermClassStore.addChangeListener(this._onChange);             
         TermClassStore.addDeleteTermClassListener(this._onDelete);  
-        MarkStore.getListChangeListener(this._getListByTerm);     
+        MarkStore.getListChangeListener(this._getListByTerm);
+        StudentStore.addChangeListener(this._onGetStudent);
+
     },
     _onDelete: function() {        
         var deletingTermClass = TermClassStore.getDeleteTermClass();
@@ -101,7 +109,23 @@ var TermClass = React.createClass({
                         </tr>
 
             });
-        }52
+        }
+        var listStudent;
+        if(this.state.student){
+            listStudent = this.state.student.map(function(item, index){
+                var id = item.student_id;
+                var firstname =item.firstname;
+                var lastname =item.lastname;
+                 return <tr>
+                            <td>
+                            </td>                       
+                            <td>{id}</td>
+                            <td>{firstname}</td>
+                            <td>{lastname}</td>
+                        </tr>
+
+            });
+        }
         var total;
         var page;
         if(this.state.termClasss){
@@ -217,11 +241,31 @@ var TermClass = React.createClass({
                                         </div>
                                          <select className="form-control col s4 select-dropdown" onChange={this._onChangeSelect}>                        
                                             <option value="">Chọn lớp</option>
-                                            <option value="0">10T1</option>
+                                            <option value="CĐ14B1">CĐ14B1</option>
                                             <option value="1">10T2</option>
                                         </select>
                                         <button type="button"  className="col s2 buttom-search btn btn btn-kind-one grey glyphicon glyphicon-search" onClick={this._onSearch}></button>
                                     </div>
+                                    <input
+        type="checkbox"
+        value="123"
+        
+      /> 123123                             
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                                <th></th> 
+                                                <th>Mã sinh viên</th>
+                                                <th>Họ</th>  
+                                                <th>Tên</th>               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        
+                                            {listStudent}
+
+                                        </tbody>
+                                    </table>   
                                 </div>
                                 <div className="col-lg-6 right-content">{listByTermData}</div>
                             </div>

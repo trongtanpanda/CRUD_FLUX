@@ -76,7 +76,7 @@ var StudentActions = {
 		});
     },
     findForMArk: function(text, clss){
-    	StudentAPI.findForMArk(text,clss).then(function(data){
+    	StudentAPI.findForMArk(text,clss).then(function(data){    		
 			AppDispatcher.dispatch({
 				action: Contants.FIND_FOR_MARK,
 				data: data,
