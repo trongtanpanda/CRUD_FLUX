@@ -64,6 +64,18 @@ var MarkActions = {
 			AppDispatcher.dispatch({
 				action:Contants.GET_LISTBYTERM,
 				data: data,
+				index: index,
+				// params: {}
+			});
+		}, function(status, text) {
+			// Handle error!
+		});
+    },
+    addStudentToTermClass: function(student, termClass){
+    	MarkAPI.addStudentToTermClass(student,termClass).then(function(data){
+    	AppDispatcher.dispatch({
+				action:Contants.ADD_STUDENT_TO_TERMCLASS,
+				data: data,
 				// params: {}
 			});
 		}, function(status, text) {

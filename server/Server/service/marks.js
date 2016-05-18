@@ -87,5 +87,24 @@ router.route('/marks/getbyterm')
             }
 		});
 	});
+
+router.route('/marks/addstudent')
+	.post(function(req, res){
+	var invalid =[]; 
+	var valid =[];
+	console.log(req.body.student.length);
+	for(var i=0; i<req.body.student.length; i++){
+		Marks.find({termCLass: req.body.termCLass},{student: req.body.student[i]}, function(err,mark){
+			if(mark){
+				console.log("ci");
+				valid.push(req.body.student[i]);
+			}else{
+				invalid.push(req.body.student[i]);
+			} 
+			
+		});		
+	}	
+		
+	});
 	
 export default router;

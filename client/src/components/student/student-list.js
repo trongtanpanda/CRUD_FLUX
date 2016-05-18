@@ -131,10 +131,12 @@ var Student = React.createClass({
     },
     checkAll: function(){
         if(this.state.checkAll){
+            console.log("uncheck");
             this.setState({
                 checkAll: false
             });
-        }else{           
+        }else{          
+             console.log("check");
             this.setState({
                 checkAll: true
             });  

@@ -40,12 +40,14 @@ var TermClass = React.createClass({
             name: null,
             text: "",
             select: null,
+            listCheck: [],
             student: "",
         }
     },
     _getListByTerm: function(){
         this.setState({
             listByTerm: MarkStore.getMarks(),
+            term: MarkStore.getTerm(),
         });        
     },
     componentDidMount: function() {
@@ -97,6 +99,48 @@ var TermClass = React.createClass({
         }        
         return list;
     },
+    _addStudentToTermClass: function(){
+        var checkboxes = document.getElementsByName('check_student');
+        var selected = [];
+        for (var i=0; i<checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                selected.push(checkboxes[i].value);
+            }
+        }
+        MarkActions.addStudentToTermClass(selected, this.state.term);
+        console.log(this.state.term);
+    },
+    checkAll: function(source){
+        var checkboxes = document.getElementsByName('check_student');    
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = document.getElementById("all").checked;
+        }    
+        if(this.state.checkAll){ 
+            this.setState({
+                checkAll: false
+            });
+        }else{          
+           
+            this.setState({
+                checkAll: true
+            });  
+        }
+        
+    },
+    renderStudent: function(item){
+         var id = item.student_id;
+            var firstname =item.firstname;
+                var lastname =item.lastname;
+                 return <tr>
+                            <td>
+                                <input type="checkbox" name="check_student" value={id} id={id} className="filled-in" />
+                                <label htmlFor={id} ></label>   
+                            </td>                       
+                            <td>{id}</td>
+                            <td>{firstname}</td>
+                            <td>{lastname}</td>
+                        </tr>;
+    },
     render: function() {
         var listByTerm;
         if(this.state.listByTerm){
@@ -111,20 +155,8 @@ var TermClass = React.createClass({
             });
         }
         var listStudent;
-        if(this.state.student){
-            listStudent = this.state.student.map(function(item, index){
-                var id = item.student_id;
-                var firstname =item.firstname;
-                var lastname =item.lastname;
-                 return <tr>
-                            <td>
-                            </td>                       
-                            <td>{id}</td>
-                            <td>{firstname}</td>
-                            <td>{lastname}</td>
-                        </tr>
-
-            });
+        if(this.state.student.length >0){
+            listStudent = this.state.student.map(this.renderStudent);
         }
         var total;
         var page;
@@ -245,16 +277,15 @@ var TermClass = React.createClass({
                                             <option value="1">10T2</option>
                                         </select>
                                         <button type="button"  className="col s2 buttom-search btn btn btn-kind-one grey glyphicon glyphicon-search" onClick={this._onSearch}></button>
-                                    </div>
-                                    <input
-        type="checkbox"
-        value="123"
-        
-      /> 123123                             
+                                    </div>                                   
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th></th> 
+                                                <th>
+                                                    <input type="checkbox" id="all" className="filled-in"                                                   
+                                    onChange={this.checkAll} />
+                                <label htmlFor="all" ></label>
+                                                </th> 
                                                 <th>Mã sinh viên</th>
                                                 <th>Họ</th>  
                                                 <th>Tên</th>               
@@ -266,6 +297,7 @@ var TermClass = React.createClass({
 
                                         </tbody>
                                     </table>   
+                                     <button type="button" onClick={this._addStudentToTermClass}  className="btn btn btn-kind-one grey" >Save</button>
                                 </div>
                                 <div className="col-lg-6 right-content">{listByTermData}</div>
                             </div>

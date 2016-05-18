@@ -24299,6 +24299,7 @@
 	    UPDATE_MARK     : "UPDATE_MARK",
 	    DELETE_MARK     : "DELETE_MARK",
 	    GET_LISTBYTERM  : "GET_LISTBYTERM",
+	    ADD_STUDENT_TO_TERMCLASS: "ADD_STUDENT_TO_TERMCLASS",
 	    //----------SECTOR----------------//
 
 	    GET_SECTOR      : "GET_SECTOR",
@@ -25950,7 +25951,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -54894,6 +54895,18 @@
 				AppDispatcher.dispatch({
 					action:Contants.GET_LISTBYTERM,
 					data: data,
+					index: index,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+	    },
+	    addStudentToTermClass: function(student, termClass){
+	    	MarkAPI.addStudentToTermClass(student,termClass).then(function(data){
+	    	AppDispatcher.dispatch({
+					action:Contants.ADD_STUDENT_TO_TERMCLASS,
+					data: data,
 					// params: {}
 				});
 			}, function(status, text) {
@@ -55006,10 +55019,26 @@
 		return t;
 	}
 	function getStudentByTermClass(index){
-		console.log(index);
 		var t = new promise(function(resolve, reject){
 			request.get(API_URL+"/getbyterm")		
 				.timeout(TIMEOUT)
+				.end(function(err,res){		
+					var data = null;
+					if(res.status === 201) {
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+		return t;
+	}
+	function addStudentToTermClass(student, termCLass){
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL+"/addstudent")		
+				.timeout(TIMEOUT)
+				.send({student: student, termCLass: termCLass})
 				.end(function(err,res){		
 					var data = null;
 					if(res.status === 201) {
@@ -55027,7 +55056,8 @@
 		createMark: createMark,
 		deleteMark: deleteMark,
 		updateMark: updateMark,
-		getStudentByTermClass: getStudentByTermClass
+		getStudentByTermClass: getStudentByTermClass,
+		addStudentToTermClass: addStudentToTermClass,
 	};
 
 /***/ },
@@ -55048,6 +55078,7 @@
 	var _editing_id = null;
 	var _deleting_id = null;
 	var _msg;
+	var _term;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
 	    for (var i = 0; i < arraytosearch.length; i++) { 
@@ -55072,7 +55103,9 @@
 	    var i = ByKeyValue(_marks, "_id", _id);
 	        _marks.splice(i,1);
 	}
-
+	function _setTerm(index) {
+	    _term = index;
+	}
 	function _editMark(index) {
 	    _editing_id = index;
 	}
@@ -55097,7 +55130,9 @@
 	    getMarks: function() { 
 	        return _marks;
 	    },
-	  
+	    getTerm: function() {
+	        return _term;
+	    },
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -55175,7 +55210,8 @@
 	            break;
 	            
 	        case MarkConstants.GET_LISTBYTERM:
-	            _listMark(payload.data.Message.marks);            
+	            _listMark(payload.data.Message.marks);
+	            _setTerm(payload.index);            
 	            MarkStore.emitListChange();
 	            break;
 	    }
@@ -93357,12 +93393,14 @@
 	            name: null,
 	            text: "",
 	            select: null,
+	            listCheck: [],
 	            student: "",
 	        }
 	    },
 	    _getListByTerm: function(){
 	        this.setState({
 	            listByTerm: MarkStore.getMarks(),
+	            term: MarkStore.getTerm(),
 	        });        
 	    },
 	    componentDidMount: function() {
@@ -93414,6 +93452,48 @@
 	        }        
 	        return list;
 	    },
+	    _addStudentToTermClass: function(){
+	        var checkboxes = document.getElementsByName('check_student');
+	        var selected = [];
+	        for (var i=0; i<checkboxes.length; i++) {
+	            if (checkboxes[i].checked) {
+	                selected.push(checkboxes[i].value);
+	            }
+	        }
+	        MarkActions.addStudentToTermClass(selected, this.state.term);
+	        console.log(this.state.term);
+	    },
+	    checkAll: function(source){
+	        var checkboxes = document.getElementsByName('check_student');    
+	        for(var i=0, n=checkboxes.length;i<n;i++) {
+	            checkboxes[i].checked = document.getElementById("all").checked;
+	        }    
+	        if(this.state.checkAll){ 
+	            this.setState({
+	                checkAll: false
+	            });
+	        }else{          
+	           
+	            this.setState({
+	                checkAll: true
+	            });  
+	        }
+	        
+	    },
+	    renderStudent: function(item){
+	         var id = item.student_id;
+	            var firstname =item.firstname;
+	                var lastname =item.lastname;
+	                 return React.createElement("tr", null, 
+	                            React.createElement("td", null, 
+	                                React.createElement("input", {type: "checkbox", name: "check_student", value: id, id: id, className: "filled-in"}), 
+	                                React.createElement("label", {htmlFor: id})
+	                            ), 
+	                            React.createElement("td", null, id), 
+	                            React.createElement("td", null, firstname), 
+	                            React.createElement("td", null, lastname)
+	                        );
+	    },
 	    render: function() {
 	        var listByTerm;
 	        if(this.state.listByTerm){
@@ -93428,20 +93508,8 @@
 	            });
 	        }
 	        var listStudent;
-	        if(this.state.student){
-	            listStudent = this.state.student.map(function(item, index){
-	                var id = item.student_id;
-	                var firstname =item.firstname;
-	                var lastname =item.lastname;
-	                 return React.createElement("tr", null, 
-	                            React.createElement("td", null
-	                            ), 
-	                            React.createElement("td", null, id), 
-	                            React.createElement("td", null, firstname), 
-	                            React.createElement("td", null, lastname)
-	                        )
-
-	            });
+	        if(this.state.student.length >0){
+	            listStudent = this.state.student.map(this.renderStudent);
 	        }
 	        var total;
 	        var page;
@@ -93563,15 +93631,14 @@
 	                                        ), 
 	                                        React.createElement("button", {type: "button", className: "col s2 buttom-search btn btn btn-kind-one grey glyphicon glyphicon-search", onClick: this._onSearch})
 	                                    ), 
-	                                    React.createElement("input", {
-	        type: "checkbox", 
-	        value: "123"}
-	        
-	      ), " 123123",                              
 	                                    React.createElement("table", {className: "table"}, 
 	                                        React.createElement("thead", null, 
 	                                            React.createElement("tr", null, 
-	                                                React.createElement("th", null), 
+	                                                React.createElement("th", null, 
+	                                                    React.createElement("input", {type: "checkbox", id: "all", className: "filled-in", 
+	                                    onChange: this.checkAll}), 
+	                                React.createElement("label", {htmlFor: "all"})
+	                                                ), 
 	                                                React.createElement("th", null, "Mã sinh viên"), 
 	                                                React.createElement("th", null, "Họ"), 
 	                                                React.createElement("th", null, "Tên")
@@ -93582,7 +93649,8 @@
 	                                            listStudent
 
 	                                        )
-	                                    )
+	                                    ), 
+	                                     React.createElement("button", {type: "button", onClick: this._addStudentToTermClass, className: "btn btn btn-kind-one grey"}, "Save")
 	                                ), 
 	                                React.createElement("div", {className: "col-lg-6 right-content"}, listByTermData)
 	                            )

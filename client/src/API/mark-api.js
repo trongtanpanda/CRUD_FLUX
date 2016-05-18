@@ -96,10 +96,26 @@ function deleteMark(mark) {
 	return t;
 }
 function getStudentByTermClass(index){
-	console.log(index);
 	var t = new promise(function(resolve, reject){
 		request.get(API_URL+"/getbyterm")		
 			.timeout(TIMEOUT)
+			.end(function(err,res){		
+				var data = null;
+				if(res.status === 201) {
+					data = JSON.parse(res.text);
+					resolve(data);
+				}else{
+					reject(res.status, res.text);
+				}
+			});
+	});
+	return t;
+}
+function addStudentToTermClass(student, termCLass){
+	var t = new promise(function(resolve, reject){
+		request.post(API_URL+"/addstudent")		
+			.timeout(TIMEOUT)
+			.send({student: student, termCLass: termCLass})
 			.end(function(err,res){		
 				var data = null;
 				if(res.status === 201) {
@@ -117,5 +133,6 @@ module.exports = {
 	createMark: createMark,
 	deleteMark: deleteMark,
 	updateMark: updateMark,
-	getStudentByTermClass: getStudentByTermClass
+	getStudentByTermClass: getStudentByTermClass,
+	addStudentToTermClass: addStudentToTermClass,
 };

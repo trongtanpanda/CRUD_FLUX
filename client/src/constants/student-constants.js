@@ -35,6 +35,7 @@ module.exports = {
     UPDATE_MARK     : "UPDATE_MARK",
     DELETE_MARK     : "DELETE_MARK",
     GET_LISTBYTERM  : "GET_LISTBYTERM",
+    ADD_STUDENT_TO_TERMCLASS: "ADD_STUDENT_TO_TERMCLASS",
     //----------SECTOR----------------//
 
     GET_SECTOR      : "GET_SECTOR",

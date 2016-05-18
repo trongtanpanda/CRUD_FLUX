@@ -12,6 +12,7 @@ var _courses= [];
 var _editing_id = null;
 var _deleting_id = null;
 var _msg;
+var _term;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
     for (var i = 0; i < arraytosearch.length; i++) { 
@@ -36,7 +37,9 @@ function _removeMark(_id) {
     var i = ByKeyValue(_marks, "_id", _id);
         _marks.splice(i,1);
 }
-
+function _setTerm(index) {
+    _term = index;
+}
 function _editMark(index) {
     _editing_id = index;
 }
@@ -61,7 +64,9 @@ var MarkStore  = _.extend(BaseStore, {
     getMarks: function() { 
         return _marks;
     },
-  
+    getTerm: function() {
+        return _term;
+    },
     getMessage:function(){
         return _msg;
     },
@@ -139,7 +144,8 @@ AppDispatcher.register(function(payload) {
             break;
             
         case MarkConstants.GET_LISTBYTERM:
-            _listMark(payload.data.Message.marks);            
+            _listMark(payload.data.Message.marks);
+            _setTerm(payload.index);            
             MarkStore.emitListChange();
             break;
     }
