@@ -128,13 +128,14 @@ var TermClass = React.createClass({
         
     },
     renderStudent: function(item){
-         var id = item.student_id;
-            var firstname =item.firstname;
-                var lastname =item.lastname;
+        var _id = item._id;
+        var id = item.student_id;
+        var firstname =item.firstname;
+        var lastname =item.lastname;
                  return <tr>
                             <td>
-                                <input type="checkbox" name="check_student" value={id} id={id} className="filled-in" />
-                                <label htmlFor={id} ></label>   
+                                <input type="checkbox" name="check_student" value={_id} id={_id} className="filled-in" />
+                                <label htmlFor={_id} ></label>   
                             </td>                       
                             <td>{id}</td>
                             <td>{firstname}</td>

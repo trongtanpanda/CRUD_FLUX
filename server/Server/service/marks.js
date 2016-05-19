@@ -89,22 +89,35 @@ router.route('/marks/getbyterm')
 	});
 
 router.route('/marks/addstudent')
+
 	.post(function(req, res){
 	var invalid =[]; 
 	var valid =[];
-	console.log(req.body.student.length);
 	for(var i=0; i<req.body.student.length; i++){
-		Marks.find({termCLass: req.body.termCLass},{student: req.body.student[i]}, function(err,mark){
-			if(mark){
-				console.log("ci");
-				valid.push(req.body.student[i]);
-			}else{
-				invalid.push(req.body.student[i]);
-			} 
-			
-		});		
+		var student = req.body.student[i];
+		// console.log(student);
+		//console.log(this.checkIsset(student[i]));
+		 Marks.findOne({student: student}, function(err, mark){
+			// return mark;
+				console.log(mark);
+		});
+		//console.log(result);
 	}	
-		
+	// console.log(invalid);
+	// console.log(valid);
 	});
-	
+
+// router.route('/marks/checkIsset')
+// 	var student = req.body.student;
+// 	var termClass = req.body.termClass;
+// 	Marks.find({student : student},{termClass: termClass}, function(err, result){
+// 			if (err){
+//                 res.send(err);
+//             }else{ 
+//                 res.status(201);
+//                 res.json({Message:{ message: 'Delete mark had success!', type: 'success',result: result }});
+//                 res.send();
+//             }
+// 		});
+
 export default router;
