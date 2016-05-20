@@ -28,7 +28,7 @@ var TermClass = React.createClass({
         });      
     },
     _onSearch: function(){
-        StudentActions.findForMArk(this.state.text,this.state.select);
+        StudentActions.findForMArk(this.state.text,this.state.select, this.state.listByTerm);
     },
     getInitialState: function() {
         TermClassActions.fetchAddTermClassFromServer();  
@@ -107,8 +107,7 @@ var TermClass = React.createClass({
                 selected.push(checkboxes[i].value);
             }
         }
-        MarkActions.addStudentToTermClass(selected, this.state.term);
-        console.log(this.state.term);
+        MarkActions.addStudentToTermClass(selected, this.state.term);        
     },
     checkAll: function(source){
         var checkboxes = document.getElementsByName('check_student');    
@@ -132,9 +131,18 @@ var TermClass = React.createClass({
         var id = item.student_id;
         var firstname =item.firstname;
         var lastname =item.lastname;
-                 return <tr>
+        var checkbox;
+        var css;
+        if(!item._isset){
+            css="";
+            checkbox =(<input type="checkbox" name="check_student" value={_id} id={_id} className="filled-in" />);
+        }else{
+            css="bg-gray";
+            checkbox =(<input type="checkbox" name="checked" value={_id} id={_id} className="filled-in" checked="checked" disabled="disabled"/>);
+        }
+                 return <tr className={css}>
                             <td>
-                                <input type="checkbox" name="check_student" value={_id} id={_id} className="filled-in" />
+                                {checkbox}
                                 <label htmlFor={_id} ></label>   
                             </td>                       
                             <td>{id}</td>

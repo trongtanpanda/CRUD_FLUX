@@ -75,11 +75,12 @@ var StudentActions = {
 			// Handle error
 		});
     },
-    findForMArk: function(text, clss){
+    findForMArk: function(text, clss, listofterm){
     	StudentAPI.findForMArk(text,clss).then(function(data){    		
 			AppDispatcher.dispatch({
 				action: Contants.FIND_FOR_MARK,
 				data: data,
+				listofterm: listofterm,
 			});
 		},function(status, err){
 			// Handle error

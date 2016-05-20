@@ -144,6 +144,7 @@ AppDispatcher.register(function(payload) {
             break;
             
         case MarkConstants.GET_LISTBYTERM:
+            console.log(payload.data.Message.marks);
             _listMark(payload.data.Message.marks);
             _setTerm(payload.index);            
             MarkStore.emitListChange();

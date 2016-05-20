@@ -95,7 +95,7 @@ router.route('/students')
 		.put(function(req, res) {
 			var text = req.body.text;
 			var clss= req.body.clss;
-			console.log(text);			
+			console.log(clss);			
 			var re = new RegExp('^'+clss+'$', "i")
 			Students.find({'birthday': {'$regex': re}}).exec(function(err, student){
 				if(err){

@@ -96,9 +96,11 @@ function deleteMark(mark) {
 	return t;
 }
 function getStudentByTermClass(index){
+	console.log(index);
 	var t = new promise(function(resolve, reject){
-		request.get(API_URL+"/getbyterm")		
+		request.post(API_URL+"/getbyterm")		
 			.timeout(TIMEOUT)
+			.send({termClass: index})
 			.end(function(err,res){		
 				var data = null;
 				if(res.status === 201) {
@@ -111,11 +113,11 @@ function getStudentByTermClass(index){
 	});
 	return t;
 }
-function addStudentToTermClass(student, termCLass){
+function addStudentToTermClass(student, termClass){
 	var t = new promise(function(resolve, reject){
 		request.post(API_URL+"/addstudent")		
 			.timeout(TIMEOUT)
-			.send({student: student, termCLass: termCLass})
+			.send({student: student, termClass: termClass})
 			.end(function(err,res){		
 				var data = null;
 				if(res.status === 201) {

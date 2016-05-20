@@ -63,3 +63,6 @@ table tr:nth-child(odd) th {
 .row {
 	padding: 0px !important;
 }
+.bg-gray {
+	background-color: red !important;
+}

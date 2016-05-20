@@ -25951,7 +25951,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -54904,6 +54904,7 @@
 	    },
 	    addStudentToTermClass: function(student, termClass){
 	    	MarkAPI.addStudentToTermClass(student,termClass).then(function(data){
+	    		console.log(data);
 	    	AppDispatcher.dispatch({
 					action:Contants.ADD_STUDENT_TO_TERMCLASS,
 					data: data,
@@ -55019,9 +55020,11 @@
 		return t;
 	}
 	function getStudentByTermClass(index){
+		console.log(index);
 		var t = new promise(function(resolve, reject){
-			request.get(API_URL+"/getbyterm")		
+			request.post(API_URL+"/getbyterm")		
 				.timeout(TIMEOUT)
+				.send({termClass: index})
 				.end(function(err,res){		
 					var data = null;
 					if(res.status === 201) {
@@ -55034,11 +55037,11 @@
 		});
 		return t;
 	}
-	function addStudentToTermClass(student, termCLass){
+	function addStudentToTermClass(student, termClass){
 		var t = new promise(function(resolve, reject){
 			request.post(API_URL+"/addstudent")		
 				.timeout(TIMEOUT)
-				.send({student: student, termCLass: termCLass})
+				.send({student: student, termClass: termClass})
 				.end(function(err,res){		
 					var data = null;
 					if(res.status === 201) {
@@ -55210,6 +55213,7 @@
 	            break;
 	            
 	        case MarkConstants.GET_LISTBYTERM:
+	            console.log(payload.data.Message.marks);
 	            _listMark(payload.data.Message.marks);
 	            _setTerm(payload.index);            
 	            MarkStore.emitListChange();
@@ -56541,11 +56545,12 @@
 				// Handle error
 			});
 	    },
-	    findForMArk: function(text, clss){
+	    findForMArk: function(text, clss, listofterm){
 	    	StudentAPI.findForMArk(text,clss).then(function(data){    		
 				AppDispatcher.dispatch({
 					action: Contants.FIND_FOR_MARK,
 					data: data,
+					listofterm: listofterm,
 				});
 			},function(status, err){
 				// Handle error
@@ -56740,7 +56745,22 @@
 	    var i = ByKeyValue(_students, "_id", _id);
 	        _students.splice(i,1);
 	}
-
+	function _checkIsset(student, list){
+	    var result= [];    
+	    for(var i=0; i<student.length; i++){
+	        for(var j= 0; j<list.length; j++){
+	            if(student[i]._id == list[j].student){
+	                console.log("co");
+	                student[i]._isset = true;
+	                result.push(student[i]);
+	            }else{
+	                student[i]._isset = false;
+	                result.push(student[i]);
+	            }
+	        }
+	    }
+	    _students = result;
+	}
 	function _editStudent(index) {
 	    _editing_id = index;
 	}
@@ -56809,8 +56829,7 @@
 	    addDeleteStudentListener: function(callback) {
 	        this.on(CHANGE_DELETE_EVENT, callback);
 	    },
-	    getImportExcel: function(){
-	        console.log('here',_importExcel);
+	    getImportExcel: function(){        
 	        return _importExcel;
 	    },
 	    emitImportExcel: function(callback) {
@@ -56862,8 +56881,8 @@
 	            StudentStore.emitImportExcel();
 	            StudentStore.emitChange();
 	            break;
-	         case StudentConstants.FIND_FOR_MARK:        
-	            _listStudent(payload.data.student);
+	         case StudentConstants.FIND_FOR_MARK:
+	            _checkIsset(payload.data.student,payload.listofterm);
 	            StudentStore.emitChange();
 	            break;
 	    }
@@ -93381,7 +93400,7 @@
 	        });      
 	    },
 	    _onSearch: function(){
-	        StudentActions.findForMArk(this.state.text,this.state.select);
+	        StudentActions.findForMArk(this.state.text,this.state.select, this.state.listByTerm);
 	    },
 	    getInitialState: function() {
 	        TermClassActions.fetchAddTermClassFromServer();  
@@ -93460,8 +93479,7 @@
 	                selected.push(checkboxes[i].value);
 	            }
 	        }
-	        MarkActions.addStudentToTermClass(selected, this.state.term);
-	        console.log(this.state.term);
+	        MarkActions.addStudentToTermClass(selected, this.state.term);        
 	    },
 	    checkAll: function(source){
 	        var checkboxes = document.getElementsByName('check_student');    
@@ -93481,13 +93499,23 @@
 	        
 	    },
 	    renderStudent: function(item){
-	         var id = item.student_id;
-	            var firstname =item.firstname;
-	                var lastname =item.lastname;
-	                 return React.createElement("tr", null, 
+	        var _id = item._id;
+	        var id = item.student_id;
+	        var firstname =item.firstname;
+	        var lastname =item.lastname;
+	        var checkbox;
+	        var css;
+	        if(!item._isset){
+	            css="";
+	            checkbox =(React.createElement("input", {type: "checkbox", name: "check_student", value: _id, id: _id, className: "filled-in"}));
+	        }else{
+	            css="bg-gray";
+	            checkbox =(React.createElement("input", {type: "checkbox", name: "checked", value: _id, id: _id, className: "filled-in", checked: "checked", disabled: "disabled"}));
+	        }
+	                 return React.createElement("tr", {className: css}, 
 	                            React.createElement("td", null, 
-	                                React.createElement("input", {type: "checkbox", name: "check_student", value: id, id: id, className: "filled-in"}), 
-	                                React.createElement("label", {htmlFor: id})
+	                                checkbox, 
+	                                React.createElement("label", {htmlFor: _id})
 	                            ), 
 	                            React.createElement("td", null, id), 
 	                            React.createElement("td", null, firstname), 

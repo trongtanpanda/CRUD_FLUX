@@ -36,7 +36,22 @@ function _removeStudent(_id) {
     var i = ByKeyValue(_students, "_id", _id);
         _students.splice(i,1);
 }
-
+function _checkIsset(student, list){
+    var result= [];    
+    for(var i=0; i<student.length; i++){
+        for(var j= 0; j<list.length; j++){
+            if(student[i]._id == list[j].student){
+                console.log("co");
+                student[i]._isset = true;
+                result.push(student[i]);
+            }else{
+                student[i]._isset = false;
+                result.push(student[i]);
+            }
+        }
+    }
+    _students = result;
+}
 function _editStudent(index) {
     _editing_id = index;
 }
@@ -105,8 +120,7 @@ var StudentStore  = _.extend(BaseStore, {
     addDeleteStudentListener: function(callback) {
         this.on(CHANGE_DELETE_EVENT, callback);
     },
-    getImportExcel: function(){
-        console.log('here',_importExcel);
+    getImportExcel: function(){        
         return _importExcel;
     },
     emitImportExcel: function(callback) {
@@ -158,8 +172,8 @@ AppDispatcher.register(function(payload) {
             StudentStore.emitImportExcel();
             StudentStore.emitChange();
             break;
-         case StudentConstants.FIND_FOR_MARK:        
-            _listStudent(payload.data.student);
+         case StudentConstants.FIND_FOR_MARK:
+            _checkIsset(payload.data.student,payload.listofterm);
             StudentStore.emitChange();
             break;
     }

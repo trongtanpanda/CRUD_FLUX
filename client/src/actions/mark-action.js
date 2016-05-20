@@ -73,6 +73,7 @@ var MarkActions = {
     },
     addStudentToTermClass: function(student, termClass){
     	MarkAPI.addStudentToTermClass(student,termClass).then(function(data){
+    		console.log(data);
     	AppDispatcher.dispatch({
 				action:Contants.ADD_STUDENT_TO_TERMCLASS,
 				data: data,

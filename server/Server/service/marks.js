@@ -76,8 +76,10 @@ router.route('/marks')
 	})
 
 router.route('/marks/getbyterm')
-	.get(function(req, res){
-		Marks.find({termClass : '56dffa0c8c87a1140e83b9d0'}, function(err, marks){
+	
+	.post(function(req, res){
+		console.log(req.body);
+		Marks.find({termClass : '56dffa0c8c87a1140e83b9d0'}, function(err, marks){			
 			if (err){
                 res.send(err);
             }else{ 
@@ -91,33 +93,38 @@ router.route('/marks/getbyterm')
 router.route('/marks/addstudent')
 
 	.post(function(req, res){
-	var invalid =[]; 
-	var valid =[];
-	for(var i=0; i<req.body.student.length; i++){
-		var student = req.body.student[i];
-		// console.log(student);
-		//console.log(this.checkIsset(student[i]));
-		 Marks.findOne({student: student}, function(err, mark){
-			// return mark;
-				console.log(mark);
-		});
-		//console.log(result);
-	}	
-	// console.log(invalid);
-	// console.log(valid);
+		var data = req.body.student;
+		var termClass = req.body.termClass;		
+		var result=[];
+		for(var i=0; i<data.length; i++){
+			var student = data[i];
+			var term = termClass;
+			Marks.create({
+				student:student, 
+				termClass: term,
+				number: "",
+				cc: "",
+				gk : "", 
+				tbkt : "", 
+				t1 :"", 
+				tkml1: "", 
+				t2: "", 
+				tkml2: "",
+				t3: "",
+				by_text: "",
+				by_number: "" 
+
+			}, function(err,mark){
+				if(err) console.log(err);
+				result.push(mark);
+				console.log(mark);					
+			});
+		}
+		res.status(201);
+        res.json({Message:{ message: 'Delete student had success!', type: 'success',result:  result}});
+        res.send();
 	});
 
-// router.route('/marks/checkIsset')
-// 	var student = req.body.student;
-// 	var termClass = req.body.termClass;
-// 	Marks.find({student : student},{termClass: termClass}, function(err, result){
-// 			if (err){
-//                 res.send(err);
-//             }else{ 
-//                 res.status(201);
-//                 res.json({Message:{ message: 'Delete mark had success!', type: 'success',result: result }});
-//                 res.send();
-//             }
-// 		});
+
 
 export default router;
