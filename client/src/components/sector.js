@@ -33,7 +33,7 @@ var Sector = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Quản lý sinh viên</h1>
+                <h1 className="text-center">Quản lý Ngành</h1>
                     <div className="col-md-10 col-md-offset-1"> 
                     <SectorForm />                   
                     <SectorList sectors={this.state.sectors} />

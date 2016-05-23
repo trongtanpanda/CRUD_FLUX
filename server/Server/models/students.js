@@ -8,7 +8,14 @@ const StudentsSchema = new Schema({
 	native: String,
 	gender: String,
 	birthday: String,
-
+	sector:{
+		type:Schema.Types.ObjectId,
+		ref: 'sector'
+	},
+	clss{
+		type:Schema.Types.ObjectId,
+		ref: 'clss'
+	},
 });
 StudentsSchema.index({'$**': 'text'});
 export default module.exports = mongoose.model('Students', StudentsSchema);

@@ -29,7 +29,7 @@ var menu = React.createClass({
 		            	<Link to='/sector'>
 			                <button type="button" className="btn btn-nav">
 			                    <span className="glyphicon glyphicon-gift"></span>
-			                    <p>Sector</p>
+			                    <p>Ngành</p>
 			                </button>
 			            </Link>
 		            </div>
