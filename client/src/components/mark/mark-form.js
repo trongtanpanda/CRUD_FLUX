@@ -19,7 +19,6 @@ var MarkForm = React.createClass({
             by_text: this.state.by_text,
             by_cc: this.state.by_cc
         };
-        console.log(mark);
         MarkActions.create(mark);
         this.setState({
            student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:""
@@ -118,7 +117,6 @@ var MarkForm = React.createClass({
         this.setState({
             editingMark: editingMark,
         });
-        console.log(editingMark);
         if (editingMark) {
             this.setState({
                 student: editingMark.student,
@@ -176,11 +174,11 @@ var MarkForm = React.createClass({
                     <form className="form-horizontal">
                         <div className="row">
                             <div className="input-field col s6">
-                                <input id="student" value={this.state.student} onChange={this._onchangId} ref="student" className="form-control" type="text"  />
+                                <input id="student" value={this.state.student._id} onChange={this._onchangId} ref="student" className="form-control" type="text"  />
                             <label for="student">Sinh viên</label>
                             </div>                       
                             <div className="input-field col s6">
-                                <input id="termClass" value={this.state.termClass} onChange={this._onchangtermClass} ref="termClass" className="form-control" type="text" />
+                                <input id="termClass" value={this.state.termClass._id} onChange={this._onchangtermClass} ref="termClass" className="form-control" type="text" />
                            <label for="termClass">Lớp học phần</label>
                             </div>
                         </div>  

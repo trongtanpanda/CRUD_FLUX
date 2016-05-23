@@ -37,19 +37,26 @@ function _removeStudent(_id) {
         _students.splice(i,1);
 }
 function _checkIsset(student, list){
-    var result= [];    
-    for(var i=0; i<student.length; i++){
-        for(var j= 0; j<list.length; j++){
-            if(student[i]._id == list[j].student){
-                console.log("co");
-                student[i]._isset = true;
-                result.push(student[i]);
-            }else{
-                student[i]._isset = false;
-                result.push(student[i]);
+    var arr= []; 
+    var result = student;
+    if(list.length > 0){
+        for(var i=0; i<student.length; i++){
+            result[i]._isset = false;
+            for(var j= 0; j<list.length; j++){
+                if(student[i]._id == list[j].student._id){    
+                    arr.push(i);                
+                    //student[i]._isset = true;                    
+                }              
+            }            
+        }
+        if(arr.length >0){
+            for(var i= 0; i< arr.length ;i++){
+                result[arr[i]]._isset = true;
             }
         }
-    }
+    }else{
+        result = student;
+    }   
     _students = result;
 }
 function _editStudent(index) {

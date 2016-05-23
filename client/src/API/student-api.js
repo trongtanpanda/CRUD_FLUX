@@ -112,11 +112,11 @@ function saveExcel(list){
 
 	return t;
 }
-function findForMArk(text, clss){
+function findForMArk(clss){
 	var t = new promise(function(resolve, reject){
 		request.put(API_URL+"/find")
 			.timeout(TIMEOUT)
-			.send({text: text, clss: clss})
+			.send({clss: clss})
 			.end(function(err,res) {
 				data = JSON.parse(res.text);
 				if(res.status === 201) {                    

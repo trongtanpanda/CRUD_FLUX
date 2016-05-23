@@ -75,8 +75,8 @@ var StudentActions = {
 			// Handle error
 		});
     },
-    findForMArk: function(text, clss, listofterm){
-    	StudentAPI.findForMArk(text,clss).then(function(data){    		
+    findForMArk: function(clss, listofterm){
+    	StudentAPI.findForMArk(clss).then(function(data){    		
 			AppDispatcher.dispatch({
 				action: Contants.FIND_FOR_MARK,
 				data: data,
@@ -84,6 +84,17 @@ var StudentActions = {
 			});
 		},function(status, err){
 			// Handle error
+		});
+    },
+    getAllStudent: function(){
+    	StudentAPI.getStudent({}).then(function(students) {			
+			AppDispatcher.dispatch({
+				action:Contants.GET_ALL_STUDENT,
+				data: students,
+				// params: {}
+			});
+		}, function(status, text) {
+			// Handle error!
 		});
     },
 };

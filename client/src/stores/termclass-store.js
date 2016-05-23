@@ -57,8 +57,7 @@ function _deleteMsg(){
     _msg =null;
 }
 var TermClassStore  = _.extend(BaseStore, {
-    getTermClasss: function() {       
-       // console.log(_termClasss);
+    getTermClasss: function() {
         return _termClasss;
 
     },

@@ -1,11 +1,12 @@
 var React = require("react"),
     MarkActions = require("../actions/mark-action.js"),
-    // CourseActions = require('../actions/course-action'),
+    TermClassActions = require("../actions/termClass-action.js"),
     MarkStore = require("../stores/mark-store"), 
     // ComboCourse = require("./combb-course"),   
     MarkForm = require("./mark/mark-form"),
+    StudentActions = require("../actions/student-action.js"),
     MarkList = require("./mark/mark-list");
-    // Message = require("./message.js");
+    
 var Paginator = require("./mark/Paginator.js");
 var PER_PAGE = 10;
 
@@ -24,7 +25,9 @@ var Mark = React.createClass({
     },
 
     getInitialState: function() {
-        MarkActions.fetchAddMarkFromServer();       
+        StudentActions.getAllStudent();
+        TermClassActions.fetchAddTermClassFromServer();
+        MarkActions.fetchAddMarkFromServer(); 
         return {
             marks: MarkStore.getMarks(),          
             id: null,        
@@ -80,18 +83,17 @@ var Mark = React.createClass({
             page = this.state.items.map(function(item,index){
                
                  var no = ((curentPage-1)*PER_PAGE)+ index + 1;
-               
                 return <tr>
                             <td>{no}</td>
-                            <td>{item.student}</td>
-                            <td>{item.termClass}</td>
+                            <td>{item.student.student_id}</td>
+                            <td>{item.student.firstname} {item.student.lastname}</td>
+                            <td>{item.termClass.name}</td>
                             <td>{item.cc}</td>
                             <td>{item.gk}</td>
                           
                             <td>
                                 <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={MarkActions.editMark.bind(null,item._id)} ></button>
-                                &nbsp;
-                                <button type="button" data-toggle="modal" data-target="#deleModal"  className="btn btn-danger red accent-2 glyphicon glyphicon-trash" onClick={MarkActions.deleteMark.bind(null,item._id)} ></button>
+                               
                             </td>                            
                         </tr>;
             })
@@ -102,6 +104,7 @@ var Mark = React.createClass({
                     <thead>
                         <tr>    
                             <th>STT</th>
+                            <th>Mã sinh viên</th>
                             <th>sinh viên</th>
                             <th>lớp học phần</th>
                             <th>chuyên cần</th>
@@ -127,23 +130,7 @@ var Mark = React.createClass({
             <MarkForm />                   
                 <div>
                     {termClassData}
-                    <div className="modal fade" id="deleModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
-                      <div className="modal-dialog" >
-                        <div className="modal-content">
-                          <div className="modal-header">
-                            <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                            <h4 className="modal-title" id="myModalLabel">Xóa lớp học phần</h4>
-                          </div>
-                          <div className="modal-body">
-                          Bạn có muốn xóa Lớp học phần ?
-                          </div>
-                          <div className="modal-footer">
-                            <button type="button" id="close"  className="btn btn btn-kind-one grey" data-dismiss="modal">Đóng</button>&nbsp;
-                            <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={MarkActions.destroy.bind(null,this.state._id)}>DELETE</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>                    
+                                   
                 </div>                   
             </div>
         </div>

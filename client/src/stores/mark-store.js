@@ -7,8 +7,11 @@ var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 var CHANGE_DELETE_EVENT = 'change_delete';
 var CHANGE_LIST_EVENT = 'change_list_event';
+var CHANGE_ADD_LIST ='change_add_list';
 var _marks = [];
 var _courses= [];
+var _termClasss = [];
+var _students = [];
 var _editing_id = null;
 var _deleting_id = null;
 var _msg;
@@ -30,8 +33,14 @@ function _addMark(mark) {
 function _listMark(data){
     _marks= data;
 }
-function _listCourse(data){
+function _listStudent(data){
+    _students= data;
+}
+function _listCourse(data){    
     _courses =data;
+}
+function _listTermClass(data){
+    _termClasss= data;
 }
 function _removeMark(_id) {    
     var i = ByKeyValue(_marks, "_id", _id);
@@ -62,6 +71,18 @@ function _deleteMsg(){
 }
 var MarkStore  = _.extend(BaseStore, {
     getMarks: function() { 
+        for(var i=0; i<_marks.length; i++){
+            for (var j = 0; j < _termClasss.length; j++) {
+                if(_marks[i].termClass===_termClasss[j]._id){
+                     _marks[i].termClass = _termClasss[j];
+                }
+            };
+            for (var j = 0; j < _students.length; j++) {
+                if(_marks[i].student===_students[j]._id){
+                     _marks[i].student = _students[j];
+                }
+            };
+        };
         return _marks;
     },
     getTerm: function() {
@@ -106,6 +127,12 @@ var MarkStore  = _.extend(BaseStore, {
     addDeleteMarkListener: function(callback) {
         this.on(CHANGE_DELETE_EVENT, callback);
     },
+    emitAddList: function(callback){
+        this.emit(CHANGE_ADD_LIST, callback);
+    },
+    addListListener: function(callback) {
+        this.on(CHANGE_ADD_LIST, callback);
+    },
 });
 
 AppDispatcher.register(function(payload) {
@@ -144,11 +171,20 @@ AppDispatcher.register(function(payload) {
             break;
             
         case MarkConstants.GET_LISTBYTERM:
-            console.log(payload.data.Message.marks);
             _listMark(payload.data.Message.marks);
             _setTerm(payload.index);            
             MarkStore.emitListChange();
             break;
+        case MarkConstants.ADD_STUDENT_TO_TERMCLASS:
+            MarkStore.emitAddList();
+            break;
+        case MarkConstants.GET_ALL_STUDENT:
+            _listStudent(payload.data);
+            break;
+        case MarkConstants.GET_TERMCLASS:
+            _listTermClass(payload.data);
+            break;
+
     }
 });
 module.exports = MarkStore;

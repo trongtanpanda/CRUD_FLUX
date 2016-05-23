@@ -23,15 +23,22 @@ var TermClass = React.createClass({
         });   
     },
     _onGetStudent: function(){
-         this.setState({
+        this.setState({
             student: StudentStore.getStudents(),
         });      
     },
+    _onGetListMarkAfterAdd: function(){
+        MarkActions.getStudentByTermClass(this.state.term);
+        StudentActions.findForMArk(this.state.selected, this.state.listByTerm);
+        //MarkActions.addStudentToTermClass(this.state.selected, this.state.term);
+    },
     _onSearch: function(){
-        StudentActions.findForMArk(this.state.text,this.state.select, this.state.listByTerm);
+        StudentActions.findForMArk(this.state.select, this.state.listByTerm);
     },
     getInitialState: function() {
         TermClassActions.fetchAddTermClassFromServer();  
+        StudentActions.getAllStudent();
+        
         return {
             termClasss: TermClassStore.getTermClasss(), 
             deletingTermClass: null, 
@@ -44,7 +51,7 @@ var TermClass = React.createClass({
             student: "",
         }
     },
-    _getListByTerm: function(){
+    _getListByTerm: function(){   
         this.setState({
             listByTerm: MarkStore.getMarks(),
             term: MarkStore.getTerm(),
@@ -54,6 +61,7 @@ var TermClass = React.createClass({
         TermClassStore.addChangeListener(this._onChange);             
         TermClassStore.addDeleteTermClassListener(this._onDelete);  
         MarkStore.getListChangeListener(this._getListByTerm);
+        MarkStore.addListListener(this._onGetListMarkAfterAdd);
         StudentStore.addChangeListener(this._onGetStudent);
 
     },
@@ -99,14 +107,17 @@ var TermClass = React.createClass({
         }        
         return list;
     },
-    _addStudentToTermClass: function(){
+    _addStudentToTermClass: function(){              
         var checkboxes = document.getElementsByName('check_student');
-        var selected = [];
+        var selected = [];        
         for (var i=0; i<checkboxes.length; i++) {
             if (checkboxes[i].checked) {
                 selected.push(checkboxes[i].value);
             }
         }
+        this.setState({
+            selected: selected,
+        });
         MarkActions.addStudentToTermClass(selected, this.state.term);        
     },
     checkAll: function(source){
@@ -156,9 +167,10 @@ var TermClass = React.createClass({
             listByTerm = this.state.listByTerm.map(function(item, index){
                 var student = item.student;
                 var termClass =item.termClass;
-                 return <tr>                           
-                            <td>{student}</td>
-                            <td>{termClass}</td>
+                 return <tr>
+                            <td>{student.student_id}</td>                       
+                            <td>{student.firstname} {student.lastname}</td>
+                            <td>{termClass.name}</td>
                         </tr>
 
             });
@@ -229,8 +241,9 @@ var TermClass = React.createClass({
                  <table className="table">
                     <thead>
                         <tr> 
-                            <th>Mã Lớp học phân</th>
-                            <th>Tên</th>              
+                            <th>Mã sinh viên</th>
+                            <th>Sinh viên</th>
+                            <th>Lớp học phần</th>              
                         </tr>
                     </thead>
                     <tbody>

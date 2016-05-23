@@ -25951,7 +25951,7 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -54671,12 +54671,13 @@
 
 	var React = __webpack_require__(2),
 	    MarkActions = __webpack_require__(549),
-	    // CourseActions = require('../actions/course-action'),
+	    TermClassActions = __webpack_require__(642),
 	    MarkStore = __webpack_require__(551), 
 	    // ComboCourse = require("./combb-course"),   
 	    MarkForm = __webpack_require__(552),
+	    StudentActions = __webpack_require__(562),
 	    MarkList = __webpack_require__(553);
-	    // Message = require("./message.js");
+	    
 	var Paginator = __webpack_require__(554);
 	var PER_PAGE = 10;
 
@@ -54695,7 +54696,9 @@
 	    },
 
 	    getInitialState: function() {
-	        MarkActions.fetchAddMarkFromServer();       
+	        StudentActions.getAllStudent();
+	        TermClassActions.fetchAddTermClassFromServer();
+	        MarkActions.fetchAddMarkFromServer(); 
 	        return {
 	            marks: MarkStore.getMarks(),          
 	            id: null,        
@@ -54751,18 +54754,17 @@
 	            page = this.state.items.map(function(item,index){
 	               
 	                 var no = ((curentPage-1)*PER_PAGE)+ index + 1;
-	               
 	                return React.createElement("tr", null, 
 	                            React.createElement("td", null, no), 
-	                            React.createElement("td", null, item.student), 
-	                            React.createElement("td", null, item.termClass), 
+	                            React.createElement("td", null, item.student.student_id), 
+	                            React.createElement("td", null, item.student.firstname, " ", item.student.lastname), 
+	                            React.createElement("td", null, item.termClass.name), 
 	                            React.createElement("td", null, item.cc), 
 	                            React.createElement("td", null, item.gk), 
 	                          
 	                            React.createElement("td", null, 
-	                                React.createElement("button", {type: "button", "data-toggle": "modal", "data-target": "#myModal", className: "btn btn-success light-blue accent-4 glyphicon glyphicon-pencil", onClick: MarkActions.editMark.bind(null,item._id)}), 
-	                                " ", 
-	                                React.createElement("button", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", className: "btn btn-danger red accent-2 glyphicon glyphicon-trash", onClick: MarkActions.deleteMark.bind(null,item._id)})
+	                                React.createElement("button", {type: "button", "data-toggle": "modal", "data-target": "#myModal", className: "btn btn-success light-blue accent-4 glyphicon glyphicon-pencil", onClick: MarkActions.editMark.bind(null,item._id)})
+	                               
 	                            )
 	                        );
 	            })
@@ -54773,6 +54775,7 @@
 	                    React.createElement("thead", null, 
 	                        React.createElement("tr", null, 
 	                            React.createElement("th", null, "STT"), 
+	                            React.createElement("th", null, "Mã sinh viên"), 
 	                            React.createElement("th", null, "sinh viên"), 
 	                            React.createElement("th", null, "lớp học phần"), 
 	                            React.createElement("th", null, "chuyên cần"), 
@@ -54797,24 +54800,8 @@
 	            
 	            React.createElement(MarkForm, null), 
 	                React.createElement("div", null, 
-	                    termClassData, 
-	                    React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	                      React.createElement("div", {className: "modal-dialog"}, 
-	                        React.createElement("div", {className: "modal-content"}, 
-	                          React.createElement("div", {className: "modal-header"}, 
-	                            React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Xóa lớp học phần")
-	                          ), 
-	                          React.createElement("div", {className: "modal-body"}, 
-	                          "Bạn có muốn xóa Lớp học phần ?"
-	                          ), 
-	                          React.createElement("div", {className: "modal-footer"}, 
-	                            React.createElement("button", {type: "button", id: "close", className: "btn btn btn-kind-one grey", "data-dismiss": "modal"}, "Đóng"), " ", 
-	                            React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: MarkActions.destroy.bind(null,this.state._id)}, "DELETE")
-	                          )
-	                        )
-	                      )
-	                    )
+	                    termClassData
+	                                   
 	                )
 	            )
 	        )
@@ -55076,8 +55063,11 @@
 	var CHANGE_EDIT_EVENT = 'change_edit';
 	var CHANGE_DELETE_EVENT = 'change_delete';
 	var CHANGE_LIST_EVENT = 'change_list_event';
+	var CHANGE_ADD_LIST ='change_add_list';
 	var _marks = [];
 	var _courses= [];
+	var _termClasss = [];
+	var _students = [];
 	var _editing_id = null;
 	var _deleting_id = null;
 	var _msg;
@@ -55099,8 +55089,14 @@
 	function _listMark(data){
 	    _marks= data;
 	}
-	function _listCourse(data){
+	function _listStudent(data){
+	    _students= data;
+	}
+	function _listCourse(data){    
 	    _courses =data;
+	}
+	function _listTermClass(data){
+	    _termClasss= data;
 	}
 	function _removeMark(_id) {    
 	    var i = ByKeyValue(_marks, "_id", _id);
@@ -55131,6 +55127,18 @@
 	}
 	var MarkStore  = _.extend(BaseStore, {
 	    getMarks: function() { 
+	        for(var i=0; i<_marks.length; i++){
+	            for (var j = 0; j < _termClasss.length; j++) {
+	                if(_marks[i].termClass===_termClasss[j]._id){
+	                     _marks[i].termClass = _termClasss[j];
+	                }
+	            };
+	            for (var j = 0; j < _students.length; j++) {
+	                if(_marks[i].student===_students[j]._id){
+	                     _marks[i].student = _students[j];
+	                }
+	            };
+	        };
 	        return _marks;
 	    },
 	    getTerm: function() {
@@ -55175,6 +55183,12 @@
 	    addDeleteMarkListener: function(callback) {
 	        this.on(CHANGE_DELETE_EVENT, callback);
 	    },
+	    emitAddList: function(callback){
+	        this.emit(CHANGE_ADD_LIST, callback);
+	    },
+	    addListListener: function(callback) {
+	        this.on(CHANGE_ADD_LIST, callback);
+	    },
 	});
 
 	AppDispatcher.register(function(payload) {
@@ -55213,11 +55227,20 @@
 	            break;
 	            
 	        case MarkConstants.GET_LISTBYTERM:
-	            console.log(payload.data.Message.marks);
 	            _listMark(payload.data.Message.marks);
 	            _setTerm(payload.index);            
 	            MarkStore.emitListChange();
 	            break;
+	        case MarkConstants.ADD_STUDENT_TO_TERMCLASS:
+	            MarkStore.emitAddList();
+	            break;
+	        case MarkConstants.GET_ALL_STUDENT:
+	            _listStudent(payload.data);
+	            break;
+	        case MarkConstants.GET_TERMCLASS:
+	            _listTermClass(payload.data);
+	            break;
+
 	    }
 	});
 	module.exports = MarkStore;
@@ -55247,7 +55270,6 @@
 	            by_text: this.state.by_text,
 	            by_cc: this.state.by_cc
 	        };
-	        console.log(mark);
 	        MarkActions.create(mark);
 	        this.setState({
 	           student:"", termClass: "", cc: "", gk: "",tbkt:"",t1:"",tkml1:"",t2:"",tkml2:"",t3:"",by_text:"",by_number:""
@@ -55346,7 +55368,6 @@
 	        this.setState({
 	            editingMark: editingMark,
 	        });
-	        console.log(editingMark);
 	        if (editingMark) {
 	            this.setState({
 	                student: editingMark.student,
@@ -55404,11 +55425,11 @@
 	                    React.createElement("form", {className: "form-horizontal"}, 
 	                        React.createElement("div", {className: "row"}, 
 	                            React.createElement("div", {className: "input-field col s6"}, 
-	                                React.createElement("input", {id: "student", value: this.state.student, onChange: this._onchangId, ref: "student", className: "form-control", type: "text"}), 
+	                                React.createElement("input", {id: "student", value: this.state.student._id, onChange: this._onchangId, ref: "student", className: "form-control", type: "text"}), 
 	                            React.createElement("label", {for: "student"}, "Sinh viên")
 	                            ), 
 	                            React.createElement("div", {className: "input-field col s6"}, 
-	                                React.createElement("input", {id: "termClass", value: this.state.termClass, onChange: this._onchangtermClass, ref: "termClass", className: "form-control", type: "text"}), 
+	                                React.createElement("input", {id: "termClass", value: this.state.termClass._id, onChange: this._onchangtermClass, ref: "termClass", className: "form-control", type: "text"}), 
 	                           React.createElement("label", {for: "termClass"}, "Lớp học phần")
 	                            )
 	                        ), 
@@ -56545,8 +56566,8 @@
 				// Handle error
 			});
 	    },
-	    findForMArk: function(text, clss, listofterm){
-	    	StudentAPI.findForMArk(text,clss).then(function(data){    		
+	    findForMArk: function(clss, listofterm){
+	    	StudentAPI.findForMArk(clss).then(function(data){    		
 				AppDispatcher.dispatch({
 					action: Contants.FIND_FOR_MARK,
 					data: data,
@@ -56554,6 +56575,17 @@
 				});
 			},function(status, err){
 				// Handle error
+			});
+	    },
+	    getAllStudent: function(){
+	    	StudentAPI.getStudent({}).then(function(students) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_ALL_STUDENT,
+					data: students,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
 			});
 	    },
 	};
@@ -56677,11 +56709,11 @@
 
 		return t;
 	}
-	function findForMArk(text, clss){
+	function findForMArk(clss){
 		var t = new promise(function(resolve, reject){
 			request.put(API_URL+"/find")
 				.timeout(TIMEOUT)
-				.send({text: text, clss: clss})
+				.send({clss: clss})
 				.end(function(err,res) {
 					data = JSON.parse(res.text);
 					if(res.status === 201) {                    
@@ -56746,19 +56778,26 @@
 	        _students.splice(i,1);
 	}
 	function _checkIsset(student, list){
-	    var result= [];    
-	    for(var i=0; i<student.length; i++){
-	        for(var j= 0; j<list.length; j++){
-	            if(student[i]._id == list[j].student){
-	                console.log("co");
-	                student[i]._isset = true;
-	                result.push(student[i]);
-	            }else{
-	                student[i]._isset = false;
-	                result.push(student[i]);
+	    var arr= []; 
+	    var result = student;
+	    if(list.length > 0){
+	        for(var i=0; i<student.length; i++){
+	            result[i]._isset = false;
+	            for(var j= 0; j<list.length; j++){
+	                if(student[i]._id == list[j].student._id){    
+	                    arr.push(i);                
+	                    //student[i]._isset = true;                    
+	                }              
+	            }            
+	        }
+	        if(arr.length >0){
+	            for(var i= 0; i< arr.length ;i++){
+	                result[arr[i]]._isset = true;
 	            }
 	        }
-	    }
+	    }else{
+	        result = student;
+	    }   
 	    _students = result;
 	}
 	function _editStudent(index) {
@@ -93395,15 +93434,22 @@
 	        });   
 	    },
 	    _onGetStudent: function(){
-	         this.setState({
+	        this.setState({
 	            student: StudentStore.getStudents(),
 	        });      
 	    },
+	    _onGetListMarkAfterAdd: function(){
+	        MarkActions.getStudentByTermClass(this.state.term);
+	        StudentActions.findForMArk(this.state.selected, this.state.listByTerm);
+	        //MarkActions.addStudentToTermClass(this.state.selected, this.state.term);
+	    },
 	    _onSearch: function(){
-	        StudentActions.findForMArk(this.state.text,this.state.select, this.state.listByTerm);
+	        StudentActions.findForMArk(this.state.select, this.state.listByTerm);
 	    },
 	    getInitialState: function() {
 	        TermClassActions.fetchAddTermClassFromServer();  
+	        StudentActions.getAllStudent();
+	        
 	        return {
 	            termClasss: TermClassStore.getTermClasss(), 
 	            deletingTermClass: null, 
@@ -93416,7 +93462,7 @@
 	            student: "",
 	        }
 	    },
-	    _getListByTerm: function(){
+	    _getListByTerm: function(){   
 	        this.setState({
 	            listByTerm: MarkStore.getMarks(),
 	            term: MarkStore.getTerm(),
@@ -93426,6 +93472,7 @@
 	        TermClassStore.addChangeListener(this._onChange);             
 	        TermClassStore.addDeleteTermClassListener(this._onDelete);  
 	        MarkStore.getListChangeListener(this._getListByTerm);
+	        MarkStore.addListListener(this._onGetListMarkAfterAdd);
 	        StudentStore.addChangeListener(this._onGetStudent);
 
 	    },
@@ -93471,14 +93518,17 @@
 	        }        
 	        return list;
 	    },
-	    _addStudentToTermClass: function(){
+	    _addStudentToTermClass: function(){              
 	        var checkboxes = document.getElementsByName('check_student');
-	        var selected = [];
+	        var selected = [];        
 	        for (var i=0; i<checkboxes.length; i++) {
 	            if (checkboxes[i].checked) {
 	                selected.push(checkboxes[i].value);
 	            }
 	        }
+	        this.setState({
+	            selected: selected,
+	        });
 	        MarkActions.addStudentToTermClass(selected, this.state.term);        
 	    },
 	    checkAll: function(source){
@@ -93529,8 +93579,9 @@
 	                var student = item.student;
 	                var termClass =item.termClass;
 	                 return React.createElement("tr", null, 
-	                            React.createElement("td", null, student), 
-	                            React.createElement("td", null, termClass)
+	                            React.createElement("td", null, student.student_id), 
+	                            React.createElement("td", null, student.firstname, " ", student.lastname), 
+	                            React.createElement("td", null, termClass.name)
 	                        )
 
 	            });
@@ -93601,8 +93652,9 @@
 	                 React.createElement("table", {className: "table"}, 
 	                    React.createElement("thead", null, 
 	                        React.createElement("tr", null, 
-	                            React.createElement("th", null, "Mã Lớp học phân"), 
-	                            React.createElement("th", null, "Tên")
+	                            React.createElement("th", null, "Mã sinh viên"), 
+	                            React.createElement("th", null, "Sinh viên"), 
+	                            React.createElement("th", null, "Lớp học phần")
 	                        )
 	                    ), 
 	                    React.createElement("tbody", null, 
@@ -93941,8 +93993,7 @@
 	    _msg =null;
 	}
 	var TermClassStore  = _.extend(BaseStore, {
-	    getTermClasss: function() {       
-	       // console.log(_termClasss);
+	    getTermClasss: function() {
 	        return _termClasss;
 
 	    },

@@ -78,8 +78,8 @@ router.route('/marks')
 router.route('/marks/getbyterm')
 	
 	.post(function(req, res){
-		console.log(req.body);
-		Marks.find({termClass : '56dffa0c8c87a1140e83b9d0'}, function(err, marks){			
+		console.log("termClass :",req.body);
+		Marks.find({termClass : req.body.termClass}, function(err, marks){			
 			if (err){
                 res.send(err);
             }else{ 
@@ -116,8 +116,7 @@ router.route('/marks/addstudent')
 
 			}, function(err,mark){
 				if(err) console.log(err);
-				result.push(mark);
-				console.log(mark);					
+				result.push(mark);				
 			});
 		}
 		res.status(201);
