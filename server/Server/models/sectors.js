@@ -6,6 +6,10 @@ const SectorSchema = new Schema({
 	name: String,
 	short_name: String,
 	english_name : String,
+	list_object: [{
+		type:Schema.Types.ObjectId,
+		ref: 'Subjects'
+	}],
 
 });
 

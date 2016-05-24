@@ -44,6 +44,7 @@ app.use('/su', require('./Server/service/subjects'));
 app.use('/ma', require('./Server/service/marks'));
 app.use('/te', require('./Server/service/termClass'));
 app.use('/st', require('./Server/service/students'));
+app.use('/cl', require('./Server/service/clss'));
 http.listen(3008, function(){
     console.log('Listening on *:3008');
 });

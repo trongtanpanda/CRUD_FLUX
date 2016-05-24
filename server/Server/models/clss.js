@@ -4,7 +4,6 @@ ObjectId = Schema.ObjectId;
 const ClssSchema = new Schema({	
 	name: String,
 	short_name: String,
-	number : String,	
 	course: {
 		type:Schema.Types.ObjectId,
 		ref: 'Course'
