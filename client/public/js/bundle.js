@@ -23703,7 +23703,7 @@
 	var Subject = __webpack_require__(637);
 	var Termclass = __webpack_require__(643);
 	var User = __webpack_require__(648);
-
+	var Clss = __webpack_require__(653);
 	var routes = (
 	    React.createElement(Route, {name: "home", path: "/", handler: App}, 
 
@@ -23714,7 +23714,8 @@
 	        React.createElement(Route, {name: "student", path: "/student", handler: Student}), 
 	        React.createElement(Route, {name: "subject", path: "/subject", handler: Subject}), 
 	        React.createElement(Route, {name: "termclass", path: "/termclass", handler: Termclass}), 
-	        React.createElement(Route, {name: "user", path: "/user", handler: User})
+	        React.createElement(Route, {name: "user", path: "/user", handler: User}), 
+	        React.createElement(Route, {name: "clss", path: "/clss", handler: Clss})
 	    )
 	);
 
@@ -24328,6 +24329,15 @@
 	    UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
 	    DELETE_TERMCLASS     : "DELETE_TERMCLASS",
 
+	    //----------CLASS----------------//
+
+	    GET_CLSS        : "GET_CLSS",
+	    CREATE_CLSS     : "CREATE_CLSS",
+	    UPDATE_CLSS     : "UPDATE_CLSS",
+	    DELETE_CLSS     : "DELETE_CLSS",
+	    ACTION_DELETE_CLSS: "ACTION_DELETE_CLSS",
+	    DELETE_CLSS: "DELETE_COURSE", 
+	    ACTION_EDIT_CLSS: "ACTION_EDIT_CLSS", 
 
 	}
 
@@ -94867,6 +94877,591 @@
 	});
 
 	module.exports = UserList;
+
+/***/ },
+/* 653 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ClssActions = __webpack_require__(654),   
+	    ClssStore = __webpack_require__(656),      
+	     ClssForm = __webpack_require__(657),
+	    ClssList = __webpack_require__(658);
+	    // Message = require("./message.js");
+
+
+
+	var Clss = React.createClass({displayName: "Clss",
+	    _onChange: function() {
+	        // console.log("onchane",ClssStore.getClss());
+	        this.setState({
+	            clss: ClssStore.getClss(),           
+	        });  
+	    },
+	    getInitialState: function() {
+
+	        ClssActions.fetchAddClssFromServer();    
+	        return {
+	            clss: ClssStore.getClss(),          
+	           
+	        }
+	    },
+	    componentDidMount: function() {
+	        ClssStore.addChangeListener(this._onChange);             
+	        
+	    },
+	    render: function() { 
+	       
+	        return (
+	            
+	            React.createElement("div", null, 
+	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
+	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	                    React.createElement(ClssForm, null), 
+	                    React.createElement(ClssList, {clss: this.state.clss})
+
+	                )
+
+	            )
+	            
+	        );
+	    }
+	});
+
+	module.exports = Clss;
+
+/***/ },
+/* 654 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(206),
+		Contants = __webpack_require__(210),
+		ClssAPI = __webpack_require__(655);
+
+	var clssActions = {
+		fetchAddClssFromServer: function() {		
+			ClssAPI.getClss({}).then(function(clsss) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_CLSS,
+					data: clsss,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(clss) {        
+			ClssAPI.createClss(clss).then(function(data) {  		         
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_CLSS,
+					data: data,
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(clss) {
+			ClssAPI.updateClss(clss).then(function(data){		 
+				AppDispatcher.dispatch({				
+					action: Contants.UPDATE_CLSS,
+					data: data,
+				});
+			}, function(status,text){
+				
+			});
+		},
+		editClss: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT_CLSS,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			ClssAPI.deleteClss(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_clss,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		},
+		deleteClss: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE_CLSS,
+		        data: index,
+		    })
+	    },
+
+	};
+	module.exports = clssActions;
+
+/***/ },
+/* 655 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var request = __webpack_require__(212),
+		AppDispatcher = __webpack_require__(206),
+		Contant = __webpack_require__(210);
+		promise = __webpack_require__(218).Promise;
+
+	var API_URL ='http://localhost:3008/cl/clss';
+	var TIMEOUT =10000;
+
+	var _pendingRequests =[];
+
+	function abortPendingRequests(key){
+		if(_pendingRequests[key]){
+			_pendingRequests[key]._callback = function(){};
+			_pendingRequests[key].abort();
+			_pendingRequests[key] = null;
+		}
+	}
+
+	function makeUrl(part) {
+		return API_URL + part;
+	}
+
+	function getClss(filter){
+		var c = new promise(function(resolve, reject){
+			request.get(API_URL)		
+				.timeout(TIMEOUT)
+				.end(function(err,res){	
+					// console.log(res);			
+					var data = null;
+					if(res.status === 200) {					
+						data = JSON.parse(res.text);
+						resolve(data);
+					}else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+		return c;
+	}
+	function createClss(newClss) {   
+		var t = new promise(function(resolve, reject){
+			request.post(API_URL)
+				.timeout(TIMEOUT)
+				.send({clss: newClss})
+				.end(function(err,res) {
+					// console.log(res.text);
+					data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+	                    resolve(data);
+					}else {
+						reject(res.status, res);                    
+					}
+				});
+		});
+
+		return t;
+
+	}
+
+	function updateClss(updateData) {	
+		var t = new promise(function(resolve, reject){
+			request.put(API_URL)
+				.timeout(TIMEOUT)
+				.send({clss: updateData})
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);				
+					if(res.status === 201){
+						resolve(data);                    
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+
+	function deleteClss(clssId) {    
+		var t = new promise(function(resolve, reject){
+			request.delete(API_URL)
+	            .timeout(TIMEOUT)
+	            .send({clss: clssId})			
+				.end(function(err,res) {
+	                data = JSON.parse(res.text);
+					if(res.status === 201) {                    
+						resolve(data);
+					}
+					else{
+						reject(res.status, res.text);
+					}
+				});
+		});
+
+		return t;
+	}
+	module.exports = {
+		getClss: getClss,
+		createClss: createClss,
+		deleteClss: deleteClss,
+		updateClss: updateClss
+	};
+
+/***/ },
+/* 656 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(223),
+	    ClssConstants = __webpack_require__(210),
+	    AppDispatcher = __webpack_require__(206),    
+	    BaseStore = __webpack_require__(224);
+
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENTS = 'change_edit';
+	var CHANGE_DELETE_EVENTS = 'change_delete';
+	var _clss= [];
+	var _editing_id = null;
+	var _deleting_id = null;
+	var _msg;
+
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
+	        }
+	    }
+	    return null;
+	}
+
+
+	function _addClss(clss) {
+	    _clss.push(clss);
+	}
+	function _listClss(data){
+	    _clss= data;
+	}
+
+	function _removeClss(_id) {    
+	    var i = ByKeyValue(_clss, "_id", _id);
+	        _clss.splice(i,1);
+	}
+
+	function _editClss(index) {
+	    _editing_id = index;
+	}
+
+	function _deleteClss(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateClss(clss) {
+	    var index = ByKeyValue(_clss, "_id", _editing_id); 
+	    _clss[index] = clss;
+	    _editing_id = null;
+	}
+
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var ClssStore  = _.extend(BaseStore, {
+	    getClss: function() { 
+	        // console.log("this is in store");
+	        return _clss;
+	    },
+	  
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    // emitChange: function() {
+	    //     this.emit(CHANGE_EVENT);
+	    // },
+	    // addChangeListener: function(callback) {
+	    //     this.on(CHANGE_EVENT, callback);
+	    // },
+
+	    getEditingClsss: function() {
+	        if (!_editing_id) {
+
+	            return null;
+	        }
+	        var index = ByKeyValue(_clss, "_id", _editing_id);
+
+	        return _clss[index];        
+	    },
+	    emitEditClss: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENTS, callback);
+	    },
+	    addEditClssListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENTS, callback);
+	    },
+
+	    getDeleteClss: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_clss, "_id", _deleting_id);
+	        return _clss[index];        
+	    },
+	    emitDeleteClss: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENTS, callback);
+	    },
+	    addDeleteClssListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENTS, callback);
+	    },
+	});
+
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+
+	        case ClssConstants.CREATE_CLSS:
+	            _addClss(payload.data.clss);
+	            ClssStore.emitChange();            
+	            break;
+
+	        case ClssConstants.DELETE_CLSS:
+	            _removeClss(payload.data.Message.clss);
+	            _getMsg(payload.data.Message);                    
+	            ClssStore.emitChange();           
+	            break;
+
+	        case ClssConstants.ACTION_EDIT_CLSS:
+	            _editClss(payload.data);
+	            ClssStore.emitEditClss();
+	            break;
+
+	        case ClssConstants.ACTION_DELETE_CLSS:
+	            _deleteClss(payload.data);
+	            ClssStore.emitDeleteClss();
+	            break;
+
+	        case ClssConstants.UPDATE_CLSS:
+
+	            _updateClss(payload.data.Message.clss);
+	            // _getMsg(payload.data.Messageh);            
+	            ClssStore.emitEditClss();
+	            ClssStore.emitChange();            
+	            break;
+
+	        case ClssConstants.GET_CLSS:
+	            // console.log(payload.data);
+	            _listClss(payload.data);
+	            ClssStore.emitChange();
+	            break;            
+	       
+	    }
+	});
+	module.exports = ClssStore;
+
+/***/ },
+/* 657 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),    
+	    ClssStore = __webpack_require__(656),
+	    ClssActions = __webpack_require__(654);
+
+	var ClssForm = React.createClass({displayName: "ClssForm",
+	    
+	    _onClickAdd: function() {
+	         var clss = {
+	            name: this.state.name,
+	            short_name: this.state.short_name,            
+	        };
+
+	        ClssActions.create(clss);
+	        this.setState({
+	          name: "", short_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	    _onClickUpdate: function() {
+	        var editingClss = this.state.editingClss;        
+	        var user ={
+	            _id:editingClss._id,         
+	            name: this.state.name,
+	            short_name: this.state.short_name,
+	            
+	        };
+	        ClssActions.update(user);
+	        this.setState({
+	           name: "", short_name: ""
+	        });
+	         $("#close").click();
+	         this._onclickClose;
+	    },
+	   
+	    _onchangname: function(e) {
+	        this.setState({
+	            name: e.target.value, 
+	        });
+	    },
+	    _onchangShortName: function(e) {
+	        this.setState({
+	            short_name: e.target.value, 
+	        });
+	    },
+	   
+	    _onEdit: function() {  
+	        var editingClss = ClssStore.getEditingClsss();
+	        this.setState({
+	            editingClss: editingClss,
+	        });
+
+	        if (editingClss) {
+	            this.setState({
+	                name: editingClss.name,
+	                short_name: editingClss.short_name,
+	               
+	            });
+	        }
+	    },
+	    _onclickClose: function(){       
+	        this.setState({
+	            name: "",
+	            short_name:"",
+	        });
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "", short_name: "",           
+	            editingClss: null,            
+	        }
+	    },
+	    componentDidMount: function() {
+	        ClssStore.addEditClssListener(this._onEdit);
+	    },
+	    render: function() {
+	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
+	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
+
+	        return (
+	            React.createElement("div", null, 
+	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	              "Thêm mới"
+	            ), 
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("form", {className: "form-horizontal"}, 
+	                      
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
+	                            )
+	                        ), 
+	                         React.createElement("div", {className: "form-group"}, 
+	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
+	                            React.createElement("div", {className: "col-sm-10"}, 
+	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangShortName, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                            )
+	                        )
+	                                       
+	                    )
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                     this.state.editingClss ? btnUpdate : btnAdd
+	                  )
+	                )
+	              )
+	            )
+	            
+	        )
+	        );
+	    }
+	});
+
+	module.exports = ClssForm;
+
+/***/ },
+/* 658 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    ClssStore = __webpack_require__(656),
+	    ClssActions = __webpack_require__(654);
+	var Confirm = __webpack_require__(229);
+	var ClssList = React.createClass({displayName: "ClssList",
+	     _onDelete: function() {        
+	        var deletingClss = ClssStore.getDeleteClss();
+	        // console.log(editingClss);
+	        this.setState({
+	            deletingClss: deletingClss,
+	        });
+
+	        if (deletingClss) {
+	            this.setState({
+	                name: deletingClss.name,
+	                _id: deletingClss._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            name: "",            
+	            deletingClss: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        ClssStore.addDeleteClssListener(this._onDelete);
+	    },
+	    render: function() {
+	        var ClssList = this.props.clss.map(function(clss, index) {
+	          
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    
+	                    React.createElement("td", null, clss.name), 
+	                    React.createElement("td", null, clss.incoming_year), 
+	                                    
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: ClssActions.editClss.bind(null,clss._id)})), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: ClssActions.deleteClss.bind(null,clss._id)}))
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        
+	                        ClssList
+	                    )
+	                ), 
+	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
+	                  ), 
+	                  React.createElement("div", {className: "modal-body"}, 
+	                   this.state.name
+	                  ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: ClssActions.destroy.bind(null,this.state._id)}, "DELETE")
+
+	                  )
+	                )
+	              )
+	            )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = ClssList;
 
 /***/ }
 /******/ ]);

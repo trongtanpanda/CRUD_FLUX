@@ -64,5 +64,14 @@ module.exports = {
     UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
     DELETE_TERMCLASS     : "DELETE_TERMCLASS",
 
+    //----------CLASS----------------//
+
+    GET_CLSS        : "GET_CLSS",
+    CREATE_CLSS     : "CREATE_CLSS",
+    UPDATE_CLSS     : "UPDATE_CLSS",
+    DELETE_CLSS     : "DELETE_CLSS",
+    ACTION_DELETE_CLSS: "ACTION_DELETE_CLSS",
+    DELETE_CLSS: "DELETE_COURSE", 
+    ACTION_EDIT_CLSS: "ACTION_EDIT_CLSS", 
 
 }

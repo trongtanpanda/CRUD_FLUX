@@ -5,9 +5,10 @@ const router = express.Router();
 router.route('/clss')
 // create a new user (accessed at POST http://localhost:8080/api/sectors)
     .post(function(req, res) {		
+    	console.log(req.body);
 		Clss.create({
-			name: req.body.name,
-			short_name: req.body.short_name,			
+			name: req.body.clss.name,
+			short_name: req.body.clss.short_name,			
 		}, function(err,clss){
 			// console.log(user);
 			if(err) {

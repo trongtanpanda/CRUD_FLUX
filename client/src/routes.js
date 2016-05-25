@@ -11,7 +11,7 @@ var Student = require('./components/student');
 var Subject = require('./components/subject');
 var Termclass = require('./components/termclass');
 var User = require('./components/user');
-
+var Clss = require('./components/clss');
 var routes = (
     <Route name="home" path='/' handler={App}>
 
@@ -23,6 +23,7 @@ var routes = (
         <Route name="subject"       path="/subject"     handler={Subject} />
         <Route name="termclass"    path="/termclass"  handler={Termclass} />
         <Route name="user"          path="/user"        handler={User} />
+        <Route name="clss"          path="/clss"        handler={Clss} />
     </Route>
 );
 
