@@ -9,6 +9,7 @@ var CHANGE_DELETE_EVENT = 'change_delete';
 var CHANGE_IMPORT_EXCEL = 'change_import_excel';
 var _students = [];
 var _courses= [];
+var _clss =[];
 var _editing_id = null;
 var _deleting_id = null;
 var _msg;
@@ -22,7 +23,9 @@ function ByKeyValue(arraytosearch, key, valuetosearch) {
     return null;
 }
 
-
+function _addClss(clss) {
+    _clss = clss;
+}
 function _addStudent(student) {
     _students.push(student);
 }
@@ -82,12 +85,20 @@ function _deleteMsg(){
     _msg =null;
 }
 var StudentStore  = _.extend(BaseStore, {
-    getStudents: function() {       
-       // console.log(_students);
+    getStudents: function() { 
+        // for(var i=0; i<_students.length; i++){
+        //     for (var j = 0; j < _clss.length; j++) {
+        //         if(_students[i].clss===_clss[j]._id){
+        //              _students[i].clss = _clss[j];
+        //         }
+        //     }
+        // }
         return _students;
 
     },
-  
+    getClsses: function() {
+        return _clss;
+    },
     getMessage:function(){
         return _msg;
     },
@@ -179,10 +190,14 @@ AppDispatcher.register(function(payload) {
             StudentStore.emitImportExcel();
             StudentStore.emitChange();
             break;
-         case StudentConstants.FIND_FOR_MARK:
+        case StudentConstants.FIND_FOR_MARK:
             _checkIsset(payload.data.student,payload.listofterm);
             StudentStore.emitChange();
             break;
+        case StudentConstants.GET_ALL_ClASS:
+            _addClss(payload.data);
+            break;
+
     }
 });
 module.exports = StudentStore;

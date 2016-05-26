@@ -11,8 +11,8 @@ router.route('/students')
 			lastname: req.body.student.lastname,
 			native: req.body.student.native,
 			gender: req.body.student.gender,
-			birthday: req.body.student.birthday
-
+			birthday: req.body.student.birthday,
+			clss: req.body.student.clss
 
 			}, function(err,student){
 			// console.log(user);
@@ -40,7 +40,8 @@ router.route('/students')
 				lastname: req.body.student.lastname,
 				native: req.body.student.native,
 				gender: req.body.student.gender,
-				birthday: req.body.student.birthday
+				birthday: req.body.student.birthday,
+				clss: req.body.student.clss
 			}
 
 			},function(err) {
@@ -78,7 +79,7 @@ router.route('/students')
 					lastname: data[i]["Tên"],
 					native: data[i]["Quê Quán"],
 					gender: data[i]["Giới tính"],
-				 	birthday: data[i]["Lớp SH"]
+				 	birthday: data[i]["Lớp SH"],
 
 				}, function(err,student){
 					if(err) console.log(err);

@@ -4,10 +4,10 @@ var AppDispatcher = require('../dispatcher/app-dispatcher'),
 
 var clssActions = {
 	fetchAddClssFromServer: function() {		
-		ClssAPI.getClss({}).then(function(clsss) {			
+		ClssAPI.getClss({}).then(function(clsss) {
 			AppDispatcher.dispatch({
 				action:Contants.GET_CLSS,
-				data: clsss,
+				data: clsss
 				// params: {}
 			});
 		}, function(status, text) {
@@ -45,7 +45,7 @@ var clssActions = {
 	destroy: function(id) {       
 		ClssAPI.deleteClss(id).then(function(data){
 			AppDispatcher.dispatch({
-				action: Contants.DELETE_clss,
+				action: Contants.DELETE_CLSS,
 				data: data,
 			});
 		},function(status, err){
@@ -57,6 +57,17 @@ var clssActions = {
 	        action: Contants.ACTION_DELETE_CLSS,
 	        data: index,
 	    })
+    },
+    getAllClass: function(){
+    	ClssAPI.getClss({}).then(function(clss) {			
+			AppDispatcher.dispatch({
+				action:Contants.GET_ALL_ClASS,
+				data: clss,
+				// params: {}
+			});
+		}, function(status, text) {
+			// Handle error!
+		});
     },
 
 };

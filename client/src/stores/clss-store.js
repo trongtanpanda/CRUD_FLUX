@@ -122,6 +122,7 @@ AppDispatcher.register(function(payload) {
         case ClssConstants.ACTION_DELETE_CLSS:
             _deleteClss(payload.data);
             ClssStore.emitDeleteClss();
+
             break;
 
         case ClssConstants.UPDATE_CLSS:

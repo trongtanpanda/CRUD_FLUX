@@ -24338,6 +24338,7 @@
 	    ACTION_DELETE_CLSS: "ACTION_DELETE_CLSS",
 	    DELETE_CLSS: "DELETE_COURSE", 
 	    ACTION_EDIT_CLSS: "ACTION_EDIT_CLSS", 
+	    GET_ALL_ClASS: "GET_ALL_ClASS",
 
 	}
 
@@ -56748,7 +56749,7 @@
 
 	var React = __webpack_require__(2),
 	    StudentActions = __webpack_require__(555),
-	    // CourseActions = require('../actions/course-action'),
+	    ClssActions = __webpack_require__(654),
 	    StudentStore = __webpack_require__(566), 
 	    // ComboCourse = require("./combb-course"),   
 	    StudentForm = __webpack_require__(567),
@@ -56758,19 +56759,20 @@
 	var X = __webpack_require__(570);
 
 
-	var Student = React.createClass({displayName: "Student",
+	var Student = React.createClass({displayName: "Student",    
 	    _onChange: function() {
 	        var students =  StudentStore.getStudents(); 
 	        if(students.length > 0){
 	            this.onChangePage(1, students);
 	        }
-	        console.log(students);
 	        this.setState({
-	            students: StudentStore.getStudents(),           
+	            students: StudentStore.getStudents(),  
+	            clss: StudentStore.getClsses()        
 	        });   
+	       
 	    },
 	    getInitialState: function() {
-	        StudentActions.fetchAddStudentFromServer();      
+	        StudentActions.fetchAddStudentFromServer();         
 	        return {
 	            students: StudentStore.getStudents(),  
 	            firstname: "",
@@ -56938,6 +56940,7 @@
 	var CHANGE_IMPORT_EXCEL = 'change_import_excel';
 	var _students = [];
 	var _courses= [];
+	var _clss =[];
 	var _editing_id = null;
 	var _deleting_id = null;
 	var _msg;
@@ -56951,7 +56954,9 @@
 	    return null;
 	}
 
-
+	function _addClss(clss) {
+	    _clss = clss;
+	}
 	function _addStudent(student) {
 	    _students.push(student);
 	}
@@ -57011,12 +57016,20 @@
 	    _msg =null;
 	}
 	var StudentStore  = _.extend(BaseStore, {
-	    getStudents: function() {       
-	       // console.log(_students);
+	    getStudents: function() { 
+	        // for(var i=0; i<_students.length; i++){
+	        //     for (var j = 0; j < _clss.length; j++) {
+	        //         if(_students[i].clss===_clss[j]._id){
+	        //              _students[i].clss = _clss[j];
+	        //         }
+	        //     }
+	        // }
 	        return _students;
 
 	    },
-	  
+	    getClsses: function() {
+	        return _clss;
+	    },
 	    getMessage:function(){
 	        return _msg;
 	    },
@@ -57108,10 +57121,14 @@
 	            StudentStore.emitImportExcel();
 	            StudentStore.emitChange();
 	            break;
-	         case StudentConstants.FIND_FOR_MARK:
+	        case StudentConstants.FIND_FOR_MARK:
 	            _checkIsset(payload.data.student,payload.listofterm);
 	            StudentStore.emitChange();
 	            break;
+	        case StudentConstants.GET_ALL_ClASS:
+	            _addClss(payload.data);
+	            break;
+
 	    }
 	});
 	module.exports = StudentStore;
@@ -94883,46 +94900,156 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    ClssActions = __webpack_require__(654),   
-	    ClssStore = __webpack_require__(656),      
-	     ClssForm = __webpack_require__(657),
-	    ClssList = __webpack_require__(658);
-	    // Message = require("./message.js");
-
+	    ClssActions = __webpack_require__(654),
+	    // CourseActions = require('../actions/course-action'),
+	    ClssStore = __webpack_require__(656), 
+	    // ComboCourse = require("./combb-course"),   
+	    ClssForm = __webpack_require__(657);
+	var Paginator = __webpack_require__(659);
+	var PER_PAGE = 10;
+	var X = __webpack_require__(570);
 
 
 	var Clss = React.createClass({displayName: "Clss",
 	    _onChange: function() {
-	        // console.log("onchane",ClssStore.getClss());
+	        var clss =  ClssStore.getClss(); 
+	        if(clss.length > 0){
+	            this.onChangePage(1, clss);
+	        }
 	        this.setState({
 	            clss: ClssStore.getClss(),           
-	        });  
+	        });   
 	    },
 	    getInitialState: function() {
-
 	        ClssActions.fetchAddClssFromServer();    
 	        return {
-	            clss: ClssStore.getClss(),          
-	           
+	            clss: ClssStore.getClss(),  
+	            name: "",
+	            short_name: "",                      
+	            deletingClss: null, 
+	            id: null,        
+	            pages: 1,
 	        }
 	    },
 	    componentDidMount: function() {
-	        ClssStore.addChangeListener(this._onChange);             
+	        ClssStore.addChangeListener(this._onChange);  
+	        ClssStore.addDeleteClssListener(this._onDelete);           
 	        
 	    },
-	    render: function() { 
+	    _onDelete: function() {        
+	        var deletingClss = ClssStore.getDeleteClss();
+	        // console.log(editingClss);
+	        this.setState({
+	            deletingClss: deletingClss,
+	        });
+
+	        if (deletingClss) {
+	            this.setState({
+	                name: deletingClss.name,
+	                short_name: deletingClss.short_name,
+	                _id: deletingClss._id,
+	            });
+	        }
+	    },
+	    onChangePage: function(page,dataEx) { 
+	            this.setState({
+	                loading: true,
+	                items: this.getData(page,ClssStore.getClss()),
+	                pages: page,
+	            });
+	    },
+	    
+	    getData: function(page,dataEx) {
+	        var list= [];
+	        var start =PER_PAGE *(page-1);
+	        var end = start + PER_PAGE;
+	        if(end >dataEx.length){
+	            end= dataEx.length;
+	        }
+	        for(var i= start; i< end; i++){           
+	                list.push(dataEx[i]);            
+	        }        
+	        return list;
+	    },
+	    renderItem: function(item) {
+	        
 	       
+	    },
+	    
+	    render: function() { 
+	        var total;
+	        var page;
+	        if(this.state.clss){
+	            total =Math.ceil(this.state.clss.length/PER_PAGE);            
+	        }
+	        if(this.state.items){
+	            var curentPage =this.state.pages;
+	            page = this.state.items.map(function(item,index){
+	               
+	                var name = item.name;
+	                var short_name = item.short_name;              
+	                var no = ((curentPage-1)*PER_PAGE)+ index + 1;  
+	                return React.createElement("tr", null, 
+	                            React.createElement("td", null, 
+	                               no
+	                            ), 
+	                            React.createElement("td", null, name), 
+	                            React.createElement("td", null, short_name), 
+	                            React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success light-blue accent-4", onClick: ClssActions.editClss.bind(null,item._id)})), 
+	                            React.createElement("td", null, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger red accent-2", onClick: ClssActions.deleteClss.bind(null,item._id)}))
+	                        );
+	            })
+	        }
+	        var clssData=(
+	            React.createElement("div", null, 
+	                 React.createElement("table", {className: "table"}, 
+	                    React.createElement("thead", null, 
+	                        React.createElement("tr", null, 
+	                            React.createElement("th", null, "STT"), 
+	                            React.createElement("th", null, "Tên"), 
+	                            React.createElement("th", null, "Tên rút gọn"), 
+	                            React.createElement("th", null, "Edit"), 
+	                            React.createElement("th", null, "Delete")
+	                        )
+	                    ), 
+	                    React.createElement("tbody", null, 
+	                        page
+	                    )
+	                ), 
+	                React.createElement(Paginator, {className: "pull-right", max: total, onChange: this.onChangePage})
+	            ));        
+
 	        return (
 	            
-	            React.createElement("div", null, 
-	                React.createElement("h1", {className: "text-center"}, "Quản lý sinh viên"), 
-	                    React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
-	                    React.createElement(ClssForm, null), 
-	                    React.createElement(ClssList, {clss: this.state.clss})
+	        React.createElement("div", null, 
+	            
+	            React.createElement("div", {className: "col-md-10 col-md-offset-1"}, 
+	            React.createElement("h3", {className: "text-left"}, "Quản lý Lớp sinh hoạt"), 
 
+	                React.createElement(ClssForm, null), 
+	                React.createElement("div", null, 
+	                    clssData, 
+	                    React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	                      React.createElement("div", {className: "modal-dialog"}, 
+	                        React.createElement("div", {className: "modal-content"}, 
+	                          React.createElement("div", {className: "modal-header"}, 
+	                            React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                            React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Xóa Lớp sinh hoạt")
+	                          ), 
+	                          React.createElement("div", {className: "modal-body"}, 
+	                          "Bạn có muốn xóa lớp sinh hoạt ", this.state.name, " ?"
+	                          ), 
+	                          React.createElement("div", {className: "modal-footer"}, 
+	                            React.createElement("button", {type: "button", id: "close", className: "btn btn-kind-one grey", "data-dismiss": "modal"}, "Đóng"), 
+	                            React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: ClssActions.destroy.bind(null,this.state._id)}, "DELETE")
+
+	                          )
+	                        )
+	                      )
+	                    )
 	                )
-
 	            )
+	        )
 	            
 	        );
 	    }
@@ -94940,10 +95067,10 @@
 
 	var clssActions = {
 		fetchAddClssFromServer: function() {		
-			ClssAPI.getClss({}).then(function(clsss) {			
+			ClssAPI.getClss({}).then(function(clsss) {
 				AppDispatcher.dispatch({
 					action:Contants.GET_CLSS,
-					data: clsss,
+					data: clsss
 					// params: {}
 				});
 			}, function(status, text) {
@@ -94981,7 +95108,7 @@
 		destroy: function(id) {       
 			ClssAPI.deleteClss(id).then(function(data){
 				AppDispatcher.dispatch({
-					action: Contants.DELETE_clss,
+					action: Contants.DELETE_CLSS,
 					data: data,
 				});
 			},function(status, err){
@@ -94993,6 +95120,17 @@
 		        action: Contants.ACTION_DELETE_CLSS,
 		        data: index,
 		    })
+	    },
+	    getAllClass: function(){
+	    	ClssAPI.getClss({}).then(function(clss) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_ALL_ClASS,
+					data: clss,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
 	    },
 
 	};
@@ -95233,6 +95371,7 @@
 	        case ClssConstants.ACTION_DELETE_CLSS:
 	            _deleteClss(payload.data);
 	            ClssStore.emitDeleteClss();
+
 	            break;
 
 	        case ClssConstants.UPDATE_CLSS:
@@ -95265,34 +95404,34 @@
 	    
 	    _onClickAdd: function() {
 	         var clss = {
-	            name: this.state.name,
-	            short_name: this.state.short_name,            
+	            
+	            name: this.state.name,            
+	            short_name: this.state.short_name,
+	           
 	        };
 
 	        ClssActions.create(clss);
 	        this.setState({
-	          name: "", short_name: ""
+	           name:"", short_name: ""
 	        });
-	         $("#close").click();
+	         $('#myModal').modal('hide');
 	         this._onclickClose;
 	    },
 	    _onClickUpdate: function() {
 	        var editingClss = this.state.editingClss;        
 	        var user ={
-	            _id:editingClss._id,         
-	            name: this.state.name,
+	            _id:editingClss._id,
+	            name: this.state.name,            
 	            short_name: this.state.short_name,
-	            
 	        };
 	        ClssActions.update(user);
 	        this.setState({
-	           name: "", short_name: ""
+	           name:"", short_name: ""
 	        });
-	         $("#close").click();
+	        $('#myModal').modal('hide');
 	         this._onclickClose;
-	    },
-	   
-	    _onchangname: function(e) {
+	    },  
+	    _onchangName: function(e) {
 	        this.setState({
 	            name: e.target.value, 
 	        });
@@ -95312,20 +95451,20 @@
 	        if (editingClss) {
 	            this.setState({
 	                name: editingClss.name,
-	                short_name: editingClss.short_name,
-	               
+	                short_name: editingClss.short_name  
 	            });
 	        }
 	    },
 	    _onclickClose: function(){       
-	        this.setState({
-	            name: "",
-	            short_name:"",
+	        this.setState({                        
+	            name:"", short_name: "",     
+	           editingClss: "",                  
 	        });
+	         $(".input-field label").removeClass("active");
 	    },
 	    getInitialState: function() {
-	            return {
-	            name: "", short_name: "",           
+	        return {
+	            name:"", short_name: "",      
 	            editingClss: null,            
 	        }
 	    },
@@ -95333,43 +95472,47 @@
 	        ClssStore.addEditClssListener(this._onEdit);
 	    },
 	    render: function() {
+	        if(this.state.editingClss){
+	            $(".input-field label").addClass("active");
+	        }
 	        var btnAdd = ( React.createElement("button", {type: "button", onClick: this._onClickAdd, className: "btn btn-primary"}, "Lưu"));
 	        var btnUpdate = (React.createElement("button", {type: "button", onClick: this._onClickUpdate, className: "btn btn-primary"}, "Update"));
 
 	        return (
-	            React.createElement("div", null, 
-	            React.createElement("button", {type: "button", onClick: this._onclickClose, className: "btn btn-primary btn-lg pull-right", "data-toggle": "modal", "data-target": "#myModal"}, 
+	        React.createElement("div", null, 
+	            React.createElement("div", {className: "button-main"}, 
+	            React.createElement("button", {type: "button", onClick: ClssForm._onclickClose, className: "btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4", "data-toggle": "modal", "data-target": "#myModal"}, 
 	              "Thêm mới"
+	            )
 	            ), 
-	           React.createElement("p", null, " "), 
+	                         
 	            React.createElement("div", {className: "modal fade", id: "myModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
 	              React.createElement("div", {className: "modal-dialog"}, 
 	                React.createElement("div", {className: "modal-content"}, 
 	                  React.createElement("div", {className: "modal-header"}, 
 	                    React.createElement("button", {type: "button", onClick: this._onclickClose, className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Lớp sinh hoạt")
 	                  ), 
 	                  React.createElement("div", {className: "modal-body"}, 
 	                    React.createElement("form", {className: "form-horizontal"}, 
-	                      
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Họ"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.name, onChange: this._onchangname, ref: "name", className: "form-control", type: "text", placeholder: "Tên khoa", ref: "title", name: "title"})
-	                            )
-	                        ), 
-	                         React.createElement("div", {className: "form-group"}, 
-	                            React.createElement("label", {htmlFor: "title", className: "col-sm-2 control-label"}, "Tên Đệm"), 
-	                            React.createElement("div", {className: "col-sm-10"}, 
-	                                React.createElement("input", {id: "title", value: this.state.short_name, onChange: this._onchangShortName, ref: "short_name", className: "form-control", type: "text", placeholder: "Trưởng khoa", ref: "title", name: "title"})
+	                       
+	                        React.createElement("div", {className: "row"}, 
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "firstname", value: this.state.name, onChange: this._onchangName, ref: "name", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "firstname"}, "Tên")
+	                            ), 
+	                        
+	                            React.createElement("div", {className: "input-field col s6"}, 
+	                              React.createElement("input", {id: "lastname", value: this.state.short_name, onChange: this._onchangShortName, ref: "short_name", type: "text", className: "validate"}), 
+	                              React.createElement("label", {for: "lastname"}, "Tên viết tắt")
 	                            )
 	                        )
-	                                       
+	                        
 	                    )
 	                  ), 
 	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                     this.state.editingClss ? btnUpdate : btnAdd
+	                    React.createElement("button", {type: "button", id: "close", onClick: this._onclickClose, className: "btn btn-kind-one grey", "data-dismiss": "modal"}, "Đóng"), 
+	                    this.state.editingClss ? btnUpdate : btnAdd
 	                  )
 	                )
 	              )
@@ -95383,85 +95526,113 @@
 	module.exports = ClssForm;
 
 /***/ },
-/* 658 */
+/* 658 */,
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),
-	    ClssStore = __webpack_require__(656),
-	    ClssActions = __webpack_require__(654);
-	var Confirm = __webpack_require__(229);
-	var ClssList = React.createClass({displayName: "ClssList",
-	     _onDelete: function() {        
-	        var deletingClss = ClssStore.getDeleteClss();
-	        // console.log(editingClss);
-	        this.setState({
-	            deletingClss: deletingClss,
-	        });
-
-	        if (deletingClss) {
-	            this.setState({
-	                name: deletingClss.name,
-	                _id: deletingClss._id,
-	            });
+	var React = __webpack_require__(2);
+	var Paginator = React.createClass({displayName: "Paginator",
+	    propTypes: {
+	        max: React.PropTypes.number.isRequired,
+	        maxVisible: React.PropTypes.number,
+	        onChange: React.PropTypes.func.isRequired
+	    },
+	    componentDidUpdate: function(prevProps, prevState) {
+	        if (prevState.currentPage !== this.state.currentPage) {
+	            this.props.onChange(this.state.currentPage);
 	        }
+	    },
+	    getDefaultProps: function() {
+	        return {
+	            maxVisible: 5
+	        };
 	    },
 	    getInitialState: function() {
-	            return {
-	            name: "",            
-	            deletingClss: null, 
-	            id: null,           
+	        return {
+	            currentPage: 1,
+	            items: []
+	        };
+	    },
+	    goTo: function(page) {
+	        this.setState({currentPage: page});
+	    },
+
+	    onClickNext: function() {
+	        var page = this.state.currentPage;
+
+	        if (page < this.props.max) {
+	            this.goTo(page + 1);
 	        }
 	    },
-	    componentDidMount: function() {
-	        ClssStore.addDeleteClssListener(this._onDelete);
+	    onClickPrev: function() {
+	        if (this.state.currentPage > 1) {
+	            this.goTo(this.state.currentPage - 1);
+	        }
+	    },
+	    onClickFirst: function() {        
+	            this.goTo(1);        
+	    },
+	    onClickLast: function() {        
+	            this.goTo(this.props.max);        
 	    },
 	    render: function() {
-	        var ClssList = this.props.clss.map(function(clss, index) {
-	          
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    
-	                    React.createElement("td", null, clss.name), 
-	                    React.createElement("td", null, clss.incoming_year), 
-	                                    
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: ClssActions.editClss.bind(null,clss._id)})), 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#deleModal", value: "delete", className: "btn btn-danger", onClick: ClssActions.deleteClss.bind(null,clss._id)}))
-	                )
-	            );
-	        }.bind(this));
+	        var className = this.props.className || '',
+	            p = this.props,
+	            s = this.state,
+	            skip = 0;
+
+	        if (s.currentPage > p.maxVisible - 1 && s.currentPage < p.max) {
+	            skip = s.currentPage - p.maxVisible + 1;
+	        } else if (s.currentPage === p.max) {
+	            skip = s.currentPage - p.maxVisible;
+	        }
+
+	        var iterator = Array.apply(null, Array(p.maxVisible)).map(function(v, i) {
+	            return skip + i + 1;
+	        });
 
 	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
-	                    React.createElement("tbody", null, 
-	                        
-	                        ClssList
+	            React.createElement("nav", null, 
+	                React.createElement("ul", {className: 'pagination ' + className}, 
+	                	React.createElement("li", {className: s.currentPage === 1 ? 'hidden' : ''}, 
+	                        React.createElement("a", {href: "#/clss", onClick: this.onClickFirst}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "First"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
+	                    ), 
+	                    React.createElement("li", {className: s.currentPage === 1 ? 'disabled' : ''}, 
+	                        React.createElement("a", {href: "#/clss", onClick: this.onClickPrev}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "«"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
+	                    ), 
+	                    iterator.map(function(page) {
+	                        return (
+	                            React.createElement("li", {key: page, 
+	                                onClick: this.goTo.bind(this, page), 
+	                                className: s.currentPage === page ? 'active' : ''}, 
+	                                React.createElement("a", {href: "#/clss"}, page)
+	                            )
+	                        );
+	                    }, this), 
+	                    React.createElement("li", {className: s.currentPage === p.max ? 'disabled' : ''}, 
+	                        React.createElement("a", {href: "#/clss", onClick: this.onClickNext}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "»"), 
+	                            React.createElement("span", {className: "sr-only"}, "Next")
+	                        )
+	                    ), 
+	                    React.createElement("li", {className: s.currentPage === p.max ? 'hidden' : ''}, 
+	                        React.createElement("a", {href: "#/clss", onClick: this.onClickLast}, 
+	                            React.createElement("span", {"aria-hidden": "true"}, "Last"), 
+	                            React.createElement("span", {className: "sr-only"}, "Prev")
+	                        )
 	                    )
-	                ), 
-	                   React.createElement("div", {className: "modal fade", id: "deleModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	              React.createElement("div", {className: "modal-dialog"}, 
-	                React.createElement("div", {className: "modal-content"}, 
-	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm khoa mới")
-	                  ), 
-	                  React.createElement("div", {className: "modal-body"}, 
-	                   this.state.name
-	                  ), 
-	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal", onClick: ClssActions.destroy.bind(null,this.state._id)}, "DELETE")
-
-	                  )
 	                )
-	              )
-	            )
 	            )
 	        );
 	    }
 	});
-
-	module.exports = ClssList;
+	module.exports = Paginator;
 
 /***/ }
 /******/ ]);

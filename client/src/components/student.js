@@ -1,6 +1,6 @@
 var React = require("react"),
     StudentActions = require("../actions/student-action.js"),
-    // CourseActions = require('../actions/course-action'),
+    ClssActions = require("../actions/clss-action"),
     StudentStore = require("../stores/student-store"), 
     // ComboCourse = require("./combb-course"),   
     StudentForm = require("./student/student-form"),
@@ -10,19 +10,20 @@ var PER_PAGE = 10;
 var X = require('xlsx');
 
 
-var Student = React.createClass({
+var Student = React.createClass({    
     _onChange: function() {
         var students =  StudentStore.getStudents(); 
         if(students.length > 0){
             this.onChangePage(1, students);
         }
-        console.log(students);
         this.setState({
-            students: StudentStore.getStudents(),           
+            students: StudentStore.getStudents(),  
+            clss: StudentStore.getClsses()        
         });   
+       
     },
     getInitialState: function() {
-        StudentActions.fetchAddStudentFromServer();      
+        StudentActions.fetchAddStudentFromServer();         
         return {
             students: StudentStore.getStudents(),  
             firstname: "",

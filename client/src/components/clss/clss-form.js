@@ -6,34 +6,34 @@ var ClssForm = React.createClass({
     
     _onClickAdd: function() {
          var clss = {
-            name: this.state.name,
-            short_name: this.state.short_name,            
+            
+            name: this.state.name,            
+            short_name: this.state.short_name,
+           
         };
 
         ClssActions.create(clss);
         this.setState({
-          name: "", short_name: ""
+           name:"", short_name: ""
         });
-         $("#close").click();
+         $('#myModal').modal('hide');
          this._onclickClose;
     },
     _onClickUpdate: function() {
         var editingClss = this.state.editingClss;        
         var user ={
-            _id:editingClss._id,         
-            name: this.state.name,
+            _id:editingClss._id,
+            name: this.state.name,            
             short_name: this.state.short_name,
-            
         };
         ClssActions.update(user);
         this.setState({
-           name: "", short_name: ""
+           name:"", short_name: ""
         });
-         $("#close").click();
+        $('#myModal').modal('hide');
          this._onclickClose;
-    },
-   
-    _onchangname: function(e) {
+    },  
+    _onchangName: function(e) {
         this.setState({
             name: e.target.value, 
         });
@@ -53,20 +53,20 @@ var ClssForm = React.createClass({
         if (editingClss) {
             this.setState({
                 name: editingClss.name,
-                short_name: editingClss.short_name,
-               
+                short_name: editingClss.short_name  
             });
         }
     },
     _onclickClose: function(){       
-        this.setState({
-            name: "",
-            short_name:"",
+        this.setState({                        
+            name:"", short_name: "",     
+           editingClss: "",                  
         });
+         $(".input-field label").removeClass("active");
     },
     getInitialState: function() {
-            return {
-            name: "", short_name: "",           
+        return {
+            name:"", short_name: "",      
             editingClss: null,            
         }
     },
@@ -74,43 +74,47 @@ var ClssForm = React.createClass({
         ClssStore.addEditClssListener(this._onEdit);
     },
     render: function() {
+        if(this.state.editingClss){
+            $(".input-field label").addClass("active");
+        }
         var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
         var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
 
         return (
-            <div>
-            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
+        <div>
+            <div className="button-main" >
+            <button type="button" onClick={ClssForm._onclickClose} className="btn btn-primary btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#myModal">
               Thêm mới
-            </button>  
-           <p>&nbsp;</p>              
+            </button> 
+            </div>   
+                         
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
                 <div className="modal-content" >
                   <div className="modal-header">
                     <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                    <h4 className="modal-title" id="myModalLabel">Thêm Lớp sinh hoạt</h4>
                   </div>
                   <div className="modal-body">
                     <form className="form-horizontal">
-                      
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Họ</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.name} onChange={this._onchangname} ref="name" className="form-control" type="text" placeholder="Tên khoa" ref="title" name="title"/>
+                       
+                        <div className="row">
+                            <div className="input-field col s6">
+                              <input id="firstname" value={this.state.name} onChange={this._onchangName} ref="name" type="text" className="validate"/>
+                              <label for="firstname">Tên</label>
                             </div>
-                        </div>
-                         <div className="form-group">
-                            <label htmlFor="title" className="col-sm-2 control-label">Tên Đệm</label>
-                            <div className="col-sm-10">
-                                <input id="title" value={this.state.short_name} onChange={this._onchangShortName} ref="short_name" className="form-control" type="text" placeholder="Trưởng khoa" ref="title" name="title"/>
+                        
+                            <div className="input-field col s6">
+                              <input id="lastname" value={this.state.short_name} onChange={this._onchangShortName} ref="short_name" type="text" className="validate"/>
+                              <label for="lastname">Tên viết tắt</label>
                             </div>
-                        </div>
-                                       
+                        </div>                  
+                        
                     </form>                    
                   </div>
-                  <div className="modal-footer">
-                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                     {this.state.editingClss ? btnUpdate : btnAdd}
+                  <div className="modal-footer">                      
+                    <button type="button" id="close" onClick={this._onclickClose} className="btn btn-kind-one grey" data-dismiss="modal">Đóng</button>
+                    {this.state.editingClss ? btnUpdate : btnAdd}                     
                   </div>
                 </div>
               </div>
