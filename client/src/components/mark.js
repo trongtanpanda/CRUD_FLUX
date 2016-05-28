@@ -90,7 +90,8 @@ var Mark = React.createClass({
                             <td>{item.termClass.name}</td>
                             <td>{item.cc}</td>
                             <td>{item.gk}</td>
-                          
+                            <td>{item.ck}</td>
+
                             <td>
                                 <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={MarkActions.editMark.bind(null,item._id)} ></button>
                                
@@ -105,11 +106,12 @@ var Mark = React.createClass({
                         <tr>    
                             <th>STT</th>
                             <th>Mã sinh viên</th>
-                            <th>sinh viên</th>
-                            <th>lớp học phần</th>
-                            <th>chuyên cần</th>
-                            <th>giữa kỳ</th>
-                            <th>Action</th>
+                            <th>Sinh viên</th>
+                            <th>Lớp học phần</th>
+                            <th>Chuyên cần</th>
+                            <th>Giữa kỳ</th>
+                            <th>Cuối kỳ</th>
+                            <th>Chỉnh sửa</th>
                                                       
                         </tr>
                     </thead>
@@ -125,7 +127,7 @@ var Mark = React.createClass({
         <div>
             
             <div className="col-md-10 col-md-offset-1">                        
-            <h3 className="text-left">Quản lý Lớp học phần</h3>
+            <h3 className="text-left">Quản lý điểm</h3>
             
             <MarkForm />                   
                 <div>

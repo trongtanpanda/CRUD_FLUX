@@ -35,7 +35,7 @@ var Subject = React.createClass({
         return (
             
             <div>
-                <h1 className="text-center">Quản lý sinh viên</h1>
+                <h1 className="text-center">Quản lý môn học</h1>
                     <div className="col-md-10 col-md-offset-1"> 
                     <SubjectForm />                   
                     <SubjectList subjects={this.state.subjects} />

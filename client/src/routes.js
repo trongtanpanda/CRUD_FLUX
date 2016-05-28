@@ -2,7 +2,7 @@ var React = require('react');
 var { Route, DefaultRoute } = require('react-router');
 
 var App = require('./App');
-
+var Login =require('./components/pages/login');
 var Course = require('./components/course');
 var Department = require('./components/department');
 var Mark = require('./components/mark');
@@ -13,8 +13,9 @@ var Termclass = require('./components/termclass');
 var User = require('./components/user');
 var Clss = require('./components/clss');
 var routes = (
-    <Route name="home" path='/' handler={App}>
-
+    <Route name="home" path='/home' handler={App}>
+        <Route name="login"         path="/"      handler={Login} />
+       
         <Route name="course"        path="/course"      handler={Course} />
         <Route name="department"    path="/department"  handler={Department} />
         <Route name="mark"          path="/mark"        handler={Mark} />

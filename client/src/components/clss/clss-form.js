@@ -78,7 +78,7 @@ var ClssForm = React.createClass({
             $(".input-field label").addClass("active");
         }
         var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
-        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Cập nhật</button>);
 
         return (
         <div>

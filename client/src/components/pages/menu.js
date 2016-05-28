@@ -11,7 +11,8 @@ var menu = React.createClass({
 		        <div className="btn-group btn-group-justified">
 		            <div className="btn-group">
 		            	<Link to='/student'>
-			                <button type="button" className="btn btn-nav"><span className="glyphicon glyphicon-home"></span>
+			                <button type="button" className="btn btn-nav">
+			                	<span className="glyphicon glyphicon-user"></span>
 			                <p>Sinh Viên</p>
 
 			                </button>
@@ -20,7 +21,7 @@ var menu = React.createClass({
 		            <div className="btn-group">
 		            	<Link to='/subject'>
 			                <button type="button" className="btn btn-nav">
-			                    <span className="glyphicon glyphicon-camera"></span>
+			                    <span className="glyphicon glyphicon-book"></span>
 			                    <p>Môn Học</p>
 			                </button>
 		                </Link>
@@ -28,7 +29,7 @@ var menu = React.createClass({
 		            <div className="btn-group">
 		            	<Link to='/sector'>
 			                <button type="button" className="btn btn-nav">
-			                    <span className="glyphicon glyphicon-gift"></span>
+			                    <span className="glyphicon glyphicon-road"></span>
 			                    <p>Ngành</p>
 			                </button>
 			            </Link>
@@ -36,7 +37,7 @@ var menu = React.createClass({
 		            	<div className="btn-group">
 			            	<Link to='/mark'>
 			                <button type="button" className="btn btn-nav">
-			                    <span className="glyphicon glyphicon-briefcase"></span>
+			                    <span className="glyphicon glyphicon-list-alt"></span>
 			                    <p>Điểm</p>
 			                </button>
 			            </Link>
@@ -50,10 +51,10 @@ var menu = React.createClass({
 		                </Link>
 		            </div>
 		            <div className="btn-group">
-		            	<Link to='/department'>
+		            	<Link to='/clss'>
 			                <button type="button" className="btn btn-nav">
-			                    <span className="glyphicon glyphicon-credit-card"></span>
-			                    <p>Khoa</p>
+			                    <span className="glyphicon glyphicon-tags"></span>
+			                    <p>Lớp sinh hoạt</p>
 			                </button>
 		                </Link>
 		            </div>

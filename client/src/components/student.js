@@ -111,8 +111,11 @@ var Student = React.createClass({
                             <td>{lastname}</td>
                             <td>{gender}</td>
                             <td>{native}</td>
-                            <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success light-blue accent-4" onClick={StudentActions.editStudent.bind(null,item._id)} /></td>
-                            <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger red accent-2" onClick={StudentActions.deleteStudent.bind(null,item._id)} /></td>
+                            <td>
+                                <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={StudentActions.editStudent.bind(null,item._id)}  ></button>
+                                &nbsp;
+                                <button type="button" data-toggle="modal" data-target="#deleModal"  className="btn btn-danger red accent-2 glyphicon glyphicon-trash" onClick={StudentActions.deleteStudent.bind(null,item._id)} ></button>
+                            </td>
                         </tr>;
             })
         }
@@ -127,8 +130,8 @@ var Student = React.createClass({
                             <th>Tên</th>
                             <th>Giới tính</th>
                             <th>Quê quán</th> 
-                            <th>Edit</th>
-                            <th>Delete</th>                            
+                            
+                            <th>&nbsp;</th>                            
                         </tr>
                     </thead>
                     <tbody>

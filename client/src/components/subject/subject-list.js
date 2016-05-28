@@ -32,13 +32,17 @@ var SubjectList = React.createClass({
           
             return (
                 <tr key={index}>
+                    <td>{index +1}</td>
                     <td>{subject.subject_id}</td> 
                     <td>{subject.name}</td>  
                     <td>{subject.short_name}</td>                                       
                     <td>{subject.number}</td>  
                                       
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={SubjectActions.editSubject.bind(null,subject._id)} /></td>
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger" onClick={SubjectActions.deleteSubject.bind(null,subject._id)} /></td>
+                    <td>
+                        <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={SubjectActions.editSubject.bind(null,subject._id)} ></button>
+                        &nbsp;
+                        <button type="button" data-toggle="modal" data-target="#deleModal"  className="btn btn-danger red accent-2 glyphicon glyphicon-trash" onClick={SubjectActions.deleteSubject.bind(null,subject._id)} ></button>
+                   </td>
                 </tr>
             );
         }.bind(this));
@@ -46,7 +50,18 @@ var SubjectList = React.createClass({
         return (
             <div>
                 <table className="table">
-                    <tbody>                        
+                    <tbody>    
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã môn học</th>
+                            <th>Tên môn học</th>
+                            <th>Tên viết tắt</th>
+                            <th>Số tín chỉ</th> 
+                            
+                            <th>&nbsp;</th>                            
+                        </tr>
+                    </thead>                    
                         {subjectList}
                     </tbody>
                 </table>
@@ -55,14 +70,14 @@ var SubjectList = React.createClass({
                 <div className="modal-content">
                   <div className="modal-header">
                     <button type="button"  className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm khoa mới</h4>
+                    <h4 className="modal-title" id="myModalLabel">Xóa môn học</h4>
                   </div>
                   <div className="modal-body">
-                   {this.state.name}
+                   Bạn có chắc muốn xóa lớp {this.state.name}?
                   </div>
                   <div className="modal-footer">
                     <button type="button" id="close"  className="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={SubjectActions.destroy.bind(null,this.state._id)}>DELETE</button>
+                    <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={SubjectActions.destroy.bind(null,this.state._id)}>Xóa</button>
 
                   </div>
                 </div>

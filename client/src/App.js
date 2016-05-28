@@ -10,10 +10,13 @@ var App = React.createClass({
     },
 
     render: function() {
-        return (
-            
+        var menu;
+        if(this.props.path!=="/"){
+            menu =(<Menu />);
+        }
+        return (            
             <div>
-                <Menu />               
+                {menu}               
                 <RouteHandler {...this.props} />
             </div>
         );

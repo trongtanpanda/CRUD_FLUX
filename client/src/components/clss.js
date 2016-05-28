@@ -94,8 +94,11 @@ var Clss = React.createClass({
                             </td>                            
                             <td>{name}</td>
                             <td>{short_name}</td>                            
-                            <td><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success light-blue accent-4" onClick={ClssActions.editClss.bind(null,item._id)} /></td>
-                            <td><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger red accent-2" onClick={ClssActions.deleteClss.bind(null,item._id)} /></td>
+                            <td>
+                                <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={ClssActions.editClss.bind(null,item._id)}  ></button>
+                                &nbsp;
+                                <button type="button" data-toggle="modal" data-target="#deleModal"  className="btn btn-danger red accent-2 glyphicon glyphicon-trash" onClick={ClssActions.deleteClss.bind(null,item._id)} ></button>
+                            </td>
                         </tr>;
             })
         }
@@ -107,8 +110,8 @@ var Clss = React.createClass({
                             <th>STT</th>                            
                             <th>Tên</th>
                             <th>Tên rút gọn</th>                            
-                            <th>Edit</th>
-                            <th>Delete</th>                            
+                            
+                            <th></th>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -140,7 +143,7 @@ var Clss = React.createClass({
                           </div>
                           <div className="modal-footer">
                             <button type="button" id="close"  className="btn btn-kind-one grey" data-dismiss="modal">Đóng</button>
-                            <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={ClssActions.destroy.bind(null,this.state._id)}>DELETE</button>
+                            <button type="button" id="close"  className="btn btn-default" data-dismiss="modal" onClick={ClssActions.destroy.bind(null,this.state._id)}>Xóa</button>
 
                           </div>
                         </div>

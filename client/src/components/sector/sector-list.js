@@ -32,12 +32,16 @@ var SectorList = React.createClass({
           
             return (
                 <tr key={index}>
+                    <td>{index +1}</td>
                     <td>{sector.sector_id}</td> 
                     <td>{sector.name}</td>                                       
                     <td>{sector.short_name}</td>  
-                    <td>{sector.english_name}</td>                            
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#myModal" value="Edit" className="btn btn-success" onClick={SectorActions.editSector.bind(null,sector._id)} /></td>
-                    <td className="col-md-1"><input type="button" data-toggle="modal" data-target="#deleModal" value="delete" className="btn btn-danger" onClick={SectorActions.deleteSector.bind(null,sector._id)} /></td>
+                    <td>{sector.english_name}</td>  
+                    <td>
+                        <button type="button" data-toggle="modal" data-target="#myModal"  className="btn btn-success light-blue accent-4 glyphicon glyphicon-pencil" onClick={SectorActions.editSector.bind(null,sector._id)}  ></button>
+                        &nbsp;
+                        <button type="button" data-toggle="modal" data-target="#deleModal"  className="btn btn-danger red accent-2 glyphicon glyphicon-trash" onClick={SectorActions.deleteSector.bind(null,sector._id)} ></button>                          
+                    </td>
                 </tr>
             );
         }.bind(this));
@@ -45,7 +49,17 @@ var SectorList = React.createClass({
         return (
             <div>
                 <table className="table">
-                    <tbody>                        
+                    <tbody>  
+                    <thead>
+                        <tr>    
+                            <th>STT</th> 
+                            <th>Mã ngành</th>                            
+                            <th>Tên ngành</th>
+                            <th>Tên viết tắt</th>                            
+                             <th>Tên tiếng anh</th>   
+                            <th></th>                            
+                        </tr>
+                    </thead>                      
                         {sectorList}
                     </tbody>
                 </table>

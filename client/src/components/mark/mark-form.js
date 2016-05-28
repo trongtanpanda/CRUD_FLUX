@@ -154,21 +154,18 @@ var MarkForm = React.createClass({
         if(this.state.editingMark){
             $(".input-field label").addClass("active");
         }
-        var btnAdd = ( <button type="button" onClick={this._onClickAdd} className="btn btn-primary">Lưu</button>);
-        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Update</button>);
+        
+        var btnUpdate = (<button type="button" onClick={this._onClickUpdate} className="btn btn-primary">Cập nhật</button>);
 
         return (
             <div>
-            <button type="button" onClick={this._onclickClose} className="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#myModal">
-              Thêm mới
-            </button>  
-           <p>&nbsp;</p>              
+                      
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
                 <div className="modal-content" >
                   <div className="modal-header">
                     <button type="button" onClick={this._onclickClose} className="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span className="sr-only">Close</span></button>
-                    <h4 className="modal-title" id="myModalLabel">Thêm Sinh Viên mới</h4>
+                    <h4 className="modal-title" id="myModalLabel">Cập nhật điểm</h4>
                   </div>
                   <div className="modal-body">
                     <form className="form-horizontal">
@@ -241,7 +238,7 @@ var MarkForm = React.createClass({
                   </div>
                   <div className="modal-footer">
                     <button type="button" id="close" onClick={this._onclickClose} className="btn btn-default" data-dismiss="modal">Đóng</button>
-                     {this.state.editingMark ? btnUpdate : btnAdd}
+                     {btnUpdate}
                   </div>
                 </div>
               </div>
