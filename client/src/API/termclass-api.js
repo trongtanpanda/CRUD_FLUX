@@ -95,9 +95,29 @@ function deleteTermClass(termClass) {
 
 	return t;
 }
+function getTermByName(text) {    
+	var t = new promise(function(resolve, reject){
+		request.get(API_URL +"/getbyname")
+            .timeout(TIMEOUT)
+            .set('Content-Type', 'application/json')
+            .send({text: text})			
+			.end(function(err,res) {
+                data = JSON.parse(res.text);
+				if(res.status === 201) {                    
+					resolve(data);
+				}
+				else{
+					reject(res.status, res.text);
+				}
+			});
+	});
+
+	return t;
+}
 module.exports = {
 	getAllTermClass: getAllTermClass,
 	createTermClass: createTermClass,
 	deleteTermClass: deleteTermClass,
-	updateTermClass: updateTermClass
+	updateTermClass: updateTermClass,
+	getTermByName  : getTermByName,
 };

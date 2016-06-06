@@ -83,6 +83,16 @@ var MarkActions = {
 			// Handle error!
 		});
     },
+    saveExcel: function(list){    	
+    	MarkAPI.saveExcel(list).then(function(data){
+			AppDispatcher.dispatch({
+				action: Contants.SAVE_EXCEL,
+				data: data,
+			});
+		},function(status, err){
+			// Handle error
+		});
+    },
 
 };
 module.exports = MarkActions;

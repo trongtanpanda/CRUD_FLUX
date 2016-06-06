@@ -159,7 +159,9 @@ var MarkForm = React.createClass({
 
         return (
             <div>
-                      
+            <button type="button"  className="btn btn-success btn-lg pull-right btn-kind-one light-blue accent-4" data-toggle="modal" data-target="#ecelModal">
+              Nhập từ excel
+            </button>          
             <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"  aria-labelledby="myModalLabel" aria-hidden="true">
               <div className="modal-dialog" >
                 <div className="modal-content" >

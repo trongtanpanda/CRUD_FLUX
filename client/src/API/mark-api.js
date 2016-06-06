@@ -130,6 +130,23 @@ function addStudentToTermClass(student, termClass){
 	});
 	return t;
 }
+function saveExcel(list){
+	var t = new promise(function(resolve, reject){
+		request.post(API_URL+"/excel")
+			.timeout(TIMEOUT)
+			.send({list: list})
+			.end(function(err,res) {
+				data = JSON.parse(res.text);
+				if(res.status === 201) {                    
+                    resolve(data);
+				}else {
+					reject(res.status, res);                    
+				}
+			});
+	});
+
+	return t;
+}
 module.exports = {
 	getAllmark: getAllmark,
 	createMark: createMark,
@@ -137,4 +154,5 @@ module.exports = {
 	updateMark: updateMark,
 	getStudentByTermClass: getStudentByTermClass,
 	addStudentToTermClass: addStudentToTermClass,
+	saveExcel: saveExcel,
 };

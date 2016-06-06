@@ -5,6 +5,7 @@ var React = require("react"),
     // ComboCourse = require("./combb-course"),   
     MarkForm = require("./mark/mark-form"),
     StudentActions = require("../actions/student-action.js"),
+    ImportForm = require("./mark/import-excel");
     MarkList = require("./mark/mark-list");
     
 var Paginator = require("./mark/Paginator.js");
@@ -128,7 +129,7 @@ var Mark = React.createClass({
             
             <div className="col-md-10 col-md-offset-1">                        
             <h3 className="text-left">Quản lý điểm</h3>
-            
+            <ImportForm />
             <MarkForm />                   
                 <div>
                     {termClassData}

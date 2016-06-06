@@ -1,8 +1,7 @@
 var React = require("react"),
     StudentActions = require("../actions/student-action.js"),
     ClssActions = require("../actions/clss-action"),
-    StudentStore = require("../stores/student-store"), 
-    // ComboCourse = require("./combb-course"),   
+    StudentStore = require("../stores/student-store"),
     StudentForm = require("./student/student-form"),
     ImportForm = require("./student/import-excel");
 var Paginator = require("./Paginator.js");

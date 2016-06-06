@@ -63,6 +63,7 @@ module.exports = {
     CREATE_TERMCLASS     : "CREATE_TERMCLASS",
     UPDATE_TERMCLASS     : "UPDATE_TERMCLASS",
     DELETE_TERMCLASS     : "DELETE_TERMCLASS",
+    GET_TERM_BY_NAME     : "GET_TERM_BY_NAME",
 
     //----------CLASS----------------//
 
