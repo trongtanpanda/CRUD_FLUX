@@ -6,11 +6,13 @@ var _ = require("underscore"),
 var CHANGE_EVENT = 'change';
 var CHANGE_EDIT_EVENT = 'change_edit';
 var CHANGE_DELETE_EVENT = 'change_delete';
+var GET_BY_NAME =' get_by_name';
 var _termClasss = [];
 var _courses= [];
 var _editing_id = null;
 var _deleting_id = null;
 var _msg;
+var _term = null;
 
 function ByKeyValue(arraytosearch, key, valuetosearch) { 
     for (var i = 0; i < arraytosearch.length; i++) { 
@@ -27,6 +29,9 @@ function _addTermClass(termClass) {
 }
 function _listTermClass(data){
     _termClasss= data;
+}
+function _getByName(term){
+    _term = term;
 }
 function _listCourse(data){
     _courses =data;
@@ -61,16 +66,18 @@ var TermClassStore  = _.extend(BaseStore, {
         return _termClasss;
 
     },
-  
+    getTermByName: function(){
+        return _term;
+    },
     getMessage:function(){
         return _msg;
     },
-    // emitChange: function() {
-    //     this.emit(CHANGE_EVENT);
-    // },
-    // addChangeListener: function(callback) {
-    //     this.on(CHANGE_EVENT, callback);
-    // },
+    emitGetByName: function() {
+        this.emit(GET_BY_NAME);
+    },
+    getByNameListener: function(callback) {
+        this.on(GET_BY_NAME, callback);
+    },
 
     getEditingTermClasss: function() {
         if (!_editing_id) {
@@ -141,6 +148,10 @@ AppDispatcher.register(function(payload) {
         case TermClassConstants.GET_COURSE:
             _listCourse(payload.data);            
             TermClassStore.emitChange();
+            break;
+        case TermClassConstants.GET_TERM_BY_NAME:
+            _getByName(payload.data.Message.termClass);   
+            TermClassStore.emitGetByName();        
             break;
     }
 });

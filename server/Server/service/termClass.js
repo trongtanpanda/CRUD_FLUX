@@ -68,6 +68,19 @@ router.route('/termClass')
             }
 		});
 	})
-	
+	router.route('/termClass/getbyname')
+    .put(function(req, res) {
+    	var clss= req.body.text;
+			var re = new RegExp('^'+clss+'$', "i")
+			TermClass.findOne({'termClass_id': {'$regex': re}}).exec(function(err, termClass) {			
+ 		if (err){
+                res.send(err);
+            }else{ 
+                res.status(201);
+                res.json({Message:{ message: 'Delete TermClass had success!', type: 'success',termClass: termClass }});
+                res.send();
+            }		
+ 		});
+	})    	
 	
 export default router;

@@ -97,7 +97,7 @@ function deleteTermClass(termClass) {
 }
 function getTermByName(text) {    
 	var t = new promise(function(resolve, reject){
-		request.get(API_URL +"/getbyname")
+		request.put(API_URL +"/getbyname")
             .timeout(TIMEOUT)
             .set('Content-Type', 'application/json')
             .send({text: text})			

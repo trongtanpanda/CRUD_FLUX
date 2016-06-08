@@ -60,7 +60,7 @@ var TermClassActions = {
 	        data: index,
 	    })
     },
-    TermClassAction: function(text) {
+    getTermByName: function(text) {
     	TermClassAPI.getTermByName(text).then(function(data){
 			AppDispatcher.dispatch({
 				action: Contants.GET_TERM_BY_NAME,

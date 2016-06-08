@@ -23698,12 +23698,12 @@
 	var Course = __webpack_require__(205);
 	var Department = __webpack_require__(543);
 	var Mark = __webpack_require__(549);
-	var Sector = __webpack_require__(560);
-	var Student = __webpack_require__(566);
-	var Subject = __webpack_require__(640);
-	var Termclass = __webpack_require__(646);
-	var User = __webpack_require__(651);
-	var Clss = __webpack_require__(656);
+	var Sector = __webpack_require__(562);
+	var Student = __webpack_require__(568);
+	var Subject = __webpack_require__(642);
+	var Termclass = __webpack_require__(648);
+	var User = __webpack_require__(653);
+	var Clss = __webpack_require__(658);
 	var routes = (
 	    React.createElement(Route, {name: "home", path: "/home", handler: App}, 
 	        React.createElement(Route, {name: "login", path: "/", handler: Login}), 
@@ -26036,7 +26036,7 @@
 /* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -54761,10 +54761,10 @@
 	    // ComboCourse = require("./combb-course"),   
 	    MarkForm = __webpack_require__(555),
 	    StudentActions = __webpack_require__(556),
-	    ImportForm = __webpack_require__(660);
-	    MarkList = __webpack_require__(558);
+	    ImportForm = __webpack_require__(558);
+	    MarkList = __webpack_require__(561);
 	    
-	var Paginator = __webpack_require__(559);
+	var Paginator = __webpack_require__(560);
 	var PER_PAGE = 10;
 
 
@@ -55232,7 +55232,7 @@
 		        data: index,
 		    })
 	    },
-	    TermClassAction: function(text) {
+	    getTermByName: function(text) {
 	    	TermClassAPI.getTermByName(text).then(function(data){
 				AppDispatcher.dispatch({
 					action: Contants.GET_TERM_BY_NAME,
@@ -55349,7 +55349,7 @@
 	}
 	function getTermByName(text) {    
 		var t = new promise(function(resolve, reject){
-			request.get(API_URL +"/getbyname")
+			request.put(API_URL +"/getbyname")
 	            .timeout(TIMEOUT)
 	            .set('Content-Type', 'application/json')
 	            .send({text: text})			
@@ -56082,74 +56082,262 @@
 /* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),
+	var React = __webpack_require__(2),    
 	    MarkStore = __webpack_require__(554),
+	    TermClassStore = __webpack_require__(662),
+	    MarkForm = __webpack_require__(555),
+	    TermClassAction = __webpack_require__(559),
 	    MarkActions = __webpack_require__(550);
-	var Confirm = __webpack_require__(230);
-	var MarkList = React.createClass({displayName: "MarkList",
-	     _onDelete: function() {        
-	        var deletingMark = MarkStore.getDeleteMark();
-	        // console.log(editingMark);
-	        this.setState({
-	            deletingMark: deletingMark,
-	        });
+	var Paginator = __webpack_require__(560);
+	var PER_PAGE = 10;
 
-	        if (deletingMark) {
-	            this.setState({
-	                firstname: deletingMark.firstname,
-	                _id: deletingMark._id,
-	            });
-	        }
+	var ImportExcel = React.createClass({displayName: "ImportExcel",    
+	    componentDidMount: function() {
+	        TermClassStore.getByNameListener(this._getByName());
+	    },
+	    _getByName: function(){
+	        console.log(TermClassStore.getTermByName());
 	    },
 	    getInitialState: function() {
-	            return {
-	            firstname: "",            
-	            deletingMark: null, 
-	            id: null,           
-	        }
+	        return {
+	            items: [],
+	            mark_id: "", first: "", midname: "", lastname: "",            
+	            editingMark: null,
+	            loading: true
+	        };
 	    },
-	    componentDidMount: function() {
-	        MarkStore.addDeleteMarkListener(this._onDelete);
+	   
+	    renderItem: function(item) {
+	        return React.createElement("li", {key: item.id}, item.title);
+	    },
+	  
+	    _upload: function(e){
+	        var files = e.target.files;
+	        var f = files[0];
+	        var dataExcel; 
+	        var sheets;      
+	        var that = this;
+	            var reader = new FileReader();
+	            var name = f.name;
+	            reader.onload = function(e) {                
+	                var data = e.target.result;  
+	                var wb = X.read(data, {type: 'binary'}); 
+	                dataExcel = process_wb(wb);
+	                sheets = Object.keys(dataExcel); 
+	                that.setState({                        
+	                    data: dataExcel,
+	                    sheets: sheets,
+	                });                                       
+	            };
+	            reader.readAsBinaryString(f);
+	    },
+	    save: function(){
+	        MarkActions.saveExcel(this.state.dataEx);
+	        
+	    },
+
+	    _onchangeSheet: function(e) {
+	        TermClassAction.getTermByName(e.target.value);       
+	        var ex =this.state.data[e.target.value];
+	        this.setState({
+	            sheetName: e.target.value,
+	            dataEx: ex,
+	        });
+	        this.onChangePage(1,ex);
+	    },
+	     onChangePage: function(page,dataEx) {
+	        if(this.state.dataEx){
+	            this.setState({
+	                loading: true,
+	                items: this.getData(page,this.state.dataEx),
+	            });
+	        }else{
+	            this.setState({
+	                loading: true,
+	                items: this.getData(page,dataEx),
+	            });
+	        }       
+	        
+	    },
+	     getData: function(page,dataEx) {
+	        var list= [];
+	        var start =PER_PAGE *(page-1);
+	        console.log(dataEx.length);
+	        var end = start + PER_PAGE;
+	        if(end >dataEx.length){
+	            end= dataEx.length;
+	        }
+	        for(var i= start; i< end; i++){           
+	                list.push(dataEx[i]);            
+	        }        
+	        return list;
+	    },
+	    renderItem: function(item) {
+	        var id = item['MÃ SỐ'];
+	        var firstname = item['HỌ - HỌ ĐỆM'];
+	        var lastname = item['TÊN'];      
+	        var cc = item['C.cần'];
+	        var gk = item['G.kỳ'];
+	        var tb = item['TB KT'];
+	        var test1 = item['Thi 1'];
+	        var word = item['Đ.CHỮ'];
+	        var number = item['Đ.SỐ'];
+	        return React.createElement("tr", null, React.createElement("td", null, id), React.createElement("td", null, firstname), React.createElement("td", null, lastname), React.createElement("td", null, cc), React.createElement("td", null, gk), React.createElement("td", null, tb), React.createElement("td", null, test1), React.createElement("td", null, word), React.createElement("td", null, number), " ");
 	    },
 	    render: function() {
-	        var markList = this.props.marks.map(function(mark, index) {
-	          
-	            return (
-	                React.createElement("tr", {key: index}, 
-	                    React.createElement("td", null, mark.student), 
-	                    React.createElement("td", null, mark.termClass), 
-	                    React.createElement("td", null, mark.cc), 
-	                    React.createElement("td", null, mark.gk), 
-	                    React.createElement("td", null, mark.tbkt), 
-	                    React.createElement("td", null, mark.t1), 
-	                    React.createElement("td", null, mark.tkml1), 
-	                    React.createElement("td", null, mark.t2), 
-	                    React.createElement("td", null, mark.tkml2), 
-	                    React.createElement("td", null, mark.t3), 
-	                    React.createElement("td", null, mark.by_text), 
-	                    React.createElement("td", null, mark.by_number), 
-	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: MarkActions.editMark.bind(null,mark._id)}))
-	                    
-	                )
-	            );
-	        }.bind(this));
+	        var listMark =[];
+	        var sheetList = [React.createElement("option", null, "Chọn sheet")];
+	        if(this.state.sheetName){
+	            var total=Math.ceil(this.state.dataEx.length/PER_PAGE);
+	            console.log(total);
+	            listMark.push(React.createElement("div", null, 
+	                 React.createElement("table", {className: "table"}, 
+	                    React.createElement("thead", null, 
+	                        React.createElement("tr", null, 
+	                            React.createElement("th", null, "Mã SV"), 
+	                            React.createElement("th", null, "Họ"), 
+	                            React.createElement("th", null, "Tên"), 
+	                            React.createElement("th", null, "Chuyên cần"), 
+	                            React.createElement("th", null, "giữa kỳ"), 
+	                            React.createElement("th", null, "TB KT"), 
+	                            React.createElement("th", null, "Thi lần 1"), 
+	                            React.createElement("th", null, "Đ. Chữ"), 
+	                            React.createElement("th", null, "D. Số")
 
-	        return (
-	            React.createElement("div", null, 
-	                React.createElement("table", {className: "table"}, 
+	                        )
+	                    ), 
 	                    React.createElement("tbody", null, 
-	                        markList
+	                        this.state.items.map(this.renderItem)
 	                    )
+	                ), 
+	                React.createElement(Paginator, {max: total, onChange: this.onChangePage})
+	                
+	            ));
+	        };
+	        if(this.state.sheets){
+	            for(var i =0; i< this.state.sheets.length; i++){
+	                sheetList.push(React.createElement("option", {value: this.state.sheets[i]}, this.state.sheets[i]));
+	            }
+	       };
+	        
+	        return (
+	        React.createElement("div", null, 
+	                    
+	           React.createElement("p", null, " "), 
+	            React.createElement("div", {className: "modal fade", id: "ecelModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
+	              React.createElement("div", {className: "modal-dialog"}, 
+	                React.createElement("div", {className: "modal-content"}, 
+	                  React.createElement("div", {className: "modal-header"}, 
+	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
+	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
+	                  ), 
+	                    React.createElement("div", {className: "modal-body"}, 
+	                    React.createElement("div", {className: "row"}, 
+	                        React.createElement("p", null, React.createElement("input", {type: "file", name: "xlfile", onChange: this._upload, id: "xlf"})), 
+	                        React.createElement("select", {onChange: this._onchangeSheet, className: "form-control col s3"}, 
+	                          sheetList
+	                        )
+	                            
+	                        ), 
+	                       listMark
+	                    ), 
+	                  React.createElement("div", {className: "modal-footer"}, 
+	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
+	                    React.createElement("button", {type: "button", onClick: this.save, className: "btn btn-primary"}, "Lưu")
+	                  )
 	                )
+	              )
 	            )
+	            
+	        )
 	        );
 	    }
 	});
 
-	module.exports = MarkList;
+	module.exports = ImportExcel;
 
 /***/ },
 /* 559 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(207),
+		Contants = __webpack_require__(211),
+		TermClassAPI = __webpack_require__(553);
+
+	var TermClassActions = {
+		fetchAddTermClassFromServer: function() {		
+			TermClassAPI.getAllTermClass({}).then(function(termClass) {			
+				AppDispatcher.dispatch({
+					action:Contants.GET_TERMCLASS,
+					data: termClass,
+					// params: {}
+				});
+			}, function(status, text) {
+				// Handle error!
+			});
+		},
+
+		create: function(termClass) { 
+			console.log(termClass);       
+			TermClassAPI.createTermClass(termClass).then(function(data) {            
+				AppDispatcher.dispatch({
+					action: Contants.CREATE_TERMCLASS,
+					data: data
+				});
+			}, function(status, text) {
+				// Handle error
+			});
+		},
+
+		update: function(termClass) {
+			TermClassAPI.updateTermClass(termClass).then(function(updateData){
+				AppDispatcher.dispatch({
+					action: Contants.UPDATE_TERMCLASS,
+					data: updateData,
+	                termClass: termClass,
+				});
+			}, function(status,text){
+				// handle err
+			});
+		},
+		editTermClass: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_EDIT,
+		        data: index,
+		    })
+	    },
+		destroy: function(id) {       
+			TermClassAPI.deleteTermClass(id).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.DELETE_TERMCLASS,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+		},
+		deleteTermClass: function(index) {
+		    AppDispatcher.dispatch({
+		        action: Contants.ACTION_DELETE,
+		        data: index,
+		    })
+	    },
+	    getTermByName: function(text) {
+	    	TermClassAPI.getTermByName(text).then(function(data){
+				AppDispatcher.dispatch({
+					action: Contants.GET_TERM_BY_NAME,
+					data: data,
+				});
+			},function(status, err){
+				// Handle error
+			});
+	    },
+
+	};
+	module.exports = TermClassActions;
+
+/***/ },
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -56257,16 +56445,86 @@
 	module.exports = Paginator;
 
 /***/ },
-/* 560 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SectorActions = __webpack_require__(561),
+	    MarkStore = __webpack_require__(554),
+	    MarkActions = __webpack_require__(550);
+	var Confirm = __webpack_require__(230);
+	var MarkList = React.createClass({displayName: "MarkList",
+	     _onDelete: function() {        
+	        var deletingMark = MarkStore.getDeleteMark();
+	        // console.log(editingMark);
+	        this.setState({
+	            deletingMark: deletingMark,
+	        });
+
+	        if (deletingMark) {
+	            this.setState({
+	                firstname: deletingMark.firstname,
+	                _id: deletingMark._id,
+	            });
+	        }
+	    },
+	    getInitialState: function() {
+	            return {
+	            firstname: "",            
+	            deletingMark: null, 
+	            id: null,           
+	        }
+	    },
+	    componentDidMount: function() {
+	        MarkStore.addDeleteMarkListener(this._onDelete);
+	    },
+	    render: function() {
+	        var markList = this.props.marks.map(function(mark, index) {
+	          
+	            return (
+	                React.createElement("tr", {key: index}, 
+	                    React.createElement("td", null, mark.student), 
+	                    React.createElement("td", null, mark.termClass), 
+	                    React.createElement("td", null, mark.cc), 
+	                    React.createElement("td", null, mark.gk), 
+	                    React.createElement("td", null, mark.tbkt), 
+	                    React.createElement("td", null, mark.t1), 
+	                    React.createElement("td", null, mark.tkml1), 
+	                    React.createElement("td", null, mark.t2), 
+	                    React.createElement("td", null, mark.tkml2), 
+	                    React.createElement("td", null, mark.t3), 
+	                    React.createElement("td", null, mark.by_text), 
+	                    React.createElement("td", null, mark.by_number), 
+	                    React.createElement("td", {className: "col-md-1"}, React.createElement("input", {type: "button", "data-toggle": "modal", "data-target": "#myModal", value: "Edit", className: "btn btn-success", onClick: MarkActions.editMark.bind(null,mark._id)}))
+	                    
+	                )
+	            );
+	        }.bind(this));
+
+	        return (
+	            React.createElement("div", null, 
+	                React.createElement("table", {className: "table"}, 
+	                    React.createElement("tbody", null, 
+	                        markList
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = MarkList;
+
+/***/ },
+/* 562 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(2),
+	    SectorActions = __webpack_require__(563),
 	    // CourseActions = require('../actions/course-action'),
-	    SectorStore = __webpack_require__(563), 
+	    SectorStore = __webpack_require__(565), 
 	    // ComboCourse = require("./combb-course"),   
-	    SectorForm = __webpack_require__(564),
-	    SectorList = __webpack_require__(565);
+	    SectorForm = __webpack_require__(566),
+	    SectorList = __webpack_require__(567);
 	    // Message = require("./message.js");
 
 
@@ -56311,12 +56569,12 @@
 	module.exports = Sector;
 
 /***/ },
-/* 561 */
+/* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(207),
 		Contants = __webpack_require__(211),
-		SectorAPI = __webpack_require__(562);
+		SectorAPI = __webpack_require__(564);
 
 	var SectorActions = {
 		fetchAddSectorFromServer: function() {		
@@ -56381,7 +56639,7 @@
 	module.exports = SectorActions;
 
 /***/ },
-/* 562 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(213),
@@ -56489,7 +56747,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -56644,12 +56902,12 @@
 	module.exports = SectorStore;
 
 /***/ },
-/* 564 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    SectorStore = __webpack_require__(563),
-	    SectorActions = __webpack_require__(561);
+	    SectorStore = __webpack_require__(565),
+	    SectorActions = __webpack_require__(563);
 
 	var SectorForm = React.createClass({displayName: "SectorForm",
 	    
@@ -56798,12 +57056,12 @@
 	module.exports = SectorForm;
 
 /***/ },
-/* 565 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SectorStore = __webpack_require__(563),
-	    SectorActions = __webpack_require__(561);
+	    SectorStore = __webpack_require__(565),
+	    SectorActions = __webpack_require__(563);
 	var Confirm = __webpack_require__(230);
 	var SectorList = React.createClass({displayName: "SectorList",
 	     _onDelete: function() {        
@@ -56892,18 +57150,18 @@
 	module.exports = SectorList;
 
 /***/ },
-/* 566 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    StudentActions = __webpack_require__(556),
-	    ClssActions = __webpack_require__(567),
-	    StudentStore = __webpack_require__(569),
-	    StudentForm = __webpack_require__(570),
-	    ImportForm = __webpack_require__(571);
-	var Paginator = __webpack_require__(572);
+	    ClssActions = __webpack_require__(569),
+	    StudentStore = __webpack_require__(571),
+	    StudentForm = __webpack_require__(572),
+	    ImportForm = __webpack_require__(573);
+	var Paginator = __webpack_require__(574);
 	var PER_PAGE = 10;
-	var X = __webpack_require__(573);
+	var X = __webpack_require__(575);
 
 
 	var Student = React.createClass({displayName: "Student",    
@@ -57076,12 +57334,12 @@
 	module.exports = Student;
 
 /***/ },
-/* 567 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(207),
 		Contants = __webpack_require__(211),
-		ClssAPI = __webpack_require__(568);
+		ClssAPI = __webpack_require__(570);
 
 	var clssActions = {
 		fetchAddClssFromServer: function() {		
@@ -57155,7 +57413,7 @@
 	module.exports = clssActions;
 
 /***/ },
-/* 568 */
+/* 570 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(213),
@@ -57262,7 +57520,7 @@
 	};
 
 /***/ },
-/* 569 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -57470,11 +57728,11 @@
 	module.exports = StudentStore;
 
 /***/ },
-/* 570 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    StudentStore = __webpack_require__(569),
+	    StudentStore = __webpack_require__(571),
 	    StudentActions = __webpack_require__(556);
 
 	var StudentForm = React.createClass({displayName: "StudentForm",
@@ -57663,15 +57921,15 @@
 	module.exports = StudentForm;
 
 /***/ },
-/* 571 */
+/* 573 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    StudentStore = __webpack_require__(569),
-	    StudentForm = __webpack_require__(570),
+	    StudentStore = __webpack_require__(571),
+	    StudentForm = __webpack_require__(572),
 	    StudentActions = __webpack_require__(556);
 	var URL = 'http://developer.echonest.com/api/v4/song/search?api_key=JE2S42FJUGYGJFVSE';
-	var Paginator = __webpack_require__(572);
+	var Paginator = __webpack_require__(574);
 	var PER_PAGE = 10;
 
 	var ImportExcel = React.createClass({displayName: "ImportExcel",    
@@ -57840,7 +58098,7 @@
 	module.exports = ImportExcel;
 
 /***/ },
-/* 572 */
+/* 574 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -57948,7 +58206,7 @@
 	module.exports = Paginator;
 
 /***/ },
-/* 573 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/* xlsx.js (C) 2013-2015 SheetJS -- http://sheetjs.com */
@@ -57960,7 +58218,7 @@
 	XLSX.version = '0.8.0';
 	var current_codepage = 1200, current_cptable;
 	if(true) {
-		if(typeof cptable === 'undefined') cptable = __webpack_require__(578);
+		if(typeof cptable === 'undefined') cptable = __webpack_require__(580);
 		current_cptable = cptable[current_codepage];
 	}
 	function reset_cp() { set_cp(1200); }
@@ -59154,7 +59412,7 @@
 
 	var fs;
 	function readFileSync(filename, options) {
-		if(fs === undefined) fs = __webpack_require__(580);
+		if(fs === undefined) fs = __webpack_require__(582);
 		return parse(fs.readFileSync(filename), options);
 	}
 
@@ -59288,9 +59546,9 @@
 	if(typeof JSZip !== 'undefined') jszip = JSZip;
 	if (true) {
 		if (typeof module !== 'undefined' && module.exports) {
-			if(has_buf && typeof jszip === 'undefined') jszip = __webpack_require__(581);
-			if(typeof jszip === 'undefined') jszip = __webpack_require__(620).JSZip;
-			_fs = __webpack_require__(580);
+			if(has_buf && typeof jszip === 'undefined') jszip = __webpack_require__(583);
+			if(typeof jszip === 'undefined') jszip = __webpack_require__(622).JSZip;
+			_fs = __webpack_require__(582);
 		}
 	}
 	var attregexg=/([\w:]+)=((?:")([^"]*)(?:")|(?:')([^']*)(?:'))/g;
@@ -59723,7 +59981,7 @@
 		var crypto;
 		if(typeof _crypto !== 'undefined') crypto = _crypto;
 		else if(true) {
-			try { crypto = __webpack_require__(621); }
+			try { crypto = __webpack_require__(623); }
 			catch(e) { crypto = null; }
 		}
 
@@ -69035,7 +69293,7 @@
 
 	/* Helper function to call out to ODS parser */
 	function parse_ods(zip, opts) {
-		if(typeof module !== "undefined" && "function" !== 'undefined' && typeof ODS === 'undefined') ODS = __webpack_require__(639);
+		if(typeof module !== "undefined" && "function" !== 'undefined' && typeof ODS === 'undefined') ODS = __webpack_require__(641);
 		if(typeof ODS === 'undefined' || !ODS.parse_ods) throw new Error("Unsupported ODS");
 		return ODS.parse_ods(zip, opts);
 	}
@@ -69606,10 +69864,10 @@
 	})( true ? exports : XLSX);
 	var XLS = XLSX;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 574 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -69622,9 +69880,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(575)
-	var ieee754 = __webpack_require__(576)
-	var isArray = __webpack_require__(577)
+	var base64 = __webpack_require__(577)
+	var ieee754 = __webpack_require__(578)
+	var isArray = __webpack_require__(579)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -71161,10 +71419,10 @@
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 575 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -71294,7 +71552,7 @@
 
 
 /***/ },
-/* 576 */
+/* 578 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -71384,7 +71642,7 @@
 
 
 /***/ },
-/* 577 */
+/* 579 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -71395,7 +71653,7 @@
 
 
 /***/ },
-/* 578 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/* cpexcel.js (C) 2013-2014 SheetJS -- http://sheetjs.com */
@@ -72204,7 +72462,7 @@
 	  "use strict";
 	  if(typeof cptable === "undefined") {
 	    if(true){
-	      var cpt = __webpack_require__(579);
+	      var cpt = __webpack_require__(581);
 	      if (typeof module !== 'undefined' && module.exports) module.exports = factory(cpt);
 	      else root.cptable = factory(cpt);
 	    } else throw new Error("cptable not found");
@@ -72723,27 +72981,27 @@
 	  return cpt;
 	}));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 579 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = cptable;
 
 /***/ },
-/* 580 */
+/* 582 */
 /***/ function(module, exports) {
 
 	
 
 /***/ },
-/* 581 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var base64 = __webpack_require__(582);
+	var base64 = __webpack_require__(584);
 
 	/**
 	Usage:
@@ -72791,16 +73049,16 @@
 	        return newObj;
 	    };
 	}
-	JSZip.prototype = __webpack_require__(583);
-	JSZip.prototype.load = __webpack_require__(612);
-	JSZip.support = __webpack_require__(584);
-	JSZip.defaults = __webpack_require__(607);
+	JSZip.prototype = __webpack_require__(585);
+	JSZip.prototype.load = __webpack_require__(614);
+	JSZip.support = __webpack_require__(586);
+	JSZip.defaults = __webpack_require__(609);
 
 	/**
 	 * @deprecated
 	 * This namespace will be removed in a future version without replacement.
 	 */
-	JSZip.utils = __webpack_require__(619);
+	JSZip.utils = __webpack_require__(621);
 
 	JSZip.base64 = {
 	    /**
@@ -72818,12 +73076,12 @@
 	        return base64.decode(input);
 	    }
 	};
-	JSZip.compressions = __webpack_require__(586);
+	JSZip.compressions = __webpack_require__(588);
 	module.exports = JSZip;
 
 
 /***/ },
-/* 582 */
+/* 584 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -72899,22 +73157,22 @@
 
 
 /***/ },
-/* 583 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var support = __webpack_require__(584);
-	var utils = __webpack_require__(585);
-	var crc32 = __webpack_require__(605);
-	var signature = __webpack_require__(606);
-	var defaults = __webpack_require__(607);
-	var base64 = __webpack_require__(582);
-	var compressions = __webpack_require__(586);
-	var CompressedObject = __webpack_require__(608);
-	var nodeBuffer = __webpack_require__(604);
-	var utf8 = __webpack_require__(609);
-	var StringWriter = __webpack_require__(610);
-	var Uint8ArrayWriter = __webpack_require__(611);
+	var support = __webpack_require__(586);
+	var utils = __webpack_require__(587);
+	var crc32 = __webpack_require__(607);
+	var signature = __webpack_require__(608);
+	var defaults = __webpack_require__(609);
+	var base64 = __webpack_require__(584);
+	var compressions = __webpack_require__(588);
+	var CompressedObject = __webpack_require__(610);
+	var nodeBuffer = __webpack_require__(606);
+	var utf8 = __webpack_require__(611);
+	var StringWriter = __webpack_require__(612);
+	var Uint8ArrayWriter = __webpack_require__(613);
 
 	/**
 	 * Returns the raw data of a ZipObject, decompress the content if necessary.
@@ -73673,7 +73931,7 @@
 
 
 /***/ },
-/* 584 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -73711,16 +73969,16 @@
 	    }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 585 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var support = __webpack_require__(584);
-	var compressions = __webpack_require__(586);
-	var nodeBuffer = __webpack_require__(604);
+	var support = __webpack_require__(586);
+	var compressions = __webpack_require__(588);
+	var nodeBuffer = __webpack_require__(606);
 	/**
 	 * Convert a string to a "binary string" : a string containing only char codes between 0 and 255.
 	 * @param {string} str the string to transform.
@@ -74045,7 +74303,7 @@
 
 
 /***/ },
-/* 586 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74060,17 +74318,17 @@
 	    compressInputType: null,
 	    uncompressInputType: null
 	};
-	exports.DEFLATE = __webpack_require__(587);
+	exports.DEFLATE = __webpack_require__(589);
 
 
 /***/ },
-/* 587 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var USE_TYPEDARRAY = (typeof Uint8Array !== 'undefined') && (typeof Uint16Array !== 'undefined') && (typeof Uint32Array !== 'undefined');
 
-	var pako = __webpack_require__(588);
+	var pako = __webpack_require__(590);
 	exports.uncompressInputType = USE_TYPEDARRAY ? "uint8array" : "array";
 	exports.compressInputType = USE_TYPEDARRAY ? "uint8array" : "array";
 
@@ -74084,17 +74342,17 @@
 
 
 /***/ },
-/* 588 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Top level file is just a mixin of submodules & constants
 	'use strict';
 
-	var assign    = __webpack_require__(589).assign;
+	var assign    = __webpack_require__(591).assign;
 
-	var deflate   = __webpack_require__(590);
-	var inflate   = __webpack_require__(598);
-	var constants = __webpack_require__(602);
+	var deflate   = __webpack_require__(592);
+	var inflate   = __webpack_require__(600);
+	var constants = __webpack_require__(604);
 
 	var pako = {};
 
@@ -74104,7 +74362,7 @@
 
 
 /***/ },
-/* 589 */
+/* 591 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -74212,17 +74470,17 @@
 
 
 /***/ },
-/* 590 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var zlib_deflate = __webpack_require__(591);
-	var utils = __webpack_require__(589);
-	var strings = __webpack_require__(596);
-	var msg = __webpack_require__(595);
-	var zstream = __webpack_require__(597);
+	var zlib_deflate = __webpack_require__(593);
+	var utils = __webpack_require__(591);
+	var strings = __webpack_require__(598);
+	var msg = __webpack_require__(597);
+	var zstream = __webpack_require__(599);
 
 	var toString = Object.prototype.toString;
 
@@ -74594,16 +74852,16 @@
 
 
 /***/ },
-/* 591 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils   = __webpack_require__(589);
-	var trees   = __webpack_require__(592);
-	var adler32 = __webpack_require__(593);
-	var crc32   = __webpack_require__(594);
-	var msg   = __webpack_require__(595);
+	var utils   = __webpack_require__(591);
+	var trees   = __webpack_require__(594);
+	var adler32 = __webpack_require__(595);
+	var crc32   = __webpack_require__(596);
+	var msg   = __webpack_require__(597);
 
 	/* Public constants ==========================================================*/
 	/* ===========================================================================*/
@@ -76365,13 +76623,13 @@
 
 
 /***/ },
-/* 592 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils = __webpack_require__(589);
+	var utils = __webpack_require__(591);
 
 	/* Public constants ==========================================================*/
 	/* ===========================================================================*/
@@ -77570,7 +77828,7 @@
 
 
 /***/ },
-/* 593 */
+/* 595 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77608,7 +77866,7 @@
 
 
 /***/ },
-/* 594 */
+/* 596 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77655,7 +77913,7 @@
 
 
 /***/ },
-/* 595 */
+/* 597 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77674,14 +77932,14 @@
 
 
 /***/ },
-/* 596 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// String encode/decode helpers
 	'use strict';
 
 
-	var utils = __webpack_require__(589);
+	var utils = __webpack_require__(591);
 
 
 	// Quick check if we can use fast array to bin string conversion
@@ -77865,7 +78123,7 @@
 
 
 /***/ },
-/* 597 */
+/* 599 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -77900,19 +78158,19 @@
 
 
 /***/ },
-/* 598 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var zlib_inflate = __webpack_require__(599);
-	var utils = __webpack_require__(589);
-	var strings = __webpack_require__(596);
-	var c = __webpack_require__(602);
-	var msg = __webpack_require__(595);
-	var zstream = __webpack_require__(597);
-	var gzheader = __webpack_require__(603);
+	var zlib_inflate = __webpack_require__(601);
+	var utils = __webpack_require__(591);
+	var strings = __webpack_require__(598);
+	var c = __webpack_require__(604);
+	var msg = __webpack_require__(597);
+	var zstream = __webpack_require__(599);
+	var gzheader = __webpack_require__(605);
 
 	var toString = Object.prototype.toString;
 
@@ -78306,17 +78564,17 @@
 
 
 /***/ },
-/* 599 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils = __webpack_require__(589);
-	var adler32 = __webpack_require__(593);
-	var crc32   = __webpack_require__(594);
-	var inflate_fast = __webpack_require__(600);
-	var inflate_table = __webpack_require__(601);
+	var utils = __webpack_require__(591);
+	var adler32 = __webpack_require__(595);
+	var crc32   = __webpack_require__(596);
+	var inflate_fast = __webpack_require__(602);
+	var inflate_table = __webpack_require__(603);
 
 	var CODES = 0;
 	var LENS = 1;
@@ -79815,7 +80073,7 @@
 
 
 /***/ },
-/* 600 */
+/* 602 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80147,13 +80405,13 @@
 
 
 /***/ },
-/* 601 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 
-	var utils = __webpack_require__(589);
+	var utils = __webpack_require__(591);
 
 	var MAXBITS = 15;
 	var ENOUGH_LENS = 852;
@@ -80480,7 +80738,7 @@
 
 
 /***/ },
-/* 602 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -80533,7 +80791,7 @@
 
 
 /***/ },
-/* 603 */
+/* 605 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80579,7 +80837,7 @@
 
 
 /***/ },
-/* 604 */
+/* 606 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -80589,15 +80847,15 @@
 	module.exports.test = function(b){
 	    return Buffer.isBuffer(b);
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 605 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(585);
+	var utils = __webpack_require__(587);
 
 	var table = [
 	    0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
@@ -80700,7 +80958,7 @@
 
 
 /***/ },
-/* 606 */
+/* 608 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80713,7 +80971,7 @@
 
 
 /***/ },
-/* 607 */
+/* 609 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80727,7 +80985,7 @@
 
 
 /***/ },
-/* 608 */
+/* 610 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80761,14 +81019,14 @@
 
 
 /***/ },
-/* 609 */
+/* 611 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(585);
-	var support = __webpack_require__(584);
-	var nodeBuffer = __webpack_require__(604);
+	var utils = __webpack_require__(587);
+	var support = __webpack_require__(586);
+	var nodeBuffer = __webpack_require__(606);
 
 	/**
 	 * The following functions come from pako, from pako/lib/utils/strings
@@ -80974,12 +81232,12 @@
 
 
 /***/ },
-/* 610 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(585);
+	var utils = __webpack_require__(587);
 
 	/**
 	 * An object to write any content to a string.
@@ -81010,12 +81268,12 @@
 
 
 /***/ },
-/* 611 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(585);
+	var utils = __webpack_require__(587);
 
 	/**
 	 * An object to write any content to an Uint8Array.
@@ -81052,12 +81310,12 @@
 
 
 /***/ },
-/* 612 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var base64 = __webpack_require__(582);
-	var ZipEntries = __webpack_require__(613);
+	var base64 = __webpack_require__(584);
+	var ZipEntries = __webpack_require__(615);
 	module.exports = function(data, options) {
 	    var files, zipEntries, i, input;
 	    options = options || {};
@@ -81087,18 +81345,18 @@
 
 
 /***/ },
-/* 613 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var StringReader = __webpack_require__(614);
-	var NodeBufferReader = __webpack_require__(616);
-	var Uint8ArrayReader = __webpack_require__(617);
-	var utils = __webpack_require__(585);
-	var sig = __webpack_require__(606);
-	var ZipEntry = __webpack_require__(618);
-	var support = __webpack_require__(584);
-	var jszipProto = __webpack_require__(583);
+	var StringReader = __webpack_require__(616);
+	var NodeBufferReader = __webpack_require__(618);
+	var Uint8ArrayReader = __webpack_require__(619);
+	var utils = __webpack_require__(587);
+	var sig = __webpack_require__(608);
+	var ZipEntry = __webpack_require__(620);
+	var support = __webpack_require__(586);
+	var jszipProto = __webpack_require__(585);
 	//  class ZipEntries {{{
 	/**
 	 * All the entries in the zip file.
@@ -81296,12 +81554,12 @@
 
 
 /***/ },
-/* 614 */
+/* 616 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var DataReader = __webpack_require__(615);
-	var utils = __webpack_require__(585);
+	var DataReader = __webpack_require__(617);
+	var utils = __webpack_require__(587);
 
 	function StringReader(data, optimizedBinaryString) {
 	    this.data = data;
@@ -81338,11 +81596,11 @@
 
 
 /***/ },
-/* 615 */
+/* 617 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var utils = __webpack_require__(585);
+	var utils = __webpack_require__(587);
 
 	function DataReader(data) {
 	    this.data = null; // type : see implementation
@@ -81451,11 +81709,11 @@
 
 
 /***/ },
-/* 616 */
+/* 618 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var Uint8ArrayReader = __webpack_require__(617);
+	var Uint8ArrayReader = __webpack_require__(619);
 
 	function NodeBufferReader(data) {
 	    this.data = data;
@@ -81477,11 +81735,11 @@
 
 
 /***/ },
-/* 617 */
+/* 619 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var DataReader = __webpack_require__(615);
+	var DataReader = __webpack_require__(617);
 
 	function Uint8ArrayReader(data) {
 	    if (data) {
@@ -81530,14 +81788,14 @@
 
 
 /***/ },
-/* 618 */
+/* 620 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var StringReader = __webpack_require__(614);
-	var utils = __webpack_require__(585);
-	var CompressedObject = __webpack_require__(608);
-	var jszipProto = __webpack_require__(583);
+	var StringReader = __webpack_require__(616);
+	var utils = __webpack_require__(587);
+	var CompressedObject = __webpack_require__(610);
+	var jszipProto = __webpack_require__(585);
 	// class ZipEntry {{{
 	/**
 	 * An entry in the zip file.
@@ -81815,11 +82073,11 @@
 
 
 /***/ },
-/* 619 */
+/* 621 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var utils = __webpack_require__(585);
+	var utils = __webpack_require__(587);
 
 	/**
 	 * @deprecated
@@ -81926,7 +82184,7 @@
 
 
 /***/ },
-/* 620 */
+/* 622 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;var require;/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
@@ -90912,13 +91170,13 @@
 	(9)
 	});
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 621 */
+/* 623 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(622)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(624)
 
 	function error () {
 	  var m = [].slice.call(arguments).join(' ')
@@ -90929,9 +91187,9 @@
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(624)
+	exports.createHash = __webpack_require__(626)
 
-	exports.createHmac = __webpack_require__(636)
+	exports.createHmac = __webpack_require__(638)
 
 	exports.randomBytes = function(size, callback) {
 	  if (callback && callback.call) {
@@ -90952,7 +91210,7 @@
 	  return ['sha1', 'sha256', 'sha512', 'md5', 'rmd160']
 	}
 
-	var p = __webpack_require__(637)(exports)
+	var p = __webpack_require__(639)(exports)
 	exports.pbkdf2 = p.pbkdf2
 	exports.pbkdf2Sync = p.pbkdf2Sync
 
@@ -90972,16 +91230,16 @@
 	  }
 	})
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 622 */
+/* 624 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, Buffer) {(function() {
 	  var g = ('undefined' === typeof window ? global : window) || {}
 	  _crypto = (
-	    g.crypto || g.msCrypto || __webpack_require__(623)
+	    g.crypto || g.msCrypto || __webpack_require__(625)
 	  )
 	  module.exports = function(size) {
 	    // Modern Browsers
@@ -91005,22 +91263,22 @@
 	  }
 	}())
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(576).Buffer))
 
 /***/ },
-/* 623 */
+/* 625 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 624 */
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(625)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(627)
 
-	var md5 = toConstructor(__webpack_require__(633))
-	var rmd160 = toConstructor(__webpack_require__(635))
+	var md5 = toConstructor(__webpack_require__(635))
+	var rmd160 = toConstructor(__webpack_require__(637))
 
 	function toConstructor (fn) {
 	  return function () {
@@ -91048,10 +91306,10 @@
 	  return createHash(alg)
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 625 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var exports = module.exports = function (alg) {
@@ -91060,16 +91318,16 @@
 	  return new Alg()
 	}
 
-	var Buffer = __webpack_require__(574).Buffer
-	var Hash   = __webpack_require__(626)(Buffer)
+	var Buffer = __webpack_require__(576).Buffer
+	var Hash   = __webpack_require__(628)(Buffer)
 
-	exports.sha1 = __webpack_require__(627)(Buffer, Hash)
-	exports.sha256 = __webpack_require__(631)(Buffer, Hash)
-	exports.sha512 = __webpack_require__(632)(Buffer, Hash)
+	exports.sha1 = __webpack_require__(629)(Buffer, Hash)
+	exports.sha256 = __webpack_require__(633)(Buffer, Hash)
+	exports.sha512 = __webpack_require__(634)(Buffer, Hash)
 
 
 /***/ },
-/* 626 */
+/* 628 */
 /***/ function(module, exports) {
 
 	module.exports = function (Buffer) {
@@ -91152,7 +91410,7 @@
 
 
 /***/ },
-/* 627 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -91164,7 +91422,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(628).inherits
+	var inherits = __webpack_require__(630).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -91296,7 +91554,7 @@
 
 
 /***/ },
-/* 628 */
+/* 630 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -91824,7 +92082,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(629);
+	exports.isBuffer = __webpack_require__(631);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -91868,7 +92126,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(630);
+	exports.inherits = __webpack_require__(632);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -91889,7 +92147,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
 
 /***/ },
-/* 629 */
+/* 631 */
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -91900,7 +92158,7 @@
 	}
 
 /***/ },
-/* 630 */
+/* 632 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -91929,7 +92187,7 @@
 
 
 /***/ },
-/* 631 */
+/* 633 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -91941,7 +92199,7 @@
 	 *
 	 */
 
-	var inherits = __webpack_require__(628).inherits
+	var inherits = __webpack_require__(630).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -92082,10 +92340,10 @@
 
 
 /***/ },
-/* 632 */
+/* 634 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(628).inherits
+	var inherits = __webpack_require__(630).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -92332,7 +92590,7 @@
 
 
 /***/ },
-/* 633 */
+/* 635 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -92344,7 +92602,7 @@
 	 * See http://pajhome.org.uk/crypt/md5 for more info.
 	 */
 
-	var helpers = __webpack_require__(634);
+	var helpers = __webpack_require__(636);
 
 	/*
 	 * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -92493,7 +92751,7 @@
 
 
 /***/ },
-/* 634 */
+/* 636 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var intSize = 4;
@@ -92531,10 +92789,10 @@
 
 	module.exports = { hash: hash };
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 635 */
+/* 637 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -92743,13 +93001,13 @@
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 636 */
+/* 638 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(624)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(626)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -92793,13 +93051,13 @@
 	}
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 637 */
+/* 639 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pbkdf2Export = __webpack_require__(638)
+	var pbkdf2Export = __webpack_require__(640)
 
 	module.exports = function (crypto, exports) {
 	  exports = exports || {}
@@ -92814,7 +93072,7 @@
 
 
 /***/ },
-/* 638 */
+/* 640 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function(crypto) {
@@ -92902,10 +93160,10 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 639 */
+/* 641 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/* ods.js (C) 2014 SheetJS -- http://sheetjs.com */
@@ -92917,10 +93175,10 @@
 	var get_utils = function() {
 		if(typeof XLSX !== 'undefined') return XLSX.utils;
 		if(true) try {
-			return __webpack_require__(573).utils;
+			return __webpack_require__(575).utils;
 		} catch(e) {
-			try { return __webpack_require__(573).utils; }
-			catch(ee) { return __webpack_require__(573).utils; }
+			try { return __webpack_require__(575).utils; }
+			catch(ee) { return __webpack_require__(575).utils; }
 		}
 		throw new Error("Cannot find XLSX utils");
 	};
@@ -92963,9 +93221,9 @@
 	if(typeof JSZip !== 'undefined') jszip = JSZip;
 	if (true) {
 		if (typeof module !== 'undefined' && module.exports) {
-			if(has_buf && typeof jszip === 'undefined') jszip = __webpack_require__(581);
-			if(typeof jszip === 'undefined') jszip = __webpack_require__(620).JSZip;
-			_fs = __webpack_require__(580);
+			if(has_buf && typeof jszip === 'undefined') jszip = __webpack_require__(583);
+			if(typeof jszip === 'undefined') jszip = __webpack_require__(622).JSZip;
+			_fs = __webpack_require__(582);
 		}
 	}
 	var attregexg=/\b[\w:-]+=["'][^"]*['"]/g;
@@ -93323,19 +93581,19 @@
 	ODS.parse_ods = parse_ods;
 	})( true ? exports : ODS);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(574).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(576).Buffer))
 
 /***/ },
-/* 640 */
+/* 642 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SubjectActions = __webpack_require__(641),
+	    SubjectActions = __webpack_require__(643),
 	    // CourseActions = require('../actions/course-action'),
-	    SubjectStore = __webpack_require__(643), 
+	    SubjectStore = __webpack_require__(645), 
 	    // ComboCourse = require("./combb-course"),   
-	    SubjectForm = __webpack_require__(644),
-	    SubjectList = __webpack_require__(645);
+	    SubjectForm = __webpack_require__(646),
+	    SubjectList = __webpack_require__(647);
 	    // Message = require("./message.js");
 
 
@@ -93382,12 +93640,12 @@
 	module.exports = Subject;
 
 /***/ },
-/* 641 */
+/* 643 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(207),
 		Contants = __webpack_require__(211),
-		SubjectAPI = __webpack_require__(642);
+		SubjectAPI = __webpack_require__(644);
 
 	var SubjectActions = {
 		fetchAddSubjectFromServer: function() {		
@@ -93451,7 +93709,7 @@
 	module.exports = SubjectActions;
 
 /***/ },
-/* 642 */
+/* 644 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(213),
@@ -93559,7 +93817,7 @@
 	};
 
 /***/ },
-/* 643 */
+/* 645 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -93712,12 +93970,12 @@
 	module.exports = SubjectStore;
 
 /***/ },
-/* 644 */
+/* 646 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    SubjectStore = __webpack_require__(643),
-	    SubjectActions = __webpack_require__(641);
+	    SubjectStore = __webpack_require__(645),
+	    SubjectActions = __webpack_require__(643);
 
 	var SubjectForm = React.createClass({displayName: "SubjectForm",
 	    
@@ -93866,12 +94124,12 @@
 	module.exports = SubjectForm;
 
 /***/ },
-/* 645 */
+/* 647 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    SubjectStore = __webpack_require__(643),
-	    SubjectActions = __webpack_require__(641);
+	    SubjectStore = __webpack_require__(645),
+	    SubjectActions = __webpack_require__(643);
 	var Confirm = __webpack_require__(230);
 	var SubjectList = React.createClass({displayName: "SubjectList",
 	     _onDelete: function() {        
@@ -93962,20 +94220,20 @@
 	module.exports = SubjectList;
 
 /***/ },
-/* 646 */
+/* 648 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
 	    TermClassActions = __webpack_require__(552),
 	    // CourseActions = require('../actions/course-action'),
-	    TermClassStore = __webpack_require__(647), 
+	    TermClassStore = __webpack_require__(649), 
 	    MarkStore = __webpack_require__(554), 
-	    TermClassForm = __webpack_require__(648),
-	    TermClassList = __webpack_require__(649),
+	    TermClassForm = __webpack_require__(650),
+	    TermClassList = __webpack_require__(651),
 	    MarkActions = __webpack_require__(550),
 	    StudentActions = __webpack_require__(556),
-	    StudentStore = __webpack_require__(647);
-	var Paginator = __webpack_require__(650);
+	    StudentStore = __webpack_require__(649);
+	var Paginator = __webpack_require__(652);
 	var PER_PAGE = 10;
 
 
@@ -94309,7 +94567,7 @@
 	module.exports = TermClass;
 
 /***/ },
-/* 647 */
+/* 649 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -94320,11 +94578,13 @@
 	var CHANGE_EVENT = 'change';
 	var CHANGE_EDIT_EVENT = 'change_edit';
 	var CHANGE_DELETE_EVENT = 'change_delete';
+	var GET_BY_NAME =' get_by_name';
 	var _termClasss = [];
 	var _courses= [];
 	var _editing_id = null;
 	var _deleting_id = null;
 	var _msg;
+	var _term = null;
 
 	function ByKeyValue(arraytosearch, key, valuetosearch) { 
 	    for (var i = 0; i < arraytosearch.length; i++) { 
@@ -94341,6 +94601,9 @@
 	}
 	function _listTermClass(data){
 	    _termClasss= data;
+	}
+	function _getByName(term){
+	    _term = term;
 	}
 	function _listCourse(data){
 	    _courses =data;
@@ -94375,16 +94638,18 @@
 	        return _termClasss;
 
 	    },
-	  
+	    getTermByName: function(){
+	        return _term;
+	    },
 	    getMessage:function(){
 	        return _msg;
 	    },
-	    // emitChange: function() {
-	    //     this.emit(CHANGE_EVENT);
-	    // },
-	    // addChangeListener: function(callback) {
-	    //     this.on(CHANGE_EVENT, callback);
-	    // },
+	    emitGetByName: function() {
+	        this.emit(GET_BY_NAME);
+	    },
+	    getByNameListener: function(callback) {
+	        this.on(GET_BY_NAME, callback);
+	    },
 
 	    getEditingTermClasss: function() {
 	        if (!_editing_id) {
@@ -94456,16 +94721,20 @@
 	            _listCourse(payload.data);            
 	            TermClassStore.emitChange();
 	            break;
+	        case TermClassConstants.GET_TERM_BY_NAME:
+	            _getByName(payload.data.Message.termClass);   
+	            TermClassStore.emitGetByName();        
+	            break;
 	    }
 	});
 	module.exports = TermClassStore;
 
 /***/ },
-/* 648 */
+/* 650 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    TermClassStore = __webpack_require__(647),
+	    TermClassStore = __webpack_require__(649),
 	    TermClassActions = __webpack_require__(552);
 
 	var TermClassForm = React.createClass({displayName: "TermClassForm",
@@ -94684,11 +94953,11 @@
 	module.exports = TermClassForm;
 
 /***/ },
-/* 649 */
+/* 651 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    TermClassStore = __webpack_require__(647),
+	    TermClassStore = __webpack_require__(649),
 	    TermClassActions = __webpack_require__(552);
 	var Confirm = __webpack_require__(230);
 	var TermClassList = React.createClass({displayName: "TermClassList",
@@ -94771,7 +95040,7 @@
 	module.exports = TermClassList;
 
 /***/ },
-/* 650 */
+/* 652 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -94879,13 +95148,13 @@
 	module.exports = Paginator;
 
 /***/ },
-/* 651 */
+/* 653 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    UserActions = __webpack_require__(652),   
-	    UserStore = __webpack_require__(654),    
-	    UserList = __webpack_require__(655);
+	    UserActions = __webpack_require__(654),   
+	    UserStore = __webpack_require__(656),    
+	    UserList = __webpack_require__(657);
 	    // Message = require("./message");
 
 
@@ -94941,12 +95210,12 @@
 	module.exports = User;
 
 /***/ },
-/* 652 */
+/* 654 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(207),
 		Contants = __webpack_require__(211),
-		UserAPI = __webpack_require__(653);
+		UserAPI = __webpack_require__(655);
 
 	var UserActions = {
 		fetchAddUserFromServer: function() {		
@@ -95004,7 +95273,7 @@
 	module.exports = UserActions;
 
 /***/ },
-/* 653 */
+/* 655 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var request = __webpack_require__(213),
@@ -95112,7 +95381,7 @@
 	};
 
 /***/ },
-/* 654 */
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -95214,12 +95483,12 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 655 */
+/* 657 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    UserStore = __webpack_require__(654),
-	 UserActions = __webpack_require__(652);
+	    UserStore = __webpack_require__(656),
+	 UserActions = __webpack_require__(654);
 	var UserList = React.createClass({displayName: "UserList",
 
 	    render: function() {
@@ -95247,18 +95516,18 @@
 	module.exports = UserList;
 
 /***/ },
-/* 656 */
+/* 658 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),
-	    ClssActions = __webpack_require__(567),
+	    ClssActions = __webpack_require__(569),
 	    // CourseActions = require('../actions/course-action'),
-	    ClssStore = __webpack_require__(657), 
+	    ClssStore = __webpack_require__(659), 
 	    // ComboCourse = require("./combb-course"),   
-	    ClssForm = __webpack_require__(658);
-	var Paginator = __webpack_require__(659);
+	    ClssForm = __webpack_require__(660);
+	var Paginator = __webpack_require__(661);
 	var PER_PAGE = 10;
-	var X = __webpack_require__(573);
+	var X = __webpack_require__(575);
 
 
 	var Clss = React.createClass({displayName: "Clss",
@@ -95412,7 +95681,7 @@
 	module.exports = Clss;
 
 /***/ },
-/* 657 */
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(224),
@@ -95561,12 +95830,12 @@
 	module.exports = ClssStore;
 
 /***/ },
-/* 658 */
+/* 660 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2),    
-	    ClssStore = __webpack_require__(657),
-	    ClssActions = __webpack_require__(567);
+	    ClssStore = __webpack_require__(659),
+	    ClssActions = __webpack_require__(569);
 
 	var ClssForm = React.createClass({displayName: "ClssForm",
 	    
@@ -95694,7 +95963,7 @@
 	module.exports = ClssForm;
 
 /***/ },
-/* 659 */
+/* 661 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(2);
@@ -95802,259 +96071,167 @@
 	module.exports = Paginator;
 
 /***/ },
-/* 660 */
+/* 662 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(2),    
-	    MarkStore = __webpack_require__(554),
-	    MarkForm = __webpack_require__(555),
-	    TermClassAction = __webpack_require__(661),
-	    MarkActions = __webpack_require__(550);
-	var Paginator = __webpack_require__(559);
-	var PER_PAGE = 10;
+	var _ = __webpack_require__(224),
+	    TermClassConstants = __webpack_require__(211),
+	    AppDispatcher = __webpack_require__(207),    
+	    BaseStore = __webpack_require__(225);
 
-	var ImportExcel = React.createClass({displayName: "ImportExcel",    
-	    // componentDidMount: function() {
-	    //     this.onChangePage(1);
-	    // },
-	   
-	    getInitialState: function() {
-	        return {
-	            items: [],
-	            mark_id: "", first: "", midname: "", lastname: "",            
-	            editingMark: null,
-	            loading: true
-	        };
-	    },
-	   
-	    renderItem: function(item) {
-	        return React.createElement("li", {key: item.id}, item.title);
-	    },
-	  
-	    _upload: function(e){
-	        var files = e.target.files;
-	        var f = files[0];
-	        var dataExcel; 
-	        var sheets;      
-	        var that = this;
-	            var reader = new FileReader();
-	            var name = f.name;
-	            reader.onload = function(e) {                
-	                var data = e.target.result;  
-	                var wb = X.read(data, {type: 'binary'}); 
-	                dataExcel = process_wb(wb);
-	                sheets = Object.keys(dataExcel); 
-	                that.setState({                        
-	                    data: dataExcel,
-	                    sheets: sheets,
-	                });                                       
-	            };
-	            reader.readAsBinaryString(f);
-	    },
-	    save: function(){
-	        MarkActions.saveExcel(this.state.dataEx);
-	        
-	    },
+	var CHANGE_EVENT = 'change';
+	var CHANGE_EDIT_EVENT = 'change_edit';
+	var CHANGE_DELETE_EVENT = 'change_delete';
+	var GET_BY_NAME =' get_by_name';
+	var _termClasss = [];
+	var _courses= [];
+	var _editing_id = null;
+	var _deleting_id = null;
+	var _msg;
+	var _term = null;
 
-	    _onchangeSheet: function(e) {
-	        TermClassAction(e.target.value);
-	        var ex =this.state.data[e.target.value];
-	        this.setState({
-	            sheetName: e.target.value,
-	            dataEx: ex,
-	        });
-	        this.onChangePage(1,ex);
-	    },
-	     onChangePage: function(page,dataEx) {
-	        if(this.state.dataEx){
-	            this.setState({
-	                loading: true,
-	                items: this.getData(page,this.state.dataEx),
-	            });
-	        }else{
-	            this.setState({
-	                loading: true,
-	                items: this.getData(page,dataEx),
-	            });
-	        }       
-	        
-	    },
-	     getData: function(page,dataEx) {
-	        var list= [];
-	        var start =PER_PAGE *(page-1);
-	        console.log(dataEx.length);
-	        var end = start + PER_PAGE;
-	        if(end >dataEx.length){
-	            end= dataEx.length;
+	function ByKeyValue(arraytosearch, key, valuetosearch) { 
+	    for (var i = 0; i < arraytosearch.length; i++) { 
+	        if (arraytosearch[i][key] == valuetosearch) {
+	            return i;
 	        }
-	        for(var i= start; i< end; i++){           
-	                list.push(dataEx[i]);            
-	        }        
-	        return list;
-	    },
-	    renderItem: function(item) {
-	        var id = item['MÃ SỐ'];
-	        var firstname = item['HỌ - HỌ ĐỆM'];
-	        var lastname = item['TÊN'];      
-	        var cc = item['C.cần'];
-	        var gk = item['G.kỳ'];
-	        var tb = item['TB KT'];
-	        var test1 = item['Thi 1'];
-	        var word = item['Đ.CHỮ'];
-	        var number = item['Đ.SỐ'];
-	        return React.createElement("tr", null, React.createElement("td", null, id), React.createElement("td", null, firstname), React.createElement("td", null, lastname), React.createElement("td", null, cc), React.createElement("td", null, gk), React.createElement("td", null, tb), React.createElement("td", null, test1), React.createElement("td", null, word), React.createElement("td", null, number), " ");
-	    },
-	    render: function() {
-	        var listMark =[];
-	        var sheetList = [React.createElement("option", null, "Chọn sheet")];
-	        if(this.state.sheetName){
-	            var total=Math.ceil(this.state.dataEx.length/PER_PAGE);
-	            console.log(total);
-	            listMark.push(React.createElement("div", null, 
-	                 React.createElement("table", {className: "table"}, 
-	                    React.createElement("thead", null, 
-	                        React.createElement("tr", null, 
-	                            React.createElement("th", null, "Mã SV"), 
-	                            React.createElement("th", null, "Họ"), 
-	                            React.createElement("th", null, "Tên"), 
-	                            React.createElement("th", null, "Chuyên cần"), 
-	                            React.createElement("th", null, "giữa kỳ"), 
-	                            React.createElement("th", null, "TB KT"), 
-	                            React.createElement("th", null, "Thi lần 1"), 
-	                            React.createElement("th", null, "Đ. Chữ"), 
-	                            React.createElement("th", null, "D. Số")
-
-	                        )
-	                    ), 
-	                    React.createElement("tbody", null, 
-	                        this.state.items.map(this.renderItem)
-	                    )
-	                ), 
-	                React.createElement(Paginator, {max: total, onChange: this.onChangePage})
-	                
-	            ));
-	        };
-	        if(this.state.sheets){
-	            for(var i =0; i< this.state.sheets.length; i++){
-	                sheetList.push(React.createElement("option", {value: this.state.sheets[i]}, this.state.sheets[i]));
-	            }
-	       };
-	        
-	        return (
-	        React.createElement("div", null, 
-	                    
-	           React.createElement("p", null, " "), 
-	            React.createElement("div", {className: "modal fade", id: "ecelModal", tabIndex: "-1", role: "dialog", "aria-labelledby": "myModalLabel", "aria-hidden": "true"}, 
-	              React.createElement("div", {className: "modal-dialog"}, 
-	                React.createElement("div", {className: "modal-content"}, 
-	                  React.createElement("div", {className: "modal-header"}, 
-	                    React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal"}, React.createElement("span", {"aria-hidden": "true"}, "×"), React.createElement("span", {className: "sr-only"}, "Close")), 
-	                    React.createElement("h4", {className: "modal-title", id: "myModalLabel"}, "Thêm Sinh Viên mới")
-	                  ), 
-	                    React.createElement("div", {className: "modal-body"}, 
-	                    React.createElement("div", {className: "row"}, 
-	                        React.createElement("p", null, React.createElement("input", {type: "file", name: "xlfile", onChange: this._upload, id: "xlf"})), 
-	                        React.createElement("select", {onChange: this._onchangeSheet, className: "form-control col s3"}, 
-	                          sheetList
-	                        )
-	                            
-	                        ), 
-	                       listMark
-	                    ), 
-	                  React.createElement("div", {className: "modal-footer"}, 
-	                    React.createElement("button", {type: "button", id: "close", className: "btn btn-default", "data-dismiss": "modal"}, "Đóng"), 
-	                    React.createElement("button", {type: "button", onClick: this.save, className: "btn btn-primary"}, "Lưu")
-	                  )
-	                )
-	              )
-	            )
-	            
-	        )
-	        );
 	    }
+	    return null;
+	}
+
+
+	function _addTermClass(termClass) {
+	    _termClasss.push(termClass);
+	}
+	function _listTermClass(data){
+	    _termClasss= data;
+	}
+	function _getByName(term){
+	    _term = term;
+	}
+	function _listCourse(data){
+	    _courses =data;
+	}
+	function _removeTermClass(_id) {    
+	    var i = ByKeyValue(_termClasss, "_id", _id);
+	        _termClasss.splice(i,1);
+	}
+
+	function _editTermClass(index) {
+	    _editing_id = index;
+	}
+
+	function _deleteTermClass(index) {
+	    _deleting_id = index;
+	}
+
+	function _updateTermClass(termClass) {
+	    var index = ByKeyValue(_termClasss, "_id", _editing_id); 
+	    _termClasss[index] = termClass;
+	    _editing_id = null;
+	}
+
+	function _getMsg(message){
+	    _msg=message;    
+	}
+	function _deleteMsg(){
+	    _msg =null;
+	}
+	var TermClassStore  = _.extend(BaseStore, {
+	    getTermClasss: function() {
+	        return _termClasss;
+
+	    },
+	    getTermByName: function(){
+	        return _term;
+	    },
+	    getMessage:function(){
+	        return _msg;
+	    },
+	    emitGetByName: function() {
+	        this.emit(GET_BY_NAME);
+	    },
+	    getByNameListener: function(callback) {
+	        this.on(GET_BY_NAME, callback);
+	    },
+
+	    getEditingTermClasss: function() {
+	        if (!_editing_id) {
+
+	            return null;
+	        }
+	        var index = ByKeyValue(_termClasss, "_id", _editing_id);
+
+	        return _termClasss[index];        
+	    },
+	    emitEditTermClass: function(callback) {
+	        this.emit(CHANGE_EDIT_EVENT, callback);
+	    },
+	    addEditTermClassListener: function(callback) {
+	        this.on(CHANGE_EDIT_EVENT, callback);
+	    },
+
+	    getDeleteTermClass: function() {
+	        if (!_deleting_id) {
+	            return null;
+	        }
+	        var index = ByKeyValue(_termClasss, "_id", _deleting_id);
+	        return _termClasss[index];        
+	    },
+	    emitDeleteTermClass: function(callback) {
+	        this.emit(CHANGE_DELETE_EVENT, callback);
+	    },
+	    addDeleteTermClassListener: function(callback) {
+	        this.on(CHANGE_DELETE_EVENT, callback);
+	    },
 	});
 
-	module.exports = ImportExcel;
+	AppDispatcher.register(function(payload) {
+	    switch (payload.action) {
+	        case TermClassConstants.CREATE_TERMCLASS:       
+	            _addTermClass(payload.data.Message.termClass);
+	            TermClassStore.emitChange();            
+	            break;
 
-/***/ },
-/* 661 */
-/***/ function(module, exports, __webpack_require__) {
+	        case TermClassConstants.DELETE_TERMCLASS:
+	            _removeTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);                    
+	            TermClassStore.emitChange();           
+	            break;
 
-	var AppDispatcher = __webpack_require__(207),
-		Contants = __webpack_require__(211),
-		TermClassAPI = __webpack_require__(553);
+	        case TermClassConstants.ACTION_EDIT:
+	            _editTermClass(payload.data);
+	            TermClassStore.emitEditTermClass();
+	            break;
 
-	var TermClassActions = {
-		fetchAddTermClassFromServer: function() {		
-			TermClassAPI.getAllTermClass({}).then(function(termClass) {			
-				AppDispatcher.dispatch({
-					action:Contants.GET_TERMCLASS,
-					data: termClass,
-					// params: {}
-				});
-			}, function(status, text) {
-				// Handle error!
-			});
-		},
+	        case TermClassConstants.ACTION_DELETE:
+	            _deleteTermClass(payload.data);
+	            TermClassStore.emitDeleteTermClass();
+	            break;
 
-		create: function(termClass) { 
-			console.log(termClass);       
-			TermClassAPI.createTermClass(termClass).then(function(data) {            
-				AppDispatcher.dispatch({
-					action: Contants.CREATE_TERMCLASS,
-					data: data
-				});
-			}, function(status, text) {
-				// Handle error
-			});
-		},
+	        case TermClassConstants.UPDATE_TERMCLASS:
+	            _updateTermClass(payload.data.Message.termClass);
+	            _getMsg(payload.data.Message);            
+	            TermClassStore.emitEditTermClass();
+	            TermClassStore.emitChange();            
+	            break;
 
-		update: function(termClass) {
-			TermClassAPI.updateTermClass(termClass).then(function(updateData){
-				AppDispatcher.dispatch({
-					action: Contants.UPDATE_TERMCLASS,
-					data: updateData,
-	                termClass: termClass,
-				});
-			}, function(status,text){
-				// handle err
-			});
-		},
-		editTermClass: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_EDIT,
-		        data: index,
-		    })
-	    },
-		destroy: function(id) {       
-			TermClassAPI.deleteTermClass(id).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.DELETE_TERMCLASS,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
-		},
-		deleteTermClass: function(index) {
-		    AppDispatcher.dispatch({
-		        action: Contants.ACTION_DELETE,
-		        data: index,
-		    })
-	    },
-	    TermClassAction: function(text) {
-	    	TermClassAPI.getTermByName(text).then(function(data){
-				AppDispatcher.dispatch({
-					action: Contants.GET_TERM_BY_NAME,
-					data: data,
-				});
-			},function(status, err){
-				// Handle error
-			});
-	    },
-
-	};
-	module.exports = TermClassActions;
+	        case TermClassConstants.GET_TERMCLASS:
+	            _listTermClass(payload.data);
+	            TermClassStore.emitChange();
+	            break;
+	            
+	        case TermClassConstants.GET_COURSE:
+	            _listCourse(payload.data);            
+	            TermClassStore.emitChange();
+	            break;
+	        case TermClassConstants.GET_TERM_BY_NAME:
+	            _getByName(payload.data.Message.termClass);   
+	            TermClassStore.emitGetByName();        
+	            break;
+	    }
+	});
+	module.exports = TermClassStore;
 
 /***/ }
 /******/ ]);

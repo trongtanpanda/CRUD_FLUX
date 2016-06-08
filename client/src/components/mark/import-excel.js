@@ -1,5 +1,6 @@
 var React = require("react"),    
     MarkStore = require("../../stores/mark-store"),
+    TermClassStore = require("../../stores/termclass-store"),
     MarkForm = require("./mark-form"),
     TermClassAction = require("../../actions/termclass-action"),
     MarkActions = require("../../actions/mark-action.js");
@@ -7,10 +8,12 @@ var Paginator = require("./Paginator.js");
 var PER_PAGE = 10;
 
 var ImportExcel = React.createClass({    
-    // componentDidMount: function() {
-    //     this.onChangePage(1);
-    // },
-   
+    componentDidMount: function() {
+        TermClassStore.getByNameListener(this._getByName());
+    },
+    _getByName: function(){
+        console.log(TermClassStore.getTermByName());
+    },
     getInitialState: function() {
         return {
             items: [],
@@ -50,7 +53,7 @@ var ImportExcel = React.createClass({
     },
 
     _onchangeSheet: function(e) {
-        TermClassAction(e.target.value);
+        TermClassAction.getTermByName(e.target.value);       
         var ex =this.state.data[e.target.value];
         this.setState({
             sheetName: e.target.value,
